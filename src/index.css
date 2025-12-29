@@ -5089,16 +5089,17 @@ body, * {
 }
 
 .kosh-app-fixed {
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
 }
 
 .kosh-app-fixed .kosh-page-main-new {
   flex: 1;
   min-height: 0;
   height: auto;
+  overflow: hidden;
 }
 
 .kosh-app-fixed footer,
@@ -5106,10 +5107,31 @@ body, * {
   display: none;
 }
 
+.kosh-app-fixed .app-download-banner {
+  flex-shrink: 0;
+  margin-top: 0;
+  padding: 40px 0;
+}
+
+@media (max-width: 768px) {
+  .kosh-app-fixed .app-download-banner {
+    padding: 30px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .kosh-app-fixed .app-download-banner {
+    padding: 25px 0;
+  }
+}
+
 .kosh-page-main-new {
   padding-top: 0;
-  height: calc(100vh - 160px);
+  flex: 1;
+  min-height: 0;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .kosh-page-layout {
@@ -5140,7 +5162,7 @@ body, * {
   background: #FFFFFF;
   border-right: 1px solid rgba(0, 0, 0, 0.08);
   padding: 0;
-  height: calc(100vh - 170px);
+  height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
   flex-shrink: 0;
@@ -5256,7 +5278,8 @@ body, * {
   flex-direction: column;
   padding: 0;
   background: #F8F8F8;
-  height: calc(100vh - 170px);
+  height: 100%;
+  min-height: 0;
   overflow: hidden;
 }
 
@@ -5704,12 +5727,19 @@ body, * {
 }
 
 @media (max-width: 768px) {
+  .kosh-app-fixed {
+    min-height: 100vh;
+  }
+  
   .kosh-page-main-new {
-    height: calc(100vh - 96px);
+    flex: 1;
+    min-height: 0;
+    height: auto;
   }
   
   .kosh-page-layout {
     flex-direction: column;
+    height: 100%;
   }
 
   .karmkand-layout {
@@ -5731,6 +5761,7 @@ body, * {
     max-height: 200px;
     border-right: none;
     border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    flex-shrink: 0;
   }
   
   .kosh-sidebar-header {
@@ -5779,6 +5810,10 @@ body, * {
   .kosh-main-content-wrapper {
     flex: 1;
     min-height: 0;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
   }
   
   .kosh-search-filter-bar {

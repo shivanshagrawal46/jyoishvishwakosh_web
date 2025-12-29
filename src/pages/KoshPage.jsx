@@ -66,12 +66,22 @@ const KoshPage = ({ language: initialLanguage, setLanguage: setLanguageProp }) =
     const loadCategories = async () => {
       try {
         setInitialLoading(true)
+        setError(null)
         const data = await fetchKoshCategories(1) // Category ID 1 for Kosh
-        setCategories(data.subcategories || [])
-        if (data.subcategories?.length > 0) {
-          setSelectedCategory(data.subcategories[0])
+        console.log('📋 Kosh categories data received:', data)
+        
+        // Handle different response structures
+        const categoriesList = data.subcategories || data.categories || (Array.isArray(data) ? data : [])
+        console.log('📋 Processed categories list:', categoriesList)
+        
+        setCategories(categoriesList)
+        if (categoriesList.length > 0) {
+          setSelectedCategory(categoriesList[0])
+        } else {
+          setError('No categories found. Please check the API response.')
         }
       } catch (err) {
+        console.error('❌ Error loading kosh categories:', err)
         setError(`Failed to load categories: ${err.message}`)
       } finally {
         setInitialLoading(false)
@@ -82,12 +92,19 @@ const KoshPage = ({ language: initialLanguage, setLanguage: setLanguageProp }) =
 
   // Optimized content loading
   useEffect(() => {
-    if (!selectedCategory) return
+    if (!selectedCategory) {
+      console.log('⚠️ No category selected, skipping content load')
+      return
+    }
     
     const categoryId = selectedCategory.id
+    console.log('🔄 Loading contents for category:', categoryId, selectedCategory.name)
     
     // Prevent duplicate loading for same category
-    if (categoryIdRef.current === categoryId) return
+    if (categoryIdRef.current === categoryId) {
+      console.log('⏭️ Skipping duplicate load for category:', categoryId)
+      return
+    }
     categoryIdRef.current = categoryId
     
     const loadContents = async () => {
@@ -98,37 +115,58 @@ const KoshPage = ({ language: initialLanguage, setLanguage: setLanguageProp }) =
 
       try {
         // PHASE 1: Load first page immediately (10 items)
+        console.log('📄 Loading page 1 for category:', categoryId)
         const page1 = await fetchKoshContents(1, categoryId, 1) // Category ID 1 for Kosh
-        if (categoryIdRef.current !== categoryId) return
+        console.log('📦 Page 1 response:', page1)
+        
+        if (categoryIdRef.current !== categoryId) {
+          console.log('⚠️ Category changed during load, aborting')
+          return
+        }
         
         const initial = page1.contents || []
+        console.log('📋 Initial contents count:', initial.length)
         setAllContents(initial)
         setVisheshSuchi(page1.vishesh_suchi || [])
         setInitialLoading(false)
         
         const totalPages = page1.totalPages || 1
-        if (totalPages <= 1) return
+        console.log('📊 Total pages:', totalPages)
+        
+        if (totalPages <= 1) {
+          console.log('✅ Only one page, loading complete')
+          return
+        }
 
         // PHASE 2: Burst load pages 2-5 (40 more items)
         const burstPages = Math.min(5, totalPages)
+        console.log('📄 Burst loading pages 2-', burstPages)
         const burstPromises = []
         for (let i = 2; i <= burstPages; i++) {
           burstPromises.push(fetchKoshContents(1, categoryId, i)) // Category ID 1 for Kosh
         }
         
         const burstResults = await Promise.all(burstPromises)
-        if (categoryIdRef.current !== categoryId) return
+        if (categoryIdRef.current !== categoryId) {
+          console.log('⚠️ Category changed during burst load, aborting')
+          return
+        }
         
         const burstContents = burstResults.flatMap(p => p.contents || [])
+        console.log('📋 Burst contents count:', burstContents.length)
+        
         // Combine all initial contents (pages 1-5)
         const allInitial = [...initial, ...burstContents]
+        console.log('📋 Total contents after burst:', allInitial.length)
         setAllContents(allInitial)
 
         // PHASE 3: Background load remaining pages with progressive updates
         if (totalPages > 5) {
+          console.log('📄 Starting background load for pages 6-', totalPages)
           loadBackgroundPages(1, categoryId, 6, totalPages, allInitial) // Category ID 1 for Kosh
         }
       } catch (err) {
+        console.error('❌ Error loading contents:', err)
         if (categoryIdRef.current === categoryId) {
           setError(`Failed to load: ${err.message}`)
           setInitialLoading(false)

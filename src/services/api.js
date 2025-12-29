@@ -68,8 +68,35 @@ export const fetchKoshCategories = async (categoryId = 1) => {
       throw new Error(`Failed to fetch categories: ${response.status} ${response.statusText}`)
     }
     
-    const data = await response.json()
-    return data
+    const result = await response.json()
+    console.log('📦 Kosh categories API response:', result)
+    
+    // Handle different response structures
+    // Case 1: { success: true, data: { subcategories: [...] } }
+    if (result.success && result.data) {
+      return result.data
+    }
+    // Case 2: { subcategories: [...] } or { data: [...] }
+    if (result.subcategories) {
+      return result
+    }
+    if (result.data) {
+      // If data is an array, wrap it in subcategories
+      if (Array.isArray(result.data)) {
+        return { subcategories: result.data }
+      }
+      // If data is an object with subcategories
+      if (result.data.subcategories) {
+        return result.data
+      }
+      return result
+    }
+    // Case 3: Direct array response
+    if (Array.isArray(result)) {
+      return { subcategories: result }
+    }
+    // Case 4: Return as-is (might have subcategories property)
+    return result
   } catch (error) {
     console.error('❌ Error fetching kosh categories:', error)
     if (error.message.includes('Failed to fetch') || error.name === 'TypeError') {
@@ -82,7 +109,7 @@ export const fetchKoshCategories = async (categoryId = 1) => {
 export const fetchKoshContents = async (categoryId = 1, subcategoryId, page = 1) => {
   try {
     const url = `${API_BASE_URL}/kosh-category/${categoryId}/${subcategoryId}?page=${page}`
-    console.log('Fetching from URL:', url)
+    console.log('📄 Fetching kosh contents from URL:', url)
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -91,19 +118,44 @@ export const fetchKoshContents = async (categoryId = 1, subcategoryId, page = 1)
       mode: 'cors'
     })
     
-    console.log('Response status:', response.status, response.statusText)
+    console.log('📄 Response status:', response.status, response.statusText)
     
     if (!response.ok) {
       const errorText = await response.text()
-      console.error('Response error:', errorText)
+      console.error('❌ Response error:', errorText)
       throw new Error(`Failed to fetch contents: ${response.status} ${response.statusText}`)
     }
     
-    const data = await response.json()
-    console.log('Fetched data:', data)
-    return data
+    const result = await response.json()
+    console.log('📦 Kosh contents API response:', result)
+    
+    // Handle different response structures
+    // Case 1: { success: true, data: { contents: [...], vishesh_suchi: [...], pagination: {...} } }
+    if (result.success && result.data) {
+      return {
+        contents: result.data.contents || [],
+        vishesh_suchi: result.data.vishesh_suchi || [],
+        totalPages: result.data.pagination?.totalPages || result.data.totalPages || 1,
+        currentPage: result.data.pagination?.currentPage || result.data.currentPage || page,
+        totalItems: result.data.pagination?.totalItems || result.data.totalItems || 0
+      }
+    }
+    
+    // Case 2: Direct structure { contents: [...], vishesh_suchi: [...], totalPages: ... }
+    if (result.contents || result.vishesh_suchi !== undefined) {
+      return {
+        contents: result.contents || [],
+        vishesh_suchi: result.vishesh_suchi || [],
+        totalPages: result.totalPages || result.pagination?.totalPages || 1,
+        currentPage: result.currentPage || result.pagination?.currentPage || page,
+        totalItems: result.totalItems || result.pagination?.totalItems || 0
+      }
+    }
+    
+    // Case 3: Return as-is (might already be in correct format)
+    return result
   } catch (error) {
-    console.error('Error fetching kosh contents:', error)
+    console.error('❌ Error fetching kosh contents:', error)
     throw error
   }
 }

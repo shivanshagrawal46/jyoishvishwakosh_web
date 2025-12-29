@@ -66,12 +66,22 @@ const HasthRekhaPage = ({ language: initialLanguage, setLanguage: setLanguagePro
     const loadCategories = async () => {
       try {
         setInitialLoading(true)
+        setError(null)
         const data = await fetchKoshCategories(2) // Category ID 2 for Hasth Rekha
-        setCategories(data.subcategories || [])
-        if (data.subcategories?.length > 0) {
-          setSelectedCategory(data.subcategories[0])
+        console.log('📋 HasthRekha categories data received:', data)
+        
+        // Handle different response structures
+        const categoriesList = data.subcategories || data.categories || (Array.isArray(data) ? data : [])
+        console.log('📋 Processed categories list:', categoriesList)
+        
+        setCategories(categoriesList)
+        if (categoriesList.length > 0) {
+          setSelectedCategory(categoriesList[0])
+        } else {
+          setError('No categories found. Please check the API response.')
         }
       } catch (err) {
+        console.error('❌ Error loading hasthrekha categories:', err)
         setError(`Failed to load categories: ${err.message}`)
       } finally {
         setInitialLoading(false)
