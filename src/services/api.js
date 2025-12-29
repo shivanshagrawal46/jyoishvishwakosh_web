@@ -10,23 +10,19 @@ const isDevelopment = () => {
 }
 
 // Get API base URL - check runtime environment
-// Since backend doesn't have CORS, we'll use relative URLs and proxy via web server
 const getApiBaseUrl = () => {
   if (isDevelopment()) {
     return '/api' // Use Vite proxy in development
   }
   
-  // In production, always use relative URL '/api'
-  // The web server (Nginx/Apache) will proxy this to the actual API server
-  // This avoids CORS issues since browser sees same-origin requests
-  return '/api'
+  // In production, use direct URL to .in domain
+  // If CORS blocks it, web server proxy must be configured
+  return 'https://www.jyotishvishwakosh.in/api'
 }
 
 const API_BASE_URL = getApiBaseUrl()
-// Panchang API - use relative URL in production, web server will proxy to kapi.jyotishvishwakosh.com
-const PANCHANG_API_BASE_URL = isDevelopment() 
-  ? 'https://kapi.jyotishvishwakosh.com/api' // Direct URL in development (if CORS allows)
-  : '/panchang-api' // Relative URL in production - web server will proxy
+// Panchang API - always use direct URL (different domain)
+const PANCHANG_API_BASE_URL = 'https://kapi.jyotishvishwakosh.com/api'
 const BOOK_API_BASE_URL = getApiBaseUrl()
 
 const getAuthApiBaseUrl = () => {
@@ -34,9 +30,8 @@ const getAuthApiBaseUrl = () => {
     return '/auth-api' // Use Vite proxy in development
   }
   
-  // In production, use relative URL '/auth-api'
-  // The web server will proxy this to the auth API server
-  return '/auth-api'
+  // In production, use direct URL to .shop domain
+  return 'https://www.jyotishvishwakosh.shop/api'
 }
 
 const AUTH_API_BASE_URL = getAuthApiBaseUrl()
