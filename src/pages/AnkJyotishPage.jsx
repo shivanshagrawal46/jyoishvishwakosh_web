@@ -4,7 +4,6 @@ import Header from '../components/Header'
 import CelebrityStrip from '../components/CelebrityStrip'
 import ServicesStrip from '../components/ServicesStrip'
 import Footer from '../components/Footer'
-import AppDownloadBanner from '../components/AppDownloadBanner'
 import { useAuth } from '../contexts/AuthContext'
 import { fetchKoshCategories, fetchKoshContents } from '../services/api'
 
@@ -66,22 +65,12 @@ const AnkJyotishPage = ({ language: initialLanguage, setLanguage: setLanguagePro
     const loadCategories = async () => {
       try {
         setInitialLoading(true)
-        setError(null)
         const data = await fetchKoshCategories(4) // Category ID 4 for Ank Jyotish
-        console.log('📋 AnkJyotish categories data received:', data)
-        
-        // Handle different response structures
-        const categoriesList = data.subcategories || data.categories || (Array.isArray(data) ? data : [])
-        console.log('📋 Processed categories list:', categoriesList)
-        
-        setCategories(categoriesList)
-        if (categoriesList.length > 0) {
-          setSelectedCategory(categoriesList[0])
-        } else {
-          setError('No categories found. Please check the API response.')
+        setCategories(data.subcategories || [])
+        if (data.subcategories?.length > 0) {
+          setSelectedCategory(data.subcategories[0])
         }
       } catch (err) {
-        console.error('❌ Error loading ankjyotish categories:', err)
         setError(`Failed to load categories: ${err.message}`)
       } finally {
         setInitialLoading(false)
@@ -563,7 +552,6 @@ const AnkJyotishPage = ({ language: initialLanguage, setLanguage: setLanguagePro
           </>
         )}
       </AnimatePresence>
-      <AppDownloadBanner language={language} />
       <Footer language={language} />
     </div>
   )

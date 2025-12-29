@@ -4,7 +4,6 @@ import Header from '../components/Header'
 import CelebrityStrip from '../components/CelebrityStrip'
 import ServicesStrip from '../components/ServicesStrip'
 import Footer from '../components/Footer'
-import AppDownloadBanner from '../components/AppDownloadBanner'
 import { useAuth } from '../contexts/AuthContext'
 import { fetchKoshCategories, fetchKoshContents } from '../services/api'
 
@@ -590,7 +589,6 @@ const KoshPage = ({ language: initialLanguage, setLanguage: setLanguageProp }) =
           </>
         )}
       </AnimatePresence>
-      <AppDownloadBanner language={language} />
       <Footer language={language} />
     </div>
   )
