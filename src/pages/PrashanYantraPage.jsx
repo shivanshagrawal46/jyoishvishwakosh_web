@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import AppDownloadBanner from '../components/AppDownloadBanner'
+import { fetchPrashanYantraData } from '../services/api'
 import hanumanjiImg from '../assets/icons/hanumanji_icon.jfif'
 
 const PrashanYantraPage = ({ language: initialLanguage, setLanguage: setLanguageProp }) => {
@@ -33,12 +34,7 @@ const PrashanYantraPage = ({ language: initialLanguage, setLanguage: setLanguage
     const fetchPrashanData = async () => {
       try {
         setLoading(true)
-        // Use proxy path to avoid CORS issues (same as other API calls)
-        const response = await fetch('/api/prashan/hanumat-prashanwali')
-        if (!response.ok) {
-          throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`)
-        }
-        const data = await response.json()
+        const data = await fetchPrashanYantraData()
         setPrashanData(data)
         
         // Shuffle the data randomly every time the page is visited

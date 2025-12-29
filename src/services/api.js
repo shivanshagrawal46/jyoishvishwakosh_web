@@ -1,8 +1,19 @@
-const API_BASE_URL = '/api'
+// Production-ready API configuration
+// In development, these will use proxy (configured in vite.config.js)
+// In production, these will use direct URLs from environment variables or defaults
+const isDevelopment = import.meta.env.DEV || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+
+const API_BASE_URL = isDevelopment 
+  ? '/api' // Use proxy in development
+  : (import.meta.env.VITE_API_BASE_URL || 'https://www.jyotishvishwakosh.in/api')
+
 const PANCHANG_API_BASE_URL = 'https://kapi.jyotishvishwakosh.com/api'
-const BOOK_API_BASE_URL = '/api'
-const AUTH_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://www.jyotishvishwakosh.shop'
-// E-Magazine uses the same /api proxy as other APIs
+
+const BOOK_API_BASE_URL = isDevelopment
+  ? '/api' // Use proxy in development
+  : (import.meta.env.VITE_API_BASE_URL || 'https://www.jyotishvishwakosh.in/api')
+
+const AUTH_API_BASE_URL = import.meta.env.VITE_AUTH_API_BASE_URL || 'https://www.jyotishvishwakosh.shop'
 
 export const fetchKoshCategories = async (categoryId = 1) => {
   try {
@@ -1194,6 +1205,47 @@ export const fetchEMagazineBySubject = async (subjectId, page = 1) => {
     }
   } catch (error) {
     console.error('Error fetching e-magazines by subject:', error)
+    throw error
+  }
+}
+
+/**
+ * About Team API function
+ */
+export const fetchAboutTeam = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/aboutteam`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+      },
+      mode: 'cors'
+    })
+    if (!response.ok) throw new Error('Failed to fetch team data')
+    const data = await response.json()
+    return data.success ? data.data : (data.data || [])
+  } catch (error) {
+    console.error('Error fetching about team:', error)
+    throw error
+  }
+}
+
+/**
+ * Prashan Yantra API function
+ */
+export const fetchPrashanYantraData = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/prashan/hanumat-prashanwali`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+      },
+      mode: 'cors'
+    })
+    if (!response.ok) throw new Error('Failed to fetch prashan yantra data')
+    return await response.json()
+  } catch (error) {
+    console.error('Error fetching prashan yantra data:', error)
     throw error
   }
 }

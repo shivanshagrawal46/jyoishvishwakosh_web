@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { fetchAboutTeam } from '../services/api'
 
 const AboutTeam = ({ language }) => {
   const [teamMembers, setTeamMembers] = useState([])
@@ -11,14 +12,10 @@ const AboutTeam = ({ language }) => {
       try {
         setLoading(true)
         setError(null)
-        const response = await fetch('/api/aboutteam')
-        if (!response.ok) {
-          throw new Error(`Failed to fetch team data: ${response.status}`)
-        }
-        const data = await response.json()
-        if (data.success && data.data) {
+        const data = await fetchAboutTeam()
+        if (data && Array.isArray(data)) {
           // Filter only active members
-          const activeMembers = data.data.filter(member => member.isActive)
+          const activeMembers = data.filter(member => member.isActive)
           setTeamMembers(activeMembers)
         } else {
           console.warn('No data in response:', data)
