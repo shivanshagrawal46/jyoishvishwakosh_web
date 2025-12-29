@@ -10,29 +10,33 @@ const isDevelopment = () => {
 }
 
 // Get API base URL - check runtime environment
+// Since backend doesn't have CORS, we'll use relative URLs and proxy via web server
 const getApiBaseUrl = () => {
   if (isDevelopment()) {
-    return '/api' // Use proxy in development
+    return '/api' // Use Vite proxy in development
   }
-  // In production, use environment variable or default
-  const envUrl = import.meta.env.VITE_API_BASE_URL
-  if (envUrl) {
-    // If env URL already includes /api, use as is, otherwise add it
-    return envUrl.endsWith('/api') ? envUrl : `${envUrl}/api`
-  }
-  return 'https://www.jyotishvishwakosh.in/api'
+  
+  // In production, always use relative URL '/api'
+  // The web server (Nginx/Apache) will proxy this to the actual API server
+  // This avoids CORS issues since browser sees same-origin requests
+  return '/api'
 }
 
 const API_BASE_URL = getApiBaseUrl()
-const PANCHANG_API_BASE_URL = 'https://kapi.jyotishvishwakosh.com/api'
+// Panchang API - use relative URL in production, web server will proxy to kapi.jyotishvishwakosh.com
+const PANCHANG_API_BASE_URL = isDevelopment() 
+  ? 'https://kapi.jyotishvishwakosh.com/api' // Direct URL in development (if CORS allows)
+  : '/panchang-api' // Relative URL in production - web server will proxy
 const BOOK_API_BASE_URL = getApiBaseUrl()
 
 const getAuthApiBaseUrl = () => {
-  const envUrl = import.meta.env.VITE_AUTH_API_BASE_URL
-  if (envUrl) {
-    return envUrl.endsWith('/api') ? envUrl : `${envUrl}/api`
+  if (isDevelopment()) {
+    return '/auth-api' // Use Vite proxy in development
   }
-  return 'https://www.jyotishvishwakosh.shop/api'
+  
+  // In production, use relative URL '/auth-api'
+  // The web server will proxy this to the auth API server
+  return '/auth-api'
 }
 
 const AUTH_API_BASE_URL = getAuthApiBaseUrl()
