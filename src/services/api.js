@@ -1,27 +1,81 @@
 // Production-ready API configuration
 // In development, these will use proxy (configured in vite.config.js)
 // In production, these will use direct URLs from environment variables or defaults
-const isDevelopment = import.meta.env.DEV || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
 
-const API_BASE_URL = isDevelopment 
-  ? '/api' // Use proxy in development
-  : (import.meta.env.VITE_API_BASE_URL || 'https://www.jyotishvishwakosh.in/api')
+// Check if we're in development at runtime (not build time)
+const isDevelopment = () => {
+  if (typeof window === 'undefined') return false
+  const hostname = window.location.hostname
+  return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === ''
+}
 
+// Get API base URL - check runtime environment
+const getApiBaseUrl = () => {
+  if (isDevelopment()) {
+    return '/api' // Use proxy in development
+  }
+  // In production, use environment variable or default
+  const envUrl = import.meta.env.VITE_API_BASE_URL
+  if (envUrl) {
+    // If env URL already includes /api, use as is, otherwise add it
+    return envUrl.endsWith('/api') ? envUrl : `${envUrl}/api`
+  }
+  return 'https://www.jyotishvishwakosh.in/api'
+}
+
+const API_BASE_URL = getApiBaseUrl()
 const PANCHANG_API_BASE_URL = 'https://kapi.jyotishvishwakosh.com/api'
+const BOOK_API_BASE_URL = getApiBaseUrl()
 
-const BOOK_API_BASE_URL = isDevelopment
-  ? '/api' // Use proxy in development
-  : (import.meta.env.VITE_API_BASE_URL || 'https://www.jyotishvishwakosh.in/api')
+const getAuthApiBaseUrl = () => {
+  const envUrl = import.meta.env.VITE_AUTH_API_BASE_URL
+  if (envUrl) {
+    return envUrl.endsWith('/api') ? envUrl : `${envUrl}/api`
+  }
+  return 'https://www.jyotishvishwakosh.shop/api'
+}
 
-const AUTH_API_BASE_URL = import.meta.env.VITE_AUTH_API_BASE_URL || 'https://www.jyotishvishwakosh.shop'
+const AUTH_API_BASE_URL = getAuthApiBaseUrl()
+
+// Log API configuration for debugging (only in browser)
+if (typeof window !== 'undefined') {
+  console.log('🔧 API Configuration:', {
+    isDevelopment: isDevelopment(),
+    API_BASE_URL,
+    AUTH_API_BASE_URL,
+    PANCHANG_API_BASE_URL,
+    env: {
+      VITE_API_BASE_URL: import.meta.env.VITE_API_BASE_URL,
+      VITE_AUTH_API_BASE_URL: import.meta.env.VITE_AUTH_API_BASE_URL
+    }
+  })
+}
 
 export const fetchKoshCategories = async (categoryId = 1) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/kosh-category/${categoryId}`)
-    if (!response.ok) throw new Error('Failed to fetch categories')
-    return await response.json()
+    const url = `${API_BASE_URL}/kosh-category/${categoryId}`
+    console.log('🌐 Fetching kosh categories from:', url)
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+      },
+      mode: 'cors'
+    })
+    
+    if (!response.ok) {
+      const errorText = await response.text()
+      console.error('❌ API Error:', response.status, errorText)
+      throw new Error(`Failed to fetch categories: ${response.status} ${response.statusText}`)
+    }
+    
+    const data = await response.json()
+    return data
   } catch (error) {
-    console.error('Error fetching kosh categories:', error)
+    console.error('❌ Error fetching kosh categories:', error)
+    if (error.message.includes('Failed to fetch') || error.name === 'TypeError') {
+      throw new Error(`Network error: Unable to connect to API. Please check your internet connection and API server status.`)
+    }
     throw error
   }
 }
@@ -955,21 +1009,9 @@ export const googleLogin = async (idToken) => {
   console.log('🔑 idToken present:', idToken ? 'Yes' : 'No')
   
   try {
-    // Check if we're in development (localhost) - use proxy to avoid CORS
-    // In production, use direct URL
-    const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-    
-    let url
-    if (isDevelopment) {
-      // Use proxy in development (same pattern as other APIs)
-      url = '/auth-api/auth/google'
-      console.log('🔧 Development mode: Using proxy:', url)
-      console.log('   → Will proxy to: https://www.jyotishvishwakosh.shop/api/auth/google')
-    } else {
-      // Use direct URL in production
-      url = `${AUTH_API_BASE_URL}/api/auth/google`
-      console.log('🌐 Production mode: Using direct URL:', url)
-    }
+    // Use the centralized AUTH_API_BASE_URL which already handles dev/prod
+    const url = `${AUTH_API_BASE_URL}/auth/google`
+    console.log('🔧 Using auth URL:', url)
     
     const requestBody = {
       idToken: idToken

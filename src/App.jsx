@@ -83,34 +83,35 @@ function App() {
   const [language, setLanguage] = useState('hindi') // 'hindi' or 'english'
 
   // Disable right-click and developer tools shortcuts
-  React.useEffect(() => {
-    // Disable right-click context menu
-    const handleContextMenu = (e) => {
-      e.preventDefault()
-      return false
-    }
+  // TEMPORARILY DISABLED FOR DEBUGGING - Re-enable after fixing production issues
+  // React.useEffect(() => {
+  //   // Disable right-click context menu
+  //   const handleContextMenu = (e) => {
+  //     e.preventDefault()
+  //     return false
+  //   }
 
-    // Disable common keyboard shortcuts
-    const handleKeyDown = (e) => {
-      // Disable F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, Ctrl+S
-      if (
-        e.key === 'F12' ||
-        (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
-        (e.ctrlKey && (e.key === 'U' || e.key === 'S'))
-      ) {
-        e.preventDefault()
-        return false
-      }
-    }
+  //   // Disable common keyboard shortcuts
+  //   const handleKeyDown = (e) => {
+  //     // Disable F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, Ctrl+S
+  //     if (
+  //       e.key === 'F12' ||
+  //       (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
+  //       (e.ctrlKey && (e.key === 'U' || e.key === 'S'))
+  //     ) {
+  //       e.preventDefault()
+  //       return false
+  //     }
+  //   }
 
-    document.addEventListener('contextmenu', handleContextMenu)
-    document.addEventListener('keydown', handleKeyDown)
+  //   document.addEventListener('contextmenu', handleContextMenu)
+  //   document.addEventListener('keydown', handleKeyDown)
 
-    return () => {
-      document.removeEventListener('contextmenu', handleContextMenu)
-      document.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [])
+  //   return () => {
+  //     document.removeEventListener('contextmenu', handleContextMenu)
+  //     document.removeEventListener('keydown', handleKeyDown)
+  //   }
+  // }, [])
 
   return (
     <Router>
