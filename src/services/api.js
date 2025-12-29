@@ -1078,7 +1078,6 @@ export const googleLogin = async (idToken) => {
         'Accept': 'application/json'
       },
       mode: isDevelopment ? 'cors' : 'cors',
-      credentials: 'include',
       body: JSON.stringify(requestBody)
     })
 
