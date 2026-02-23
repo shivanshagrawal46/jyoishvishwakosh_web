@@ -12898,3 +12898,724 @@ body, * {
     gap: 40px;
   }
 }
+
+/* ==========================================================
+   CSU PRINTING PAGE – Admin + A6 Paper + Print
+   ========================================================== */
+
+.csu-page {
+  min-height: 100vh;
+  background: linear-gradient(160deg, #faf7f0 0%, #f0ead8 50%, #e8e0cc 100%);
+  font-family: 'Laila', 'Noto Sans Devanagari', sans-serif;
+}
+
+/* ── Admin Section ── */
+
+.csu-admin {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 32px 20px 12px;
+}
+
+.csu-admin-top {
+  margin-bottom: 24px;
+}
+
+.csu-admin-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  justify-content: center;
+}
+
+.csu-brand-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #8b2500, #c55a11);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(139, 37, 0, 0.25);
+  flex-shrink: 0;
+}
+
+.csu-admin-brand h1 {
+  font-size: 24px;
+  font-weight: 800;
+  color: #3a1a08;
+  margin: 0;
+  letter-spacing: -0.3px;
+}
+
+.csu-admin-brand p {
+  font-size: 13px;
+  color: #8a7054;
+  margin: 2px 0 0;
+}
+
+.csu-admin-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.csu-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04), 0 4px 20px rgba(107, 29, 29, 0.06);
+  border: 1px solid #ede4d4;
+}
+
+.csu-card-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: #a08060;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #f4ece0;
+}
+
+/* Chips */
+
+.csu-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 14px;
+  min-height: 36px;
+  align-items: center;
+}
+
+.csu-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 14px;
+  border: 1.5px solid #ddd2c0;
+  border-radius: 20px;
+  background: #fdfbf6;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: #5a4530;
+  font-family: inherit;
+  transition: all 0.15s ease;
+}
+
+.csu-chip:hover {
+  border-color: #c55a11;
+  background: #fff7ed;
+  color: #c55a11;
+}
+
+.csu-chip.active {
+  background: linear-gradient(135deg, #c55a11, #a84400);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 2px 10px rgba(197, 90, 17, 0.3);
+}
+
+.csu-chip-n {
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.06);
+  font-weight: 500;
+}
+
+.csu-chip.active .csu-chip-n {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.csu-muted {
+  color: #bfad96;
+  font-size: 13px;
+  font-style: italic;
+}
+
+/* Go-to-page row */
+
+.csu-goto-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.csu-goto-row input {
+  flex: 1;
+  padding: 9px 12px;
+  border: 1.5px solid #ddd2c0;
+  border-radius: 9px;
+  font-size: 13px;
+  font-family: inherit;
+  background: #fdfbf6;
+  transition: border-color 0.15s;
+}
+
+.csu-goto-row input:focus {
+  outline: none;
+  border-color: #c55a11;
+  box-shadow: 0 0 0 3px rgba(197, 90, 17, 0.08);
+}
+
+.csu-goto-row button {
+  padding: 9px 20px;
+  background: #2a5d8c;
+  color: #fff;
+  border: none;
+  border-radius: 9px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+
+.csu-goto-row button:hover:not(:disabled) {
+  background: #1d4a6e;
+}
+
+.csu-goto-row button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* Active page info */
+
+.csu-active-page {
+  font-size: 13px;
+  color: #6a5a48;
+}
+
+.csu-page-num {
+  color: #8b2500;
+}
+
+.csu-row-count {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 10px;
+  background: #e8f5ea;
+  color: #1e7e34;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* Dropzone */
+
+.csu-dz {
+  border: 2px dashed #cfc0a8;
+  border-radius: 14px;
+  padding: 22px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 14px;
+  min-height: 88px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fdfbf6;
+}
+
+.csu-dz:hover,
+.csu-dz.drag {
+  border-color: #c55a11;
+  background: #fff8f0;
+}
+
+.csu-dz.has {
+  border-color: #66bb6a;
+  background: #f4faf4;
+  border-style: solid;
+}
+
+.csu-dz-arrow {
+  font-size: 30px;
+  color: #c55a11;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.csu-dz-prompt {
+  color: #8a7a64;
+  font-size: 13px;
+}
+
+.csu-dz-prompt small {
+  display: block;
+  margin-top: 4px;
+  color: #b8a890;
+  font-size: 11px;
+}
+
+.csu-file-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.csu-fi {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.csu-fn {
+  font-weight: 700;
+  color: #333;
+  font-size: 14px;
+  word-break: break-all;
+  text-align: left;
+}
+
+.csu-fs {
+  font-size: 11px;
+  color: #999;
+  text-align: left;
+}
+
+.csu-file-clear {
+  margin-left: auto;
+  background: none;
+  border: 1.5px solid #ddd;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+
+.csu-file-clear:hover {
+  background: #fff0f0;
+  border-color: #e57373;
+  color: #d32f2f;
+}
+
+/* Action row */
+
+.csu-act-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.csu-btn-up {
+  flex: 1;
+  padding: 11px 16px;
+  background: linear-gradient(135deg, #c55a11, #d46c0e);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+  transition: all 0.15s;
+  letter-spacing: 0.2px;
+}
+
+.csu-btn-up:hover:not(:disabled) {
+  background: linear-gradient(135deg, #a84a0e, #c55a11);
+  box-shadow: 0 3px 14px rgba(197, 90, 17, 0.25);
+}
+
+.csu-btn-up:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.csu-btn-del {
+  padding: 11px 18px;
+  background: #fff;
+  color: #d32f2f;
+  border: 1.5px solid #ffcdd2;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+
+.csu-btn-del:hover:not(:disabled) {
+  background: #fff5f5;
+  border-color: #ef9a9a;
+}
+
+.csu-btn-del:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+/* Template download button */
+
+.csu-btn-tpl {
+  width: 100%;
+  padding: 9px 16px;
+  background: #fff;
+  color: #2a5d8c;
+  border: 1.5px solid #bbdefb;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: inherit;
+  transition: all 0.15s;
+  margin-bottom: 10px;
+  letter-spacing: 0.2px;
+}
+
+.csu-btn-tpl:hover {
+  background: #e3f2fd;
+  border-color: #90caf9;
+}
+
+/* Toast */
+
+.csu-toast {
+  padding: 9px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  animation: csuSlideIn 0.3s ease;
+}
+
+.csu-toast.success {
+  background: #e8f5ea;
+  color: #1b5e20;
+  border: 1px solid #a5d6a7;
+}
+
+.csu-toast.error {
+  background: #ffeef0;
+  color: #b71c1c;
+  border: 1px solid #ef9a9a;
+}
+
+@keyframes csuSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Print Bar ── */
+
+.csu-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 14px 24px;
+  background: #fff;
+  border-top: 1px solid #ede4d4;
+  border-bottom: 1px solid #ede4d4;
+}
+
+.csu-btn-pr {
+  padding: 11px 40px;
+  background: linear-gradient(135deg, #1a237e, #283593);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: inherit;
+  letter-spacing: 0.5px;
+  transition: all 0.15s;
+}
+
+.csu-btn-pr:hover:not(:disabled) {
+  background: linear-gradient(135deg, #0d1642, #1a237e);
+  box-shadow: 0 4px 16px rgba(26, 35, 126, 0.3);
+}
+
+.csu-btn-pr:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.csu-bar-meta {
+  font-size: 12px;
+  color: #aaa;
+  letter-spacing: 0.3px;
+}
+
+/* ── A6 Paper Zone ── */
+
+.csu-pz {
+  display: flex;
+  justify-content: center;
+  padding: 40px 24px 60px;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.3), transparent 70%),
+    linear-gradient(180deg, #e4dcc8 0%, #d8cfba 100%);
+}
+
+/* A6 Landscape = 148 mm × 105 mm */
+
+.csu-a6 {
+  width: 148mm;
+  height: 105mm;
+  background: #fff;
+  padding: 5mm;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    0 6px 20px rgba(0, 0, 0, 0.07),
+    0 12px 40px rgba(0, 0, 0, 0.05);
+  font-family: 'Laila', 'Noto Sans Devanagari', 'Mangal', serif;
+}
+
+/* Double ornamental border */
+
+.csu-a6::before {
+  content: '';
+  position: absolute;
+  top: 2.5mm;
+  left: 2.5mm;
+  right: 2.5mm;
+  bottom: 2.5mm;
+  border: 0.35mm solid #6b1d1d;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.csu-a6::after {
+  content: '';
+  position: absolute;
+  top: 1.8mm;
+  left: 1.8mm;
+  right: 1.8mm;
+  bottom: 1.8mm;
+  border: 0.15mm solid rgba(107, 29, 29, 0.2);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Loading overlay */
+
+.csu-a6-loading {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.85);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.csu-spinner {
+  width: 6mm;
+  height: 6mm;
+  border: 0.6mm solid #e8dcc8;
+  border-top-color: #c55a11;
+  border-radius: 50%;
+  animation: csuSpin 0.7s linear infinite;
+}
+
+@keyframes csuSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Heading */
+
+.csu-a6-h {
+  text-align: center;
+  font-weight: 700;
+  font-size: 2.4mm;
+  color: #1a0800;
+  margin-bottom: 0.5mm;
+  padding-bottom: 0.4mm;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.1mm;
+  line-height: 1.2;
+}
+
+/* Table */
+
+.csu-a6-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 2.2mm;
+  line-height: 1.15;
+}
+
+.csu-a6-table th,
+.csu-a6-table td {
+  border: 0.2mm solid #444;
+  padding: 0.3mm 0.4mm;
+  text-align: center;
+  vertical-align: middle;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.csu-a6-table thead th {
+  background: #f5f0e2;
+  font-weight: 700;
+  border-bottom-width: 0.4mm;
+  color: #1a0800;
+  padding: 0.5mm 0.3mm;
+  letter-spacing: 0.08mm;
+}
+
+.csu-a6-table tbody tr:nth-child(even) {
+  background: #fdfcf9;
+}
+
+.csu-vrat {
+  text-align: left !important;
+  padding-left: 0.6mm !important;
+}
+
+/* Multi-value lines inside a cell */
+
+.csu-ml {
+  padding: 0.1mm 0;
+  line-height: 1.12;
+}
+
+.csu-ml + .csu-ml {
+  border-top: 0.1mm dotted #bbb;
+  margin-top: 0.1mm;
+  padding-top: 0.15mm;
+}
+
+/* Footer */
+
+.csu-a6-f {
+  text-align: center;
+  font-size: 1.8mm;
+  color: #999;
+  margin-top: 0.8mm;
+  letter-spacing: 0.4mm;
+}
+
+/* Empty state */
+
+.csu-a6-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #ccc;
+  gap: 2mm;
+  text-align: center;
+}
+
+.csu-a6-empty-icon {
+  font-size: 10mm;
+  opacity: 0.3;
+}
+
+.csu-a6-empty div {
+  font-size: 3mm;
+}
+
+.csu-a6-empty small {
+  font-size: 2.2mm;
+  color: #ddd;
+}
+
+/* ── Print Styles ── */
+
+@media print {
+  .no-print,
+  .csu-admin,
+  .csu-bar {
+    display: none !important;
+  }
+
+  @page {
+    size: 148mm 105mm;
+    margin: 0;
+  }
+
+  html,
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+  }
+
+  .csu-page {
+    background: none !important;
+    min-height: auto !important;
+  }
+
+  .csu-pz {
+    padding: 0 !important;
+    background: none !important;
+    display: block !important;
+  }
+
+  .csu-a6 {
+    box-shadow: none !important;
+    margin: 0 !important;
+    width: 148mm !important;
+    height: 105mm !important;
+  }
+
+  .csu-a6::before,
+  .csu-a6::after {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .csu-a6-table thead th {
+    background: #f5f0e2 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .csu-a6-table tbody tr:nth-child(even) {
+    background: #fdfcf9 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+/* ── Responsive for Admin Panel ── */
+
+@media (max-width: 700px) {
+  .csu-admin-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .csu-admin-brand h1 {
+    font-size: 20px;
+  }
+
+  .csu-pz {
+    padding: 24px 8px 40px;
+  }
+}

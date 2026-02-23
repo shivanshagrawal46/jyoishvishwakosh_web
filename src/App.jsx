@@ -48,6 +48,7 @@ import VideosPage from './pages/VideosPage'
 import DivineQuotesPage from './pages/DivineQuotesPage'
 import PrashanYantraPage from './pages/PrashanYantraPage'
 import ContactPage from './pages/ContactPage'
+import CsuPrintingPage from './pages/CsuPrintingPage'
 
 function HomePage({ language, setLanguage }) {
   return (
@@ -264,6 +265,10 @@ function App() {
           <Route 
             path="/contact" 
             element={<ContactPage language={language} setLanguage={setLanguage} />} 
+          />
+          <Route
+            path="/csu/printing/guruji/a6"
+            element={<CsuPrintingPage />}
           />
         </Routes>
     </div>

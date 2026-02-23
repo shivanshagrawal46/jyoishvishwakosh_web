@@ -1342,3 +1342,63 @@ export const fetchPrashanYantraData = async () => {
   }
 }
 
+export const uploadCsuExcel = async (file, pageNo) => {
+  try {
+    const formData = new FormData()
+    formData.append('excelFile', file)
+    formData.append('pageNo', pageNo)
+    const response = await fetch(`${API_BASE_URL}/csu/upload-excel`, {
+      method: 'POST',
+      body: formData,
+      mode: 'cors'
+    })
+    if (!response.ok) throw new Error('Excel upload failed')
+    return await response.json()
+  } catch (error) {
+    console.error('CSU upload error:', error)
+    throw error
+  }
+}
+
+export const fetchCsuPages = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/csu/pages`, {
+      headers: { 'Accept': 'application/json' },
+      mode: 'cors'
+    })
+    if (!response.ok) throw new Error('Failed to fetch CSU pages')
+    return await response.json()
+  } catch (error) {
+    console.error('CSU pages fetch error:', error)
+    throw error
+  }
+}
+
+export const fetchCsuPageData = async (pageNo) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/csu/page/${pageNo}`, {
+      headers: { 'Accept': 'application/json' },
+      mode: 'cors'
+    })
+    if (!response.ok) throw new Error('Failed to fetch CSU page data')
+    return await response.json()
+  } catch (error) {
+    console.error('CSU page data fetch error:', error)
+    throw error
+  }
+}
+
+export const deleteCsuPageAll = async (pageNo) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/csu/page/${pageNo}/all`, {
+      method: 'DELETE',
+      mode: 'cors'
+    })
+    if (!response.ok) throw new Error('Failed to delete CSU page')
+    return await response.json()
+  } catch (error) {
+    console.error('CSU page delete error:', error)
+    throw error
+  }
+}
+
