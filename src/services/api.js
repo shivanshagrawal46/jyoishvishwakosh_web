@@ -1421,3 +1421,82 @@ export const updateCsuRow = async (id, updates) => {
   }
 }
 
+export const uploadCsu2Excel = async (file, pageNo) => {
+  try {
+    const formData = new FormData()
+    formData.append('excelFile', file)
+    formData.append('pageNo', pageNo)
+    const response = await fetch(`${API_BASE_URL}/csu2/upload-excel`, {
+      method: 'POST',
+      body: formData,
+      mode: 'cors'
+    })
+    if (!response.ok) throw new Error('CSU2 Excel upload failed')
+    return await response.json()
+  } catch (error) {
+    console.error('CSU2 upload error:', error)
+    throw error
+  }
+}
+
+export const fetchCsu2Pages = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/csu2/pages`, {
+      headers: { 'Accept': 'application/json' },
+      mode: 'cors'
+    })
+    if (!response.ok) throw new Error('Failed to fetch CSU2 pages')
+    return await response.json()
+  } catch (error) {
+    console.error('CSU2 pages fetch error:', error)
+    throw error
+  }
+}
+
+export const fetchCsu2PageData = async (pageNo) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/csu2/page/${pageNo}`, {
+      headers: { 'Accept': 'application/json' },
+      mode: 'cors'
+    })
+    if (!response.ok) throw new Error('Failed to fetch CSU2 page data')
+    return await response.json()
+  } catch (error) {
+    console.error('CSU2 page data fetch error:', error)
+    throw error
+  }
+}
+
+export const deleteCsu2PageAll = async (pageNo) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/csu2/page/${pageNo}/all`, {
+      method: 'DELETE',
+      mode: 'cors'
+    })
+    if (!response.ok) throw new Error('Failed to delete CSU2 page')
+    return await response.json()
+  } catch (error) {
+    console.error('CSU2 page delete error:', error)
+    throw error
+  }
+}
+
+export const updateCsu2Row = async (id, updates) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/csu2/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(updates),
+      mode: 'cors'
+    })
+    if (!response.ok) throw new Error('Failed to update CSU2 row')
+    return await response.json()
+  } catch (error) {
+    console.error('CSU2 row update error:', error)
+    throw error
+  }
+}
+

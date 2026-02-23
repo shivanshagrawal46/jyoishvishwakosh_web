@@ -49,6 +49,7 @@ import DivineQuotesPage from './pages/DivineQuotesPage'
 import PrashanYantraPage from './pages/PrashanYantraPage'
 import ContactPage from './pages/ContactPage'
 import CsuPrintingPage from './pages/CsuPrintingPage'
+import CsuPrinting2Page from './pages/CsuPrinting2Page'
 
 function HomePage({ language, setLanguage }) {
   return (
@@ -269,6 +270,10 @@ function App() {
           <Route
             path="/csu/printing/guruji/a6"
             element={<CsuPrintingPage />}
+          />
+          <Route
+            path="/csu/printing/guruji/a6/excel2"
+            element={<CsuPrinting2Page />}
           />
         </Routes>
     </div>

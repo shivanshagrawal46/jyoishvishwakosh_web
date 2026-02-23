@@ -13690,3 +13690,104 @@ body, * {
     padding: 24px 8px 40px;
   }
 }
+
+/* ==========================================================
+   CSU2 PRINTING – Multi-column A6 layout for संस्कार/मुहूर्त
+   ========================================================== */
+
+/* Page title input in admin */
+
+.csu2-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #f0e6d4;
+}
+
+.csu2-title-row label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #8a7054;
+  white-space: nowrap;
+}
+
+.csu2-title-row input {
+  flex: 1;
+  padding: 7px 10px;
+  border: 1.5px solid #ddd2c0;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: inherit;
+  background: #fdfbf6;
+}
+
+.csu2-title-row input:focus {
+  outline: none;
+  border-color: #c55a11;
+  box-shadow: 0 0 0 3px rgba(197, 90, 17, 0.08);
+}
+
+/* CSU2 full-width table flow */
+
+.csu2-wrap {
+  flex: 1;
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  table-layout: auto;
+  font-size: 2mm;
+  line-height: 1.2;
+}
+
+.csu2-hd {
+  font-weight: 700;
+  color: #000;
+  white-space: nowrap;
+  width: 1%;
+  vertical-align: top;
+  padding: 0.15mm 0;
+  border-bottom: 0.06mm solid #c8c0b0;
+  text-align: left;
+}
+
+.csu2-sep {
+  white-space: nowrap;
+  width: 1%;
+  vertical-align: top;
+  padding: 0.15mm 0.3mm;
+  border-bottom: 0.06mm solid #c8c0b0;
+  font-weight: 700;
+}
+
+.csu2-dt {
+  vertical-align: top;
+  padding: 0.15mm 0;
+  word-break: break-all;
+  border-bottom: 0.06mm solid #c8c0b0;
+}
+
+.csu2-blk:last-child .csu2-hd,
+.csu2-blk:last-child .csu2-sep,
+.csu2-blk:last-child .csu2-dt {
+  border-bottom: none;
+}
+
+.csu2-yr {
+  font-weight: 600;
+  color: #333;
+}
+
+.csu2-mn {
+  font-weight: 600;
+}
+
+.csu2-lg {
+  color: #333;
+  font-size: 0.88em;
+}
+
+.csu2-nd {
+  color: #bbb;
+}
