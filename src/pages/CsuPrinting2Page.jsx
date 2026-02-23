@@ -3,7 +3,8 @@ import {
   uploadCsu2Excel,
   fetchCsu2Pages,
   fetchCsu2PageData,
-  deleteCsu2PageAll
+  deleteCsu2PageAll,
+  updateCsu2Row
 } from '../services/api'
 
 const MN = {
@@ -85,6 +86,9 @@ export default function CsuPrinting2Page() {
   const [dragActive, setDragActive] = useState(false)
   const [newPageInput, setNewPageInput] = useState('')
   const [pageTitle, setPageTitle] = useState('')
+  const [editCell, setEditCell] = useState(null)
+  const [editValue, setEditValue] = useState('')
+  const [saving, setSaving] = useState(null)
   const a6Ref = useRef(null)
   const fileInputRef = useRef(null)
 
@@ -166,31 +170,103 @@ export default function CsuPrinting2Page() {
   const handleDrop = (e) => { e.preventDefault(); e.stopPropagation()
     setDragActive(false); if (e.dataTransfer?.files?.[0]) setFile(e.dataTransfer.files[0]) }
 
-  const renderBlock = (block) => {
+  const itemsToText = (items) => {
+    if (!items || items.length === 0) return ''
+    return items.map(it => {
+      const d = it.date || ''
+      const l = it.lagna || ''
+      return l ? `${d} ${l}` : d
+    }).join(', ')
+  }
+
+  const textToItems = (text) => {
+    return text.split(',').map((chunk, i) => {
+      const parts = chunk.trim().split(/\s+/)
+      const date = parts[0] || ''
+      const lagna = parts.slice(1).join(' ') || ''
+      return { date, lagna, sequence: i + 1 }
+    }).filter(it => it.date)
+  }
+
+  const startEdit = (blockId, field, value) => {
+    setEditCell({ blockId, field })
+    setEditValue(value)
+  }
+
+  const saveEdit = async () => {
+    if (!editCell) return
+    const { blockId, field } = editCell
+    const trimmed = editValue.trim()
+    setEditCell(null)
+
+    const block = blocks.find(b => b._id === blockId)
+    if (!block) return
+
+    setSaving(blockId)
+    try {
+      if (field === 'heading') {
+        if (trimmed !== block.heading) {
+          await updateCsu2Row(blockId, { heading: trimmed })
+        }
+      } else if (field === 'items') {
+        const newItems = textToItems(trimmed)
+        await updateCsu2Row(blockId, { items: newItems })
+      }
+      loadPageData(pageNo)
+    } catch (err) {
+      console.error('Save failed:', err)
+    } finally {
+      setSaving(null)
+    }
+  }
+
+  const renderBlock = (block, bi) => {
     let lastYear = null
+    const isEditH = editCell?.blockId === block.id && editCell?.field === 'heading'
+    const isEditD = editCell?.blockId === block.id && editCell?.field === 'items'
+    const origBlock = blocks.find(b => b._id === block.id)
+
+    const datesDisplay = block.groups.map((g, gi) => {
+      const showYear = g.year !== lastYear
+      lastYear = g.year
+      return (
+        <span key={gi}>
+          {showYear && <span className="csu2-yr">{g.year} में </span>}
+          <span className="csu2-mn">{MN[g.month] || g.month}-</span>
+          {g.dates.map((d, di) => (
+            <span key={di}>
+              {d.day}{d.lag ? <span className="csu2-lg">({d.lag})</span> : ''}
+              {di < g.dates.length - 1 && ', '}
+            </span>
+          ))}
+          {gi < block.groups.length - 1 && ' | '}
+        </span>
+      )
+    })
+
     return (
-      <tr key={block.id} className="csu2-blk">
-        <td className="csu2-hd">{block.heading}</td>
+      <tr key={block.id || bi} className="csu2-blk">
+        <td className="csu2-hd" onClick={() => !isEditH && startEdit(block.id, 'heading', block.heading)}>
+          {isEditH ? (
+            <input className="csu-edit-input" autoFocus value={editValue}
+              onChange={(e) => setEditValue(e.target.value)}
+              onBlur={saveEdit}
+              onKeyDown={(e) => { if (e.key === 'Enter') e.target.blur(); if (e.key === 'Escape') setEditCell(null) }} />
+          ) : block.heading}
+        </td>
         <td className="csu2-sep">:</td>
-        <td className="csu2-dt">
-          {block.groups.map((g, gi) => {
-            const showYear = g.year !== lastYear
-            lastYear = g.year
-            return (
-              <span key={gi}>
-                {showYear && <span className="csu2-yr">{g.year} में </span>}
-                <span className="csu2-mn">{MN[g.month] || g.month}-</span>
-                {g.dates.map((d, di) => (
-                  <span key={di}>
-                    {d.day}{d.lag && <span className="csu2-lg">({d.lag})</span>}
-                    {di < g.dates.length - 1 && ','}
-                  </span>
-                ))}
-                {gi < block.groups.length - 1 && ' | '}
-              </span>
-            )
-          })}
-          {block.groups.length === 0 && <span className="csu2-nd">—</span>}
+        <td className="csu2-dt" onClick={() => !isEditD && startEdit(block.id, 'items', itemsToText(origBlock?.items))}>
+          {isEditD ? (
+            <input className="csu-edit-input" autoFocus value={editValue}
+              onChange={(e) => setEditValue(e.target.value)}
+              onBlur={saveEdit}
+              onKeyDown={(e) => { if (e.key === 'Enter') e.target.blur(); if (e.key === 'Escape') setEditCell(null) }} />
+          ) : (
+            <>
+              {datesDisplay}
+              {block.groups.length === 0 && <span className="csu2-nd">—</span>}
+            </>
+          )}
         </td>
       </tr>
     )
@@ -267,6 +343,7 @@ export default function CsuPrinting2Page() {
       <div className="csu-bar no-print">
         <button className="csu-btn-pr" onClick={() => window.print()} disabled={blocks.length === 0}>
           ⎙ Print A6</button>
+        {saving && <span className="csu-bar-saving">Saving…</span>}
         <span className="csu-bar-meta">
           {blocks.length > 0 ? `${processed.length} headings · ${fontSize.toFixed(1)}mm` : 'Upload data'}</span>
       </div>
@@ -279,7 +356,7 @@ export default function CsuPrinting2Page() {
           {processed.length > 0 ? (
             <table className="csu2-wrap">
               <tbody>
-                {processed.map(renderBlock)}
+                {processed.map((b, i) => renderBlock(b, i))}
               </tbody>
             </table>
           ) : !loading && (

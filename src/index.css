@@ -13461,13 +13461,12 @@ body, * {
 .csu-a6-h {
   text-align: center;
   font-weight: 700;
-  font-size: 2.4mm;
+  font-size: inherit;
   color: #1a0800;
-  margin-bottom: 0.5mm;
-  padding-bottom: 0.4mm;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  margin-bottom: 0.3mm;
+  padding-bottom: 0.2mm;
+  white-space: normal;
+  word-break: break-word;
   letter-spacing: 0.1mm;
   line-height: 1.2;
   cursor: pointer;
@@ -13482,7 +13481,7 @@ body, * {
   border-collapse: collapse;
   border-spacing: 0;
   table-layout: auto;
-  font-size: 2.2mm;
+  font-size: inherit;
   line-height: 1.15;
   -webkit-border-horizontal-spacing: 0;
   -webkit-border-vertical-spacing: 0;
@@ -13764,7 +13763,8 @@ body, * {
 .csu2-dt {
   vertical-align: top;
   padding: 0.15mm 0;
-  word-break: break-all;
+  overflow-wrap: break-word;
+  word-break: normal;
   border-bottom: 0.06mm solid #c8c0b0;
 }
 

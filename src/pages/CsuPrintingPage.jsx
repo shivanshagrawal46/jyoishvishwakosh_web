@@ -101,21 +101,19 @@ export default function CsuPrintingPage() {
   useEffect(() => {
     const paper = a6Ref.current
     if (!paper || rows.length === 0) return
-    const tableEl = paper.querySelector('.csu-a6-table')
-    if (!tableEl) return
 
     let lo = 1.0
     let hi = 3.6
     for (let i = 0; i < 14; i++) {
       const mid = (lo + hi) / 2
-      tableEl.style.fontSize = `${mid}mm`
+      paper.style.fontSize = `${mid}mm`
       if (paper.scrollHeight > paper.clientHeight) {
         hi = mid
       } else {
         lo = mid
       }
     }
-    tableEl.style.fontSize = `${lo}mm`
+    paper.style.fontSize = `${lo}mm`
     setFontSize(parseFloat(lo.toFixed(2)))
   }, [rows, heading])
 
