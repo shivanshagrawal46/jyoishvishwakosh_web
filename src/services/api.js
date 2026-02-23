@@ -1402,3 +1402,22 @@ export const deleteCsuPageAll = async (pageNo) => {
   }
 }
 
+export const updateCsuRow = async (id, updates) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/csu/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(updates),
+      mode: 'cors'
+    })
+    if (!response.ok) throw new Error('Failed to update CSU row')
+    return await response.json()
+  } catch (error) {
+    console.error('CSU row update error:', error)
+    throw error
+  }
+}
+

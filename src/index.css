@@ -13355,6 +13355,18 @@ body, * {
   cursor: not-allowed;
 }
 
+.csu-bar-saving {
+  font-size: 12px;
+  color: #c55a11;
+  font-weight: 600;
+  animation: csuPulse 0.8s ease infinite alternate;
+}
+
+@keyframes csuPulse {
+  from { opacity: 0.5; }
+  to { opacity: 1; }
+}
+
 .csu-bar-meta {
   font-size: 12px;
   color: #aaa;
@@ -13387,6 +13399,8 @@ body, * {
     0 6px 20px rgba(0, 0, 0, 0.07),
     0 12px 40px rgba(0, 0, 0, 0.05);
   font-family: 'Laila', 'Noto Sans Devanagari', 'Mangal', serif;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Double ornamental border */
@@ -13456,26 +13470,81 @@ body, * {
   text-overflow: ellipsis;
   letter-spacing: 0.1mm;
   line-height: 1.2;
+  cursor: pointer;
+  flex-shrink: 0;
 }
 
 /* Table */
 
 .csu-a6-table {
   width: 100%;
+  flex: 1;
   border-collapse: collapse;
-  table-layout: fixed;
+  border-spacing: 0;
+  table-layout: auto;
   font-size: 2.2mm;
   line-height: 1.15;
+  -webkit-border-horizontal-spacing: 0;
+  -webkit-border-vertical-spacing: 0;
+  margin: 0;
+  padding: 0;
+  text-indent: 0;
+  letter-spacing: 0;
+  word-spacing: 0;
 }
 
 .csu-a6-table th,
 .csu-a6-table td {
   border: 0.2mm solid #444;
-  padding: 0.3mm 0.4mm;
+  padding: 0;
+  margin: 0;
   text-align: center;
   vertical-align: middle;
+  text-indent: 0;
+  letter-spacing: 0;
+  word-spacing: 0;
+  -webkit-padding-start: 0;
+  -webkit-padding-end: 0;
+  -moz-padding-start: 0;
+  -moz-padding-end: 0;
+  box-sizing: border-box;
+  white-space: nowrap;
+  width: 1%;
+}
+
+/* Only the last column expands to fill remaining space */
+.csu-a6-table th:last-child,
+.csu-a6-table td:last-child {
+  width: auto;
+  white-space: normal;
   word-break: break-word;
-  overflow-wrap: break-word;
+}
+
+/* Click-to-edit cell */
+.csu-cell-text {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.csu-edit-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: #fffde7;
+  font: inherit;
+  text-align: inherit;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  line-height: inherit;
+  letter-spacing: inherit;
+}
+
+.csu-edit-heading {
+  text-align: center;
+  font-weight: 700;
 }
 
 .csu-a6-table thead th {
@@ -13483,8 +13552,9 @@ body, * {
   font-weight: 700;
   border-bottom-width: 0.4mm;
   color: #1a0800;
-  padding: 0.5mm 0.3mm;
-  letter-spacing: 0.08mm;
+  padding: 0;
+  letter-spacing: 0;
+  cursor: default;
 }
 
 .csu-a6-table tbody tr:nth-child(even) {
@@ -13493,7 +13563,7 @@ body, * {
 
 .csu-vrat {
   text-align: left !important;
-  padding-left: 0.6mm !important;
+  padding: 0 !important;
 }
 
 /* Multi-value lines inside a cell */
@@ -13515,8 +13585,9 @@ body, * {
   text-align: center;
   font-size: 1.8mm;
   color: #999;
-  margin-top: 0.8mm;
+  margin-top: 0.5mm;
   letter-spacing: 0.4mm;
+  flex-shrink: 0;
 }
 
 /* Empty state */

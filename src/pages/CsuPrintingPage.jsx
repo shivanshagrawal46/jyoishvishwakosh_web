@@ -3,8 +3,20 @@ import {
   uploadCsuExcel,
   fetchCsuPages,
   fetchCsuPageData,
-  deleteCsuPageAll
+  deleteCsuPageAll,
+  updateCsuRow
 } from '../services/api'
+
+const FIELD_MAP = {
+  0: 'di_hn',
+  1: 'var_hn',
+  2: 'tithi_hn',
+  3: 'tithi_time_hn',
+  4: 'nakshatra_hn',
+  5: 'nakshatra_time_hn',
+  6: 'chara_rashi_pravesh_hn',
+  7: 'vrat_parvadi_vivaran_hn'
+}
 
 export default function CsuPrintingPage() {
   const [pageNo, setPageNo] = useState(1)
@@ -18,6 +30,11 @@ export default function CsuPrintingPage() {
   const [fontSize, setFontSize] = useState(2.5)
   const [dragActive, setDragActive] = useState(false)
   const [newPageInput, setNewPageInput] = useState('')
+  const [saving, setSaving] = useState(null)
+  const [editCell, setEditCell] = useState(null)
+  const [editValue, setEditValue] = useState('')
+  const [editHeading, setEditHeading] = useState(false)
+  const [editHeadingValue, setEditHeadingValue] = useState('')
 
   const a6Ref = useRef(null)
   const fileInputRef = useRef(null)
@@ -40,7 +57,6 @@ export default function CsuPrintingPage() {
       console.log('=== CSU RAW API RESPONSE ===', res)
       const items = res?.data || (Array.isArray(res) ? res : [])
       if (items.length > 0) {
-        console.log('=== CSU ALL ROWS ===', items)
         items.forEach((row, i) => {
           console.log(`--- Row ${i} ---`, {
             di_hn: row.di_hn,
@@ -82,7 +98,6 @@ export default function CsuPrintingPage() {
     loadPageData(pageNo)
   }, [pageNo, loadPageData])
 
-  // Binary-search auto-scale: find the largest font that fits in the A6 box
   useEffect(() => {
     const paper = a6Ref.current
     if (!paper || rows.length === 0) return
@@ -212,6 +227,13 @@ export default function CsuPrintingPage() {
     }
   }
 
+  const trimTime = (t) => {
+    if (!t || typeof t !== 'string') return t || ''
+    const parts = t.split(':')
+    if (parts.length >= 2) return `${parts[0]}:${parts[1]}`
+    return t
+  }
+
   const renderMulti = (val) => {
     if (!val) return ''
     if (Array.isArray(val)) {
@@ -224,6 +246,128 @@ export default function CsuPrintingPage() {
       ))
     }
     return val
+  }
+
+  const renderMultiTime = (val) => {
+    if (!val) return ''
+    if (Array.isArray(val)) {
+      const trimmed = val.map(trimTime)
+      if (trimmed.length === 0) return ''
+      if (trimmed.length === 1) return trimmed[0] || ''
+      return trimmed.map((v, i) => (
+        <div key={i} className="csu-ml">
+          {v}
+        </div>
+      ))
+    }
+    return trimTime(val)
+  }
+
+  const getCellText = (val) => {
+    if (!val) return ''
+    if (Array.isArray(val)) return val.join(', ')
+    return String(val)
+  }
+
+  const renderRashi = (r) => {
+    const rashi = r.chara_rashi_pravesh_hn || ''
+    const time = trimTime(r.chara_rashi_time_hn || '')
+    if (rashi && time) return `${rashi} ${time}`
+    return rashi || time || ''
+  }
+
+  // --- Click-to-edit ---
+
+  const startCellEdit = (ri, ci, rawValue) => {
+    setEditCell({ ri, ci })
+    setEditValue(getCellText(rawValue))
+  }
+
+  const saveCellEdit = async () => {
+    if (!editCell) return
+    const { ri, ci } = editCell
+    const row = rows[ri]
+    if (!row?._id) { setEditCell(null); return }
+    const field = FIELD_MAP[ci]
+    if (!field) { setEditCell(null); return }
+
+    const trimmed = editValue.trim()
+    const oldText = getCellText(row[field])
+    setEditCell(null)
+
+    if (trimmed === oldText) return
+
+    const isArrayField = field === 'tithi_hn' || field === 'tithi_time_hn'
+    const newValue = isArrayField
+      ? trimmed.split(/[,|;]/).map((s) => s.trim()).filter(Boolean)
+      : trimmed
+
+    const updated = [...rows]
+    updated[ri] = { ...updated[ri], [field]: newValue }
+    setRows(updated)
+
+    setSaving(row._id)
+    try {
+      await updateCsuRow(row._id, { [field]: newValue })
+    } catch (err) {
+      updated[ri] = row
+      setRows([...updated])
+      console.error('Save failed:', err)
+    } finally {
+      setSaving(null)
+    }
+  }
+
+  const startHeadingEdit = () => {
+    setEditHeading(true)
+    setEditHeadingValue(heading)
+  }
+
+  const saveHeadingEdit = async () => {
+    setEditHeading(false)
+    const trimmed = editHeadingValue.trim()
+    if (trimmed === heading) return
+    const row = rows.find((r) => r.heading_hn)
+    if (!row?._id) return
+    const oldHeading = heading
+    setHeading(trimmed)
+    setSaving(row._id)
+    try {
+      await updateCsuRow(row._id, { heading_hn: trimmed })
+    } catch (err) {
+      setHeading(oldHeading)
+      console.error('Heading save failed:', err)
+    } finally {
+      setSaving(null)
+    }
+  }
+
+  const isEditing = (ri, ci) => editCell?.ri === ri && editCell?.ci === ci
+
+  const cellDisplay = (ri, ci, displayContent, rawValue) => {
+    if (isEditing(ri, ci)) {
+      return (
+        <input
+          className="csu-edit-input"
+          autoFocus
+          value={editValue}
+          onChange={(e) => setEditValue(e.target.value)}
+          onBlur={saveCellEdit}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') e.target.blur()
+            if (e.key === 'Escape') setEditCell(null)
+          }}
+        />
+      )
+    }
+    return (
+      <span
+        className="csu-cell-text"
+        onClick={() => startCellEdit(ri, ci, rawValue)}
+      >
+        {displayContent || '\u00A0'}
+      </span>
+    )
   }
 
   return (
@@ -241,7 +385,6 @@ export default function CsuPrintingPage() {
         </div>
 
         <div className="csu-admin-grid">
-          {/* Page Selection */}
           <div className="csu-card">
             <div className="csu-card-label">Page Selection</div>
             <div className="csu-chips">
@@ -286,7 +429,6 @@ export default function CsuPrintingPage() {
             </div>
           </div>
 
-          {/* Upload */}
           <div className="csu-card">
             <div className="csu-card-label">Excel Upload</div>
             <div
@@ -372,6 +514,7 @@ export default function CsuPrintingPage() {
         >
           ⎙ &nbsp;Print A6
         </button>
+        {saving && <span className="csu-bar-saving">Saving…</span>}
         <span className="csu-bar-meta">
           {rows.length > 0
             ? `${rows.length} rows · ${fontSize.toFixed(1)}mm · Page ${pageNo}`
@@ -388,35 +531,51 @@ export default function CsuPrintingPage() {
             </div>
           )}
 
-          {heading && <div className="csu-a6-h">{heading}</div>}
+          {heading && (
+            <div className="csu-a6-h" onClick={startHeadingEdit}>
+              {editHeading ? (
+                <input
+                  className="csu-edit-input csu-edit-heading"
+                  autoFocus
+                  value={editHeadingValue}
+                  onChange={(e) => setEditHeadingValue(e.target.value)}
+                  onBlur={saveHeadingEdit}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') e.target.blur()
+                    if (e.key === 'Escape') setEditHeading(false)
+                  }}
+                />
+              ) : (
+                heading
+              )}
+            </div>
+          )}
 
           {rows.length > 0 ? (
             <table className="csu-a6-table">
               <thead>
                 <tr>
-                  <th style={{ width: '5%' }}>दि.</th>
-                  <th style={{ width: '7%' }}>वार</th>
-                  <th style={{ width: '13%' }}>तिथि</th>
-                  <th style={{ width: '11%' }}>घ.मि.</th>
-                  <th style={{ width: '12%' }}>नक्षत्र</th>
-                  <th style={{ width: '11%' }}>घ.मि.</th>
-                  <th style={{ width: '10%' }}>च.रा.प्र.</th>
-                  <th style={{ width: '11%' }}>घ.मि.</th>
-                  <th style={{ width: '20%' }}>व्रत-पर्वादि विवरण</th>
+                  <th>दि.</th>
+                  <th>वार</th>
+                  <th>तिथि</th>
+                  <th>घ.मि.</th>
+                  <th>नक्षत्र</th>
+                  <th>घ.मि.</th>
+                  <th>च.रा.प्र.</th>
+                  <th>व्रत-पर्वादि विवरण</th>
                 </tr>
               </thead>
               <tbody>
-                {rows.map((r, i) => (
-                  <tr key={r._id || i}>
-                    <td>{r.di_hn || ''}</td>
-                    <td>{r.var_hn || ''}</td>
-                    <td>{renderMulti(r.tithi_hn)}</td>
-                    <td>{renderMulti(r.tithi_time_hn)}</td>
-                    <td>{r.nakshatra_hn || ''}</td>
-                    <td>{r.nakshatra_time_hn || ''}</td>
-                    <td>{r.chara_rashi_pravesh_hn || ''}</td>
-                    <td>{r.chara_rashi_time_hn || ''}</td>
-                    <td className="csu-vrat">{r.vrat_parvadi_vivaran_hn || ''}</td>
+                {rows.map((r, ri) => (
+                  <tr key={r._id || ri}>
+                    <td>{cellDisplay(ri, 0, r.di_hn, r.di_hn)}</td>
+                    <td>{cellDisplay(ri, 1, r.var_hn, r.var_hn)}</td>
+                    <td>{cellDisplay(ri, 2, renderMulti(r.tithi_hn), r.tithi_hn)}</td>
+                    <td>{cellDisplay(ri, 3, renderMultiTime(r.tithi_time_hn), r.tithi_time_hn)}</td>
+                    <td>{cellDisplay(ri, 4, r.nakshatra_hn, r.nakshatra_hn)}</td>
+                    <td>{cellDisplay(ri, 5, trimTime(r.nakshatra_time_hn), r.nakshatra_time_hn)}</td>
+                    <td>{cellDisplay(ri, 6, renderRashi(r), r.chara_rashi_pravesh_hn)}</td>
+                    <td className="csu-vrat">{cellDisplay(ri, 7, r.vrat_parvadi_vivaran_hn, r.vrat_parvadi_vivaran_hn)}</td>
                   </tr>
                 ))}
               </tbody>
