@@ -1360,6 +1360,31 @@ export const uploadCsuExcel = async (file, pageNo) => {
   }
 }
 
+export const uploadCsuColumnExcel = async ({
+  file,
+  pageNo,
+  columnField,
+  columnHeading
+}) => {
+  try {
+    const formData = new FormData()
+    formData.append('excelFile', file)
+    formData.append('pageNo', pageNo)
+    if (columnField) formData.append('columnField', columnField)
+    if (columnHeading) formData.append('columnHeading', columnHeading)
+    const response = await fetch(`${API_BASE_URL}/csu/upload-column-excel`, {
+      method: 'POST',
+      body: formData,
+      mode: 'cors'
+    })
+    if (!response.ok) throw new Error('CSU column upload failed')
+    return await response.json()
+  } catch (error) {
+    console.error('CSU column upload error:', error)
+    throw error
+  }
+}
+
 export const fetchCsuPages = async () => {
   try {
     const response = await fetch(`${API_BASE_URL}/csu/pages`, {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import {
   uploadCsuExcel,
+  uploadCsuColumnExcel,
   fetchCsuPages,
   fetchCsuPageData,
   deleteCsuPageAll,
@@ -18,6 +19,22 @@ const FIELD_MAP = {
   7: 'vrat_parvadi_vivaran_hn'
 }
 
+const CSU_COLUMN_OPTIONS = [
+  { value: 'heading_hn', label: 'शीर्षक (heading_hn)' },
+  { value: 'di_hn', label: 'दि. (di_hn)' },
+  { value: 'var_hn', label: 'वार (var_hn)' },
+  { value: 'tithi_hn', label: 'तिथि (tithi_hn)' },
+  { value: 'tithi_time_hn', label: 'तिथि समय (tithi_time_hn)' },
+  { value: 'nakshatra_hn', label: 'नक्षत्र (nakshatra_hn)' },
+  { value: 'nakshatra_time_hn', label: 'नक्षत्र समय (nakshatra_time_hn)' },
+  { value: 'chara_rashi_pravesh_hn', label: 'च.रा.प्र. (chara_rashi_pravesh_hn)' },
+  { value: 'chara_rashi_time_hn', label: 'च.रा. समय (chara_rashi_time_hn)' },
+  {
+    value: 'vrat_parvadi_vivaran_hn',
+    label: 'व्रत-पर्वादि विवरण (vrat_parvadi_vivaran_hn)'
+  }
+]
+
 export default function CsuPrintingPage() {
   const [pageNo, setPageNo] = useState(1)
   const [pagesList, setPagesList] = useState([])
@@ -27,6 +44,9 @@ export default function CsuPrintingPage() {
   const [file, setFile] = useState(null)
   const [uploading, setUploading] = useState(false)
   const [uploadStatus, setUploadStatus] = useState(null)
+  const [columnFile, setColumnFile] = useState(null)
+  const [columnField, setColumnField] = useState('tithi_hn')
+  const [columnUploading, setColumnUploading] = useState(false)
   const [fontSize, setFontSize] = useState(2.5)
   const [dragActive, setDragActive] = useState(false)
   const [newPageInput, setNewPageInput] = useState('')
@@ -38,6 +58,7 @@ export default function CsuPrintingPage() {
 
   const a6Ref = useRef(null)
   const fileInputRef = useRef(null)
+  const columnFileInputRef = useRef(null)
 
   const loadPages = useCallback(async () => {
     try {
@@ -157,6 +178,37 @@ export default function CsuPrintingPage() {
       setUploadStatus({ type: 'success', text: `Page ${pageNo} deleted` })
     } catch (e) {
       setUploadStatus({ type: 'error', text: e.message })
+    }
+  }
+
+  const handleColumnUpload = async () => {
+    if (!columnFile || !pageNo || !columnField) return
+    setColumnUploading(true)
+    setUploadStatus(null)
+    try {
+      const data = await uploadCsuColumnExcel({
+        file: columnFile,
+        pageNo,
+        columnField
+      })
+      if (data.success !== false) {
+        setUploadStatus({
+          type: 'success',
+          text: `Updated ${data.updatedRows || data.count || ''} rows for ${columnField}`
+        })
+        setColumnFile(null)
+        if (columnFileInputRef.current) columnFileInputRef.current.value = ''
+        loadPageData(pageNo)
+      } else {
+        setUploadStatus({
+          type: 'error',
+          text: data.message || 'Column upload failed'
+        })
+      }
+    } catch (e) {
+      setUploadStatus({ type: 'error', text: e.message })
+    } finally {
+      setColumnUploading(false)
     }
   }
 
@@ -492,6 +544,46 @@ export default function CsuPrintingPage() {
             <button className="csu-btn-tpl" onClick={handleExportTemplate}>
               ⤓ &nbsp;Download Excel Template
             </button>
+            <div className="csu-partial-box">
+              <div className="csu-partial-title">Edit via Excel (Single Column)</div>
+              <div className="csu-partial-row">
+                <select
+                  value={columnField}
+                  onChange={(e) => setColumnField(e.target.value)}
+                >
+                  {CSU_COLUMN_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  className="csu-btn-partial-file"
+                  onClick={() => columnFileInputRef.current?.click()}
+                >
+                  {columnFile ? 'Change File' : 'Choose Excel'}
+                </button>
+                <input
+                  ref={columnFileInputRef}
+                  type="file"
+                  accept=".xlsx,.xls,.csv"
+                  onChange={(e) => setColumnFile(e.target.files?.[0] || null)}
+                  hidden
+                />
+              </div>
+              {columnFile && (
+                <div className="csu-partial-file-name">{columnFile.name}</div>
+              )}
+              <button
+                className="csu-btn-up csu-btn-partial"
+                onClick={handleColumnUpload}
+                disabled={!columnFile || !columnField || columnUploading}
+              >
+                {columnUploading
+                  ? 'Updating…'
+                  : `Update Only ${columnField} → Page ${pageNo}`}
+              </button>
+            </div>
 
             {uploadStatus && (
               <div className={`csu-toast ${uploadStatus.type}`}>

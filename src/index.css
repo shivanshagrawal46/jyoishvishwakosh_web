@@ -13285,6 +13285,70 @@ body, * {
   border-color: #90caf9;
 }
 
+/* Partial column edit upload */
+
+.csu-partial-box {
+  margin: 8px 0 10px;
+  padding: 10px;
+  border: 1px solid #e7dcc8;
+  border-radius: 10px;
+  background: #fcfaf6;
+}
+
+.csu-partial-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #7b5b3f;
+  margin-bottom: 8px;
+}
+
+.csu-partial-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+}
+
+.csu-partial-row select {
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1.5px solid #ddd2c0;
+  border-radius: 8px;
+  font-size: 12px;
+  font-family: inherit;
+  background: #fff;
+}
+
+.csu-btn-partial-file {
+  padding: 8px 12px;
+  border: 1.5px solid #d6c9b4;
+  border-radius: 8px;
+  background: #fff;
+  color: #6b5338;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.csu-btn-partial-file:hover {
+  background: #f8f0e4;
+}
+
+.csu-partial-file-name {
+  margin-top: 6px;
+  font-size: 11px;
+  color: #6f6253;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.csu-btn-partial {
+  margin-top: 8px;
+  font-size: 12px;
+  padding: 9px 12px;
+}
+
 /* Toast */
 
 .csu-toast {
