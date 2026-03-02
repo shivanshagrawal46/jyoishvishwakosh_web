@@ -55,6 +55,11 @@ export default function CsuPrintingPage() {
   const [editValue, setEditValue] = useState('')
   const [editHeading, setEditHeading] = useState(false)
   const [editHeadingValue, setEditHeadingValue] = useState('')
+  const [lineStartPage, setLineStartPage] = useState('')
+  const [linePageCount, setLinePageCount] = useState('')
+  const [linePageNos, setLinePageNos] = useState([])
+  const [fullDocPages, setFullDocPages] = useState([])
+  const [buildingFullPdf, setBuildingFullPdf] = useState(false)
 
   const a6Ref = useRef(null)
   const fileInputRef = useRef(null)
@@ -123,9 +128,9 @@ export default function CsuPrintingPage() {
     const paper = a6Ref.current
     if (!paper || rows.length === 0) return
 
-    let lo = 1.0
+    let lo = 0.8
     let hi = 3.6
-    for (let i = 0; i < 14; i++) {
+    for (let i = 0; i < 16; i++) {
       const mid = (lo + hi) / 2
       paper.style.fontSize = `${mid}mm`
       if (paper.scrollHeight > paper.clientHeight) {
@@ -137,6 +142,39 @@ export default function CsuPrintingPage() {
     paper.style.fontSize = `${lo}mm`
     setFontSize(parseFloat(lo.toFixed(2)))
   }, [rows, heading])
+
+  // Auto-scale full doc pages when they render
+  useEffect(() => {
+    if (fullDocPages.length === 0) return
+    const timer = setTimeout(() => {
+      const pageEls = document.querySelectorAll('.csu-print-doc .csu-doc-page')
+      pageEls.forEach((pageEl) => {
+        if (pageEl.querySelector('.csu-line-page')) return
+        let lo = 0.8, hi = 3.6
+        for (let i = 0; i < 16; i++) {
+          const mid = (lo + hi) / 2
+          pageEl.style.fontSize = `${mid}mm`
+          if (pageEl.scrollHeight > pageEl.clientHeight) hi = mid
+          else lo = mid
+        }
+        const safeFontSize = Math.max(0.6, lo * 0.95)
+        pageEl.style.fontSize = `${safeFontSize}mm`
+      })
+
+      if (buildingFullPdf) {
+        setTimeout(() => {
+          const cleanup = () => {
+            document.body.classList.remove('csu-print-full')
+            window.removeEventListener('afterprint', cleanup)
+          }
+          document.body.classList.add('csu-print-full')
+          window.addEventListener('afterprint', cleanup)
+          window.print()
+        }, 100)
+      }
+    }, 300)
+    return () => clearTimeout(timer)
+  }, [fullDocPages, buildingFullPdf])
 
   const handleUpload = async () => {
     if (!file || !pageNo) return
@@ -212,7 +250,105 @@ export default function CsuPrintingPage() {
     }
   }
 
-  const handlePrint = () => window.print()
+  const handlePrint = () => {
+    const paper = a6Ref.current
+    if (!paper) { window.print(); return }
+    const original = paper.style.fontSize
+    const current = parseFloat(original) || fontSize
+    paper.style.fontSize = `${current * 0.95}mm`
+    setTimeout(() => {
+      window.print()
+      const restore = () => {
+        paper.style.fontSize = original
+        window.removeEventListener('afterprint', restore)
+      }
+      window.addEventListener('afterprint', restore)
+    }, 50)
+  }
+
+  const handleAddLinePages = () => {
+    const start = parseInt(lineStartPage, 10)
+    const count = parseInt(linePageCount, 10)
+    if (!start || !count || start < 1 || count < 1) return
+    const newPages = Array.from({ length: count }, (_, i) => start + i)
+    setLinePageNos((prev) => [...new Set([...prev, ...newPages])].sort((a, b) => a - b))
+    setLineStartPage('')
+    setLinePageCount('')
+  }
+
+  const handleClearLinePages = () => setLinePageNos([])
+
+  const renderReadonlyTable = (tableRows) => (
+    <table className="csu-a6-table">
+      <thead>
+        <tr>
+          <th>दि.</th>
+          <th>वार</th>
+          <th>तिथि</th>
+          <th>घ.मि.</th>
+          <th>नक्षत्र</th>
+          <th>घ.मि.</th>
+          <th>च.रा.प्र.</th>
+          <th>व्रत-पर्वादि विवरण</th>
+        </tr>
+      </thead>
+      <tbody>
+        {tableRows.map((r, ri) => (
+          <tr key={r._id || ri}>
+            <td>{r.di_hn || ''}</td>
+            <td>{r.var_hn || ''}</td>
+            <td>{renderMulti(r.tithi_hn)}</td>
+            <td>{renderMultiTime(r.tithi_time_hn)}</td>
+            <td>{renderMulti(r.nakshatra_hn)}</td>
+            <td>{renderMultiTime(r.nakshatra_time_hn)}</td>
+            <td>{renderRashi(r)}</td>
+            <td className="csu-vrat">{r.vrat_parvadi_vivaran_hn || ''}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )
+
+  const handleCreateFullPdf = async () => {
+    setBuildingFullPdf(true)
+    setUploadStatus(null)
+    try {
+      const pagesRes = await fetchCsuPages()
+      const pages = (pagesRes?.data || [])
+        .map((p) => p.pageNo)
+        .filter((n) => Number.isFinite(n))
+        .sort((a, b) => a - b)
+
+      const pageDataList = await Promise.all(pages.map((pn) => fetchCsuPageData(pn)))
+      const dataPages = pageDataList.map((res, idx) => {
+        const pageRows = (res?.data || []).sort((a, b) => (a.sequence || 0) - (b.sequence || 0))
+        const pageHeading = pageRows.find((r) => r.heading_hn)?.heading_hn || ''
+        return {
+          type: 'data',
+          pageNo: pages[idx],
+          heading: pageHeading,
+          rows: pageRows
+        }
+      })
+
+      const linedPages = linePageNos.map((n) => ({
+        type: 'line',
+        pageNo: n
+      }))
+
+      const merged = [...dataPages, ...linedPages].sort((a, b) => {
+        if (a.pageNo !== b.pageNo) return a.pageNo - b.pageNo
+        if (a.type === b.type) return 0
+        return a.type === 'data' ? -1 : 1
+      })
+
+      setFullDocPages(merged)
+    } catch (e) {
+      setUploadStatus({ type: 'error', text: e.message })
+    } finally {
+      setBuildingFullPdf(false)
+    }
+  }
 
   const handleExportTemplate = () => {
     const BOM = '\uFEFF'
@@ -545,6 +681,38 @@ export default function CsuPrintingPage() {
               ⤓ &nbsp;Download Excel Template
             </button>
             <div className="csu-partial-box">
+              <div className="csu-partial-title">Lining Pages (for full PDF)</div>
+              <div className="csu-partial-row">
+                <input
+                  type="number"
+                  min="1"
+                  placeholder="Start page no"
+                  value={lineStartPage}
+                  onChange={(e) => setLineStartPage(e.target.value)}
+                />
+                <input
+                  type="number"
+                  min="1"
+                  placeholder="Count"
+                  value={linePageCount}
+                  onChange={(e) => setLinePageCount(e.target.value)}
+                />
+              </div>
+              <div className="csu-act-row" style={{ marginTop: 8 }}>
+                <button className="csu-btn-up csu-btn-partial" onClick={handleAddLinePages}>
+                  Add Lining Range
+                </button>
+                <button className="csu-btn-del" onClick={handleClearLinePages}>
+                  Clear
+                </button>
+              </div>
+              {linePageNos.length > 0 && (
+                <div className="csu-partial-file-name">
+                  Lining pages: {linePageNos.join(', ')}
+                </div>
+              )}
+            </div>
+            <div className="csu-partial-box">
               <div className="csu-partial-title">Edit via Excel (Single Column)</div>
               <div className="csu-partial-row">
                 <select
@@ -604,6 +772,13 @@ export default function CsuPrintingPage() {
         >
           ⎙ &nbsp;Print A6
         </button>
+        <button
+          className="csu-btn-pr"
+          onClick={handleCreateFullPdf}
+          disabled={buildingFullPdf}
+        >
+          {buildingFullPdf ? 'Building PDF…' : 'Create Full PDF'}
+        </button>
         {saving && <span className="csu-bar-saving">Saving…</span>}
         <span className="csu-bar-meta">
           {rows.length > 0
@@ -613,7 +788,7 @@ export default function CsuPrintingPage() {
       </div>
 
       {/* ── A6 Paper ── */}
-      <div className="csu-pz">
+      <div className="csu-pz csu-single-preview">
         <div className="csu-a6" ref={a6Ref}>
           {loading && (
             <div className="csu-a6-loading">
@@ -680,10 +855,32 @@ export default function CsuPrintingPage() {
             )
           )}
 
-          {rows.length > 0 && (
+          {false && rows.length > 0 && (
             <div className="csu-a6-f">— {pageNo} —</div>
           )}
         </div>
+      </div>
+
+      <div className="csu-print-doc">
+        {fullDocPages.map((p, idx) => (
+          <div className="csu-a6 csu-doc-page" key={`${p.type}-${p.pageNo}-${idx}`}>
+            {p.type === 'data' ? (
+              <>
+                {p.heading && <div className="csu-a6-h">{p.heading}</div>}
+                {p.rows?.length > 0 ? renderReadonlyTable(p.rows) : <div className="csu-a6-empty"><div>No rows for page {p.pageNo}</div></div>}
+              </>
+            ) : (
+              <div className="csu-line-page">
+                <div className="csu-line-grid">
+                  {Array.from({ length: 16 }).map((_, i) => (
+                    <div className="csu-line-row" key={i} />
+                  ))}
+                </div>
+              </div>
+            )}
+            {p.type === 'line' && <div className="csu-a6-f">— {p.pageNo} —</div>}
+          </div>
+        ))}
       </div>
     </div>
   )

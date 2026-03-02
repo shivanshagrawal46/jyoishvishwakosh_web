@@ -1450,13 +1450,26 @@ export const uploadCsu2Excel = async (file, pageNo) => {
   try {
     const formData = new FormData()
     formData.append('excelFile', file)
-    formData.append('pageNo', pageNo)
+    formData.append('pageNo', String(pageNo))
     const response = await fetch(`${API_BASE_URL}/csu2/upload-excel`, {
       method: 'POST',
       body: formData,
       mode: 'cors'
     })
-    if (!response.ok) throw new Error('CSU2 Excel upload failed')
+    if (!response.ok) {
+      let details = ''
+      try {
+        const errData = await response.json()
+        details = errData?.message || JSON.stringify(errData)
+      } catch {
+        try {
+          details = await response.text()
+        } catch {
+          details = ''
+        }
+      }
+      throw new Error(`CSU2 Excel upload failed (${response.status})${details ? `: ${details}` : ''}`)
+    }
     return await response.json()
   } catch (error) {
     console.error('CSU2 upload error:', error)

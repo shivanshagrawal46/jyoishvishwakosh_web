@@ -13318,6 +13318,16 @@ body, * {
   background: #fff;
 }
 
+.csu-partial-row input {
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1.5px solid #ddd2c0;
+  border-radius: 8px;
+  font-size: 12px;
+  font-family: inherit;
+  background: #fff;
+}
+
 .csu-btn-partial-file {
   padding: 8px 12px;
   border: 1.5px solid #d6c9b4;
@@ -13347,6 +13357,74 @@ body, * {
   margin-top: 8px;
   font-size: 12px;
   padding: 9px 12px;
+}
+
+.csu-print-doc:empty {
+  display: none;
+}
+
+.csu-print-doc {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 12px 40px;
+  background: linear-gradient(180deg, #e4dcc8, #d8cfba);
+}
+
+.csu-doc-page {
+  margin: 0 auto 18px;
+  width: 148mm !important;
+  height: 105mm !important;
+  padding: 5mm !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  background: #fff;
+  font-family: 'Laila', 'Noto Sans Devanagari', 'Mangal', serif;
+}
+
+.csu-doc-page .csu-a6-table {
+  flex: 1;
+}
+
+.csu-doc-page .csu-a6-h {
+  flex-shrink: 0;
+}
+
+.csu-line-page {
+  height: calc(100% - 6mm);
+  padding-left: 8mm;
+  position: relative;
+}
+
+/* Left red margin line */
+.csu-line-page::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 7mm;
+  bottom: 0;
+  width: 0;
+  border-left: 0.25mm solid #e06060;
+}
+
+.csu-line-grid {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.csu-line-row {
+  flex: 1;
+  border-bottom: 0.12mm solid #c0c8d8;
+  min-height: 0;
+}
+
+.csu-line-row:last-child {
+  border-bottom: none;
 }
 
 /* Toast */
@@ -13559,10 +13637,11 @@ body, * {
 .csu-a6-table th,
 .csu-a6-table td {
   border: 0.2mm solid #444;
-  padding: 0;
+  padding: 0.15mm 0;
   margin: 0;
   text-align: center;
   vertical-align: middle;
+  line-height: 1.3;
   text-indent: 0;
   letter-spacing: 0;
   word-spacing: 0;
@@ -13733,6 +13812,44 @@ body, * {
 
   .csu-a6-table tbody tr:nth-child(even) {
     background: #fdfcf9 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body.csu-print-full .csu-single-preview {
+    display: none !important;
+  }
+
+  .csu-print-doc {
+    padding: 0 !important;
+    background: none !important;
+    gap: 0 !important;
+  }
+
+  body.csu-print-full .csu-print-doc .csu-doc-page {
+    page-break-after: always;
+    break-after: page;
+    margin: 0 !important;
+    box-shadow: none !important;
+  }
+
+  body.csu-print-full .csu-single-preview {
+    display: none !important;
+  }
+
+  body.csu-print-full .csu-print-doc .csu-doc-page:last-child {
+    page-break-after: auto;
+    break-after: auto;
+  }
+
+  .csu-line-page::before {
+    border-left-color: #e06060 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .csu-line-row {
+    border-bottom-color: #c0c8d8 !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
