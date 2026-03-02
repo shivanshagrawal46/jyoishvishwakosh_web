@@ -13855,3 +13855,161 @@ body, * {
 .csu2-nd {
   color: #bbb;
 }
+
+/* ==========================================================
+   CSU3 PRINTING – heading + content flow pages
+   ========================================================== */
+
+.csu3-pz {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 28px 12px 52px;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.3), transparent 70%),
+    linear-gradient(180deg, #e4dcc8 0%, #d8cfba 100%);
+}
+
+.csu3-a6 {
+  width: 148mm;
+  height: 105mm;
+  background: #fff;
+  padding: 5mm 5mm 8mm;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    0 6px 20px rgba(0, 0, 0, 0.07),
+    0 12px 40px rgba(0, 0, 0, 0.05);
+  font-family: 'Laila', 'Noto Sans Devanagari', 'Mangal', serif;
+}
+
+.csu3-a6::before {
+  content: '';
+  position: absolute;
+  top: 2.5mm;
+  left: 2.5mm;
+  right: 2.5mm;
+  bottom: 2.5mm;
+  border: 0.35mm solid #6b1d1d;
+  pointer-events: none;
+}
+
+.csu3-a6::after {
+  content: '';
+  position: absolute;
+  top: 1.8mm;
+  left: 1.8mm;
+  right: 1.8mm;
+  bottom: 1.8mm;
+  border: 0.15mm solid rgba(107, 29, 29, 0.2);
+  pointer-events: none;
+}
+
+.csu3-block {
+  margin-bottom: 2.5mm;
+}
+
+.csu3-heading {
+  font-size: 3.1mm;
+  font-weight: 700;
+  color: #1d0f07;
+  line-height: 1.25;
+  margin-bottom: 0.8mm;
+  text-align: center;
+}
+
+.csu3-content {
+  font-size: 2.7mm;
+  line-height: 1.35;
+  color: #222;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  cursor: text;
+}
+
+.csu3-edit-content {
+  width: 100%;
+  border: 0.12mm solid #c55a11;
+  border-radius: 1mm;
+  background: #fffde7;
+  color: #222;
+  font-family: inherit;
+  font-size: 2.7mm;
+  line-height: 1.35;
+  padding: 1mm;
+  box-sizing: border-box;
+  resize: none;
+}
+
+.csu3-a6 .csu-a6-f {
+  position: absolute;
+  left: 50%;
+  bottom: 2.8mm;
+  transform: translateX(-50%);
+  margin: 0;
+}
+
+.csu3-form {
+  display: grid;
+  gap: 8px;
+}
+
+.csu3-form input,
+.csu3-form textarea {
+  width: 100%;
+  padding: 9px 10px;
+  border: 1.5px solid #ddd2c0;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 13px;
+  box-sizing: border-box;
+  background: #fff;
+}
+
+.csu3-form textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+
+.csu3-form input:focus,
+.csu3-form textarea:focus {
+  outline: none;
+  border-color: #c55a11;
+  box-shadow: 0 0 0 3px rgba(197, 90, 17, 0.08);
+}
+
+.csu3-measure {
+  position: absolute !important;
+  left: -99999px !important;
+  top: -99999px !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  box-shadow: none !important;
+}
+
+@media print {
+  .csu3-pz {
+    padding: 0 !important;
+    background: none !important;
+    gap: 0 !important;
+  }
+
+  .csu3-a6 {
+    box-shadow: none !important;
+    margin: 0 !important;
+    page-break-after: always;
+    break-after: page;
+  }
+
+  .csu3-a6:last-child {
+    page-break-after: auto;
+    break-after: auto;
+  }
+
+  .csu3-measure {
+    display: none !important;
+  }
+}

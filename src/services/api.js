@@ -1525,3 +1525,83 @@ export const updateCsu2Row = async (id, updates) => {
   }
 }
 
+export const createCsu3Row = async (payload) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/csu3`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(payload),
+      mode: 'cors'
+    })
+    if (!response.ok) throw new Error('Failed to create CSU3 row')
+    return await response.json()
+  } catch (error) {
+    console.error('CSU3 create error:', error)
+    throw error
+  }
+}
+
+export const fetchCsu3Pages = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/csu3/pages`, {
+      headers: { 'Accept': 'application/json' },
+      mode: 'cors'
+    })
+    if (!response.ok) throw new Error('Failed to fetch CSU3 pages')
+    return await response.json()
+  } catch (error) {
+    console.error('CSU3 pages fetch error:', error)
+    throw error
+  }
+}
+
+export const fetchCsu3PageData = async (pageNo) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/csu3/page/${pageNo}`, {
+      headers: { 'Accept': 'application/json' },
+      mode: 'cors'
+    })
+    if (!response.ok) throw new Error('Failed to fetch CSU3 page data')
+    return await response.json()
+  } catch (error) {
+    console.error('CSU3 page data fetch error:', error)
+    throw error
+  }
+}
+
+export const deleteCsu3PageAll = async (pageNo) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/csu3/page/${pageNo}/all`, {
+      method: 'DELETE',
+      mode: 'cors'
+    })
+    if (!response.ok) throw new Error('Failed to delete CSU3 page')
+    return await response.json()
+  } catch (error) {
+    console.error('CSU3 page delete error:', error)
+    throw error
+  }
+}
+
+export const updateCsu3Row = async (id, updates) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/csu3/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(updates),
+      mode: 'cors'
+    })
+    if (!response.ok) throw new Error('Failed to update CSU3 row')
+    return await response.json()
+  } catch (error) {
+    console.error('CSU3 row update error:', error)
+    throw error
+  }
+}
+
