@@ -347,7 +347,7 @@ export default function CsuPrintingPage() {
 
     if (trimmed === oldText) return
 
-    const isArrayField = field === 'tithi_hn' || field === 'tithi_time_hn'
+    const isArrayField = field === 'tithi_hn' || field === 'tithi_time_hn' || field === 'nakshatra_hn' || field === 'nakshatra_time_hn'
     const newValue = isArrayField
       ? trimmed.split(/[,|;]/).map((s) => s.trim()).filter(Boolean)
       : trimmed
@@ -662,8 +662,8 @@ export default function CsuPrintingPage() {
                     <td>{cellDisplay(ri, 1, r.var_hn, r.var_hn)}</td>
                     <td>{cellDisplay(ri, 2, renderMulti(r.tithi_hn), r.tithi_hn)}</td>
                     <td>{cellDisplay(ri, 3, renderMultiTime(r.tithi_time_hn), r.tithi_time_hn)}</td>
-                    <td>{cellDisplay(ri, 4, r.nakshatra_hn, r.nakshatra_hn)}</td>
-                    <td>{cellDisplay(ri, 5, trimTime(r.nakshatra_time_hn), r.nakshatra_time_hn)}</td>
+                    <td>{cellDisplay(ri, 4, renderMulti(r.nakshatra_hn), r.nakshatra_hn)}</td>
+                    <td>{cellDisplay(ri, 5, renderMultiTime(r.nakshatra_time_hn), r.nakshatra_time_hn)}</td>
                     <td>{cellDisplay(ri, 6, renderRashi(r), r.chara_rashi_pravesh_hn)}</td>
                     <td className="csu-vrat">{cellDisplay(ri, 7, r.vrat_parvadi_vivaran_hn, r.vrat_parvadi_vivaran_hn)}</td>
                   </tr>
