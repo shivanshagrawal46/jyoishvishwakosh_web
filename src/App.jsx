@@ -42,6 +42,8 @@ import AnkFalPage from './pages/AnkFalPage'
 import PanchangPage from './pages/PanchangPage'
 import DainikMuhuratPage from './pages/DainikMuhuratPage'
 import BookPage from './pages/BookPage'
+import BookDetailPage from './pages/BookDetailPage'
+import BookReaderPage from './pages/BookReaderPage'
 import EMagazinePage from './pages/EMagazinePage'
 import EMagazineDetailPage from './pages/EMagazineDetailPage'
 import VideosPage from './pages/VideosPage'
@@ -238,11 +240,11 @@ function App() {
           />
           <Route 
             path="/books/:categoryId/:bookId" 
-            element={<BookPage language={language} setLanguage={setLanguage} />} 
+            element={<BookDetailPage language={language} setLanguage={setLanguage} />} 
           />
           <Route 
             path="/books/:categoryId/:bookId/:chapterId" 
-            element={<BookPage language={language} setLanguage={setLanguage} />} 
+            element={<BookReaderPage language={language} setLanguage={setLanguage} />} 
           />
           <Route 
             path="/emagazine" 

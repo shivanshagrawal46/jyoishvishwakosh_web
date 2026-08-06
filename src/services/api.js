@@ -997,56 +997,147 @@ export const fetchBookCategories = async () => {
   }
 }
 
+// Book endpoints paginate at 10 items per page and return the envelope
+// { success, data, pagination }. `fetchBookPage` keeps the envelope so callers can
+// decide whether to walk the remaining pages; the legacy helpers below unwrap it.
+const fetchBookPage = async (path, page = 1) => {
+  const separator = path.includes('?') ? '&' : '?'
+  const response = await fetch(`${BOOK_API_BASE_URL}${path}${separator}page=${page}`, {
+    method: 'GET',
+    headers: { 'Accept': 'application/json' },
+    mode: 'cors'
+  })
+  if (!response.ok) throw new Error(`Request failed (${response.status})`)
+  const json = await response.json()
+  const items = json.success ? json.data : (json.data || json)
+  return { items: Array.isArray(items) ? items : [], pagination: json.pagination || null }
+}
+
+// Walks every page of a paginated book endpoint. Pages after the first are fetched
+// concurrently, so a 40-chapter book costs two round trips instead of four.
+const fetchAllBookPages = async (path) => {
+  const first = await fetchBookPage(path, 1)
+  const totalPages = first.pagination?.totalPages || 1
+  if (totalPages <= 1) return first.items
+
+  const rest = await Promise.all(
+    Array.from({ length: totalPages - 1 }, (_, i) => fetchBookPage(path, i + 2))
+  )
+  return rest.reduce((all, page) => all.concat(page.items), first.items)
+}
+
 export const fetchBooksByCategory = async (categoryId, page = 1) => {
   try {
-    const response = await fetch(`${BOOK_API_BASE_URL}/book/category/${categoryId}?page=${page}`, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-      },
-      mode: 'cors'
-    })
-    if (!response.ok) throw new Error('Failed to fetch books')
-    const data = await response.json()
-    return data.success ? data.data : (data.data || data)
+    const { items } = await fetchBookPage(`/book/category/${categoryId}`, page)
+    return items
   } catch (error) {
     console.error('Error fetching books:', error)
     throw error
   }
 }
 
+export const fetchAllBooksByCategory = async (categoryId) => {
+  try {
+    return await fetchAllBookPages(`/book/category/${categoryId}`)
+  } catch (error) {
+    console.error('Error fetching all books:', error)
+    throw error
+  }
+}
+
+export const fetchBooksByCategoryPaged = async (categoryId, page = 1) => {
+  try {
+    return await fetchBookPage(`/book/category/${categoryId}`, page)
+  } catch (error) {
+    console.error('Error fetching books page:', error)
+    throw error
+  }
+}
+
 export const fetchChaptersByBook = async (categoryId, bookId, page = 1) => {
   try {
-    const response = await fetch(`${BOOK_API_BASE_URL}/book/category/${categoryId}/${bookId}?page=${page}`, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-      },
-      mode: 'cors'
-    })
-    if (!response.ok) throw new Error('Failed to fetch chapters')
-    const data = await response.json()
-    return data.success ? data.data : (data.data || data)
+    const { items } = await fetchBookPage(`/book/category/${categoryId}/${bookId}`, page)
+    return items
   } catch (error) {
     console.error('Error fetching chapters:', error)
     throw error
   }
 }
 
+export const fetchAllChaptersByBook = async (categoryId, bookId) => {
+  try {
+    return await fetchAllBookPages(`/book/category/${categoryId}/${bookId}`)
+  } catch (error) {
+    console.error('Error fetching all chapters:', error)
+    throw error
+  }
+}
+
 export const fetchChapterContent = async (categoryId, bookId, chapterId, page = 1) => {
   try {
-    const response = await fetch(`${BOOK_API_BASE_URL}/book/category/${categoryId}/${bookId}/${chapterId}?page=${page}`, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-      },
-      mode: 'cors'
-    })
-    if (!response.ok) throw new Error('Failed to fetch chapter content')
-    const data = await response.json()
-    return data.success ? data.data : (data.data || data)
+    const { items } = await fetchBookPage(`/book/category/${categoryId}/${bookId}/${chapterId}`, page)
+    return items
   } catch (error) {
     console.error('Error fetching chapter content:', error)
+    throw error
+  }
+}
+
+// A chapter's topics are split across pages of 10. The reader needs the whole
+// chapter to render its accordion and in-chapter search.
+export const fetchAllChapterContent = async (categoryId, bookId, chapterId) => {
+  try {
+    return await fetchAllBookPages(`/book/category/${categoryId}/${bookId}/${chapterId}`)
+  } catch (error) {
+    console.error('Error fetching full chapter content:', error)
+    throw error
+  }
+}
+
+/** Number of books in a category, read from the pagination envelope of page 1. */
+export const fetchBookCount = async (categoryId) => {
+  try {
+    const { pagination, items } = await fetchBookPage(`/book/category/${categoryId}`, 1)
+    return pagination?.totalItems ?? items.length
+  } catch (error) {
+    console.error('Error fetching book count:', error)
+    return null
+  }
+}
+
+/**
+ * Chapter count for a book, read from the pagination envelope of page 1.
+ * Listing pages use this instead of /book/index/:id, whose full topic tree can
+ * run to ~100 KB per book.
+ */
+export const fetchChapterCount = async (categoryId, bookId) => {
+  try {
+    const { pagination, items } = await fetchBookPage(`/book/category/${categoryId}/${bookId}`, 1)
+    return pagination?.totalItems ?? items.length
+  } catch (error) {
+    console.error('Error fetching chapter count:', error)
+    return null
+  }
+}
+
+/**
+ * Full book index: title-page metadata (author, publications, isbn_no,
+ * acknowledgement_title), aggregate counts, front matter, and the complete
+ * chapter -> topic tree with page ranges. One call replaces the per-chapter
+ * fan-out the old book page used to do.
+ */
+export const fetchBookIndex = async (bookId) => {
+  try {
+    const response = await fetch(`${BOOK_API_BASE_URL}/book/index/${bookId}`, {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' },
+      mode: 'cors'
+    })
+    if (!response.ok) throw new Error('Failed to fetch book index')
+    const json = await response.json()
+    return json.success ? json.data : (json.data || json)
+  } catch (error) {
+    console.error('Error fetching book index:', error)
     throw error
   }
 }
