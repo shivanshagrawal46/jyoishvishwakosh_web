@@ -52,6 +52,7 @@ const STRINGS = {
     verse: 'मूल श्लोक',
     meaning: 'हिन्दी व्याख्या',
     english: 'English Translation',
+    noTranslation: 'अनुवाद उपलब्ध नहीं',
     loading: 'लोड हो रहा है…',
     loadingBook: 'ग्रंथ खुल रहा है…',
     empty: 'कुछ नहीं मिला',
@@ -140,6 +141,7 @@ const STRINGS = {
     verse: 'Original verse',
     meaning: 'Hindi commentary',
     english: 'English translation',
+    noTranslation: 'no English translation yet',
     loading: 'Loading…',
     loadingBook: 'Opening the book…',
     empty: 'Nothing here yet',
@@ -336,11 +338,16 @@ export const parseBlocks = (raw) => {
   return blocks
 }
 
-export const topicSearchBlob = (item) =>
-  [item.title_hn, item.title_en, item.title_hinglish, item.meaning, item.details, item.extra]
+// Searches only the text the reader can actually see, so a hit always has
+// something to highlight. The reader mirrors this choice of commentary.
+export const topicSearchBlob = (item, language = 'hindi') => {
+  const commentary =
+    language === 'english' && item.extra?.trim() ? item.extra : item.details
+  return [item.title_hn, item.title_en, item.title_hinglish, item.meaning, commentary]
     .filter(Boolean)
     .join(' ')
     .toLowerCase()
+}
 
 export const copyToClipboard = async (text) => {
   try {

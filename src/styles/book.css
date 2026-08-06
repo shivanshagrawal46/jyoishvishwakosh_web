@@ -96,15 +96,6 @@
 
 .bk-shell--wide { max-width: 1440px; }
 
-/* ── Reading text must be selectable (the global reset disables it) ── */
-.bk-selectable,
-.bk-selectable * {
-  user-select: text !important;
-  -webkit-user-select: text !important;
-  -moz-user-select: text !important;
-  caret-color: auto;
-}
-
 /* ═══════════════════════════════════════════════════════════════════
    TYPE PRIMITIVES
 ═══════════════════════════════════════════════════════════════════ */
@@ -904,10 +895,13 @@
 
 .bk-title-page-main { min-width: 0; }
 
+/* Stacked on small screens. Only the heading itself centres: `justify-items`
+   on the column would shrink the tiles and plates below to their content. */
 @media (max-width: 860px) {
   .bk-title-page { grid-template-columns: minmax(0, 1fr); }
   .bk-title-page-vol { justify-self: center; }
-  .bk-title-page-head { justify-items: center; text-align: center; }
+  .bk-title-page-head { text-align: center; }
+  .bk-title-page-head > .bk-eyebrow { justify-self: center; }
   .bk-colophon, .bk-ack { text-align: left; }
 }
 
@@ -964,6 +958,12 @@
   margin: 6px 0 2px;
 }
 
+/* The three counts belong on one line even on the narrowest phone, so they
+   read as a set rather than as three separate cards. */
+@media (max-width: 640px) {
+  .bk-metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+}
+
 .bk-metric {
   position: relative;
   display: grid;
@@ -1000,6 +1000,12 @@
   font-size: .84rem;
   font-weight: 600;
   color: var(--bk-ink-2);
+}
+
+@media (max-width: 640px) {
+  .bk-metric { padding: 12px 8px 11px; justify-items: center; text-align: center; }
+  .bk-metric b { font-size: 1.3rem; }
+  .bk-metric span { font-size: .78rem; }
 }
 
 /* ── Plates: colophon and acknowledgement share a header band ────── */
@@ -1080,8 +1086,17 @@
 
 .bk-colophon-row dd.is-empty { color: var(--bk-ink-4); font-weight: 500; }
 
+/* Label and value still pair up on a phone — a narrower label column keeps the
+   plate compact instead of doubling its height. */
 @media (max-width: 560px) {
-  .bk-colophon-row { grid-template-columns: 1fr; gap: 3px; }
+  .bk-colophon-row {
+    grid-template-columns: minmax(96px, auto) minmax(0, 1fr);
+    gap: 4px 14px;
+    padding: 12px 14px;
+    align-items: baseline;
+  }
+  .bk-colophon-row dt { font-size: .8rem; gap: 7px; }
+  .bk-colophon-row dd { font-size: .94rem; text-align: right; }
 }
 
 /* ── Acknowledgement ─────────────────────────────────────────────── */
@@ -2036,6 +2051,20 @@
 
 .bk-block-label i { font-style: normal; color: var(--rd-accent); display: grid; place-items: center; }
 
+/* Says why an English reader is looking at the Hindi commentary */
+.bk-block-note {
+  flex: 0 0 auto;
+  padding: 2px 8px;
+  border: 1px solid var(--rd-rule);
+  border-radius: 999px;
+  font-size: .58rem;
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: none;
+  color: var(--rd-ink-3);
+}
+
 /* The śloka: centred, gold-ruled, on a warm plate */
 .bk-verse {
   position: relative;
@@ -2135,7 +2164,6 @@
   color: color-mix(in srgb, var(--rd-accent) 82%, #000);
   white-space: nowrap;
   vertical-align: baseline;
-  user-select: text;
 }
 
 /* Search hit highlight */

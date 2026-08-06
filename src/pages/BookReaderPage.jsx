@@ -26,12 +26,15 @@ const OPEN_MS = OPEN_S * 1000 + 40    // …plus a frame, for scroll-after-expan
 
 const DEFAULT_PREFS = { size: 2, leading: 1, measure: 1, theme: 'parchment', justify: false }
 
+const hasText = (value) => typeof value === 'string' && value.trim().length > 0
+
 const BookReaderPage = ({ language: initialLanguage, setLanguage: setLanguageProp }) => {
   const [language, setLanguage] = useState(initialLanguage || 'hindi')
   const { categoryId, bookId, chapterId } = useParams()
   const { hash } = useLocation()
   const navigate = useNavigate()
   const t = useT(language)
+  const isEnglish = language === 'english'
 
   const index = useBookIndex(bookId)
   const content = useChapterContent(categoryId, bookId, chapterId)
@@ -92,8 +95,8 @@ const BookReaderPage = ({ language: initialLanguage, setLanguage: setLanguagePro
 
   const visibleTopics = useMemo(() => {
     if (!q) return topics
-    return topics.filter((item) => topicSearchBlob(item).includes(q))
-  }, [topics, q])
+    return topics.filter((item) => topicSearchBlob(item, language).includes(q))
+  }, [topics, q, language])
 
   /* ── Open state: first topic expands by itself ────────────────── */
   useEffect(() => {
@@ -345,6 +348,13 @@ const BookReaderPage = ({ language: initialLanguage, setLanguage: setLanguagePro
     const title = titleOf(item)
     const subtitle = language === 'english' ? item.title_hn : item.title_en
 
+    // The śloka is Sanskrit, so it stays in both languages; the commentary
+    // follows the chosen one. Only about a quarter of the topics carry an
+    // English translation, so fall back to the Hindi commentary — labelled as
+    // such — instead of leaving an English reader with an empty topic.
+    const latinBody = isEnglish && hasText(item.extra) ? item.extra : null
+    const devaBody = !latinBody && hasText(item.details) ? item.details : null
+
     return (
       <motion.article
         key={item._id}
@@ -399,7 +409,7 @@ const BookReaderPage = ({ language: initialLanguage, setLanguage: setLanguagePro
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: OPEN_S, ease: EASE }}
             >
-              <div className="bk-piece-inner bk-selectable">
+              <div className="bk-piece-inner">
                 {locked ? (
                   <div className="bk-block">
                     <p className="bk-prose bk-prose--deva">{t('emptyContent')}</p>
@@ -416,17 +426,20 @@ const BookReaderPage = ({ language: initialLanguage, setLanguage: setLanguagePro
                       </div>
                     )}
 
-                    {item.details && (
+                    {devaBody && (
                       <div className="bk-block">
-                        <span className="bk-block-label">{t('meaning')}</span>
-                        <BookText text={item.details} variant="deva" query={find.trim()} id={`${item._id}-d`} />
+                        <span className="bk-block-label">
+                          {t('meaning')}
+                          {isEnglish && <em className="bk-block-note">{t('noTranslation')}</em>}
+                        </span>
+                        <BookText text={devaBody} variant="deva" query={find.trim()} id={`${item._id}-d`} />
                       </div>
                     )}
 
-                    {item.extra && (
+                    {latinBody && (
                       <div className="bk-block">
                         <span className="bk-block-label">{t('english')}</span>
-                        <BookText text={item.extra} variant="latin" query={find.trim()} id={`${item._id}-e`} />
+                        <BookText text={latinBody} variant="latin" query={find.trim()} id={`${item._id}-e`} />
                       </div>
                     )}
                   </>

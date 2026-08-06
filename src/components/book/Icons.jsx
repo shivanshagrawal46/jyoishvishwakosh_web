@@ -109,13 +109,6 @@ export const IconBookmark = ({ filled = false, ...p }) => (
   </Svg>
 )
 
-export const IconCopy = (p) => (
-  <Svg {...p}>
-    <rect x="9" y="9" width="11.5" height="11.5" rx="2.2" />
-    <path d="M6.2 15H5a1.5 1.5 0 0 1-1.5-1.5v-8A1.5 1.5 0 0 1 5 4h8A1.5 1.5 0 0 1 14.5 5.5v1.2" />
-  </Svg>
-)
-
 export const IconShare = (p) => (
   <Svg {...p}>
     <path d="M12 3.5v11" /><polyline points="8 7.4 12 3.5 16 7.4" />

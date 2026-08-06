@@ -271,9 +271,7 @@ const BookDetailPage = ({ language: initialLanguage, setLanguage: setLanguagePro
                       {ackBody && (
                         <>
                           <div
-                            className={`bk-ack-body bk-selectable${
-                              ackLong && !ackOpen ? ' is-clamped' : ''
-                            }`}
+                            className={`bk-ack-body${ackLong && !ackOpen ? ' is-clamped' : ''}`}
                           >
                             <BookText text={ackBody} variant="deva" id={`ack-${bookId}`} />
                           </div>
