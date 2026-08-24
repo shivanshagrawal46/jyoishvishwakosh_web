@@ -6,3 +6,6 @@
 .env.production.local
 
 # Logs
+
+# Design review screenshots
+.shots/

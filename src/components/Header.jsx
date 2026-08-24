@@ -1,243 +1,300 @@
-import React, { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Link } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 import { GoogleLogin } from '@react-oauth/google'
 import { useAuth } from '../contexts/AuthContext'
+import { useChrome } from '../contexts/ChromeContext'
+import useMediaQuery from '../hooks/useMediaQuery'
 import { googleLogin } from '../services/api'
+import { useToast } from './ui/Toast'
+import {
+  IconMenu, IconMoon, IconSearch, IconSun, IconX, IconChevronDown,
+  IconHome, IconCalendar, IconZodiac, IconBook,
+} from './ui/Icons'
+import { NAV_LINKS } from '../data/site'
 import logoImg from '../assets/icons/logo_new.png'
+
+const EASE = [0.22, 1, 0.36, 1]
+
+/* Four destinations plus More. Anything beyond five targets stops being a
+   tab bar and starts being a menu. */
+const TAB_LINKS = [
+  { path: '/',          name: 'Home',      nameHi: 'होम',     Icon: IconHome },
+  { path: '/panchang',  name: 'Panchang',  nameHi: 'पंचांग',   Icon: IconCalendar },
+  { path: '/rashi-fal', name: 'Horoscope', nameHi: 'राशिफल',  Icon: IconZodiac },
+  { path: '/books',     name: 'Granth',    nameHi: 'ग्रंथ',     Icon: IconBook },
+]
 
 const Header = ({ language, setLanguage }) => {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const { theme, toggleTheme, openSearch } = useChrome()
   const { user, login, logout } = useAuth()
-  const [isLoggingIn, setIsLoggingIn] = useState(false)
+  const toast = useToast()
+  const location = useLocation()
+  const hi = language === 'hindi'
+  // A full "Sign in with Google" pill will not fit beside the wordmark, the
+  // language switch and search on a phone, so it collapses to the G badge.
+  const compact = useMediaQuery('(max-width: 640px)')
 
-  const navLinks = [
-    { name: 'Home', nameHi: 'होम', path: '/' },
-    { name: 'Kundli', nameHi: 'कुंडली', path: '/#app-download' },
-    { name: 'Horoscope', nameHi: 'राशिफल', path: '/rashi-fal' },
-    { name: 'Panchang', nameHi: 'पंचांग', path: '/panchang' },
-    { name: 'Shop', nameHi: 'शॉप', path: '/astroshop' },
-    { name: 'E-Pooja', nameHi: 'ई-पूजा', path: '/e-pooja' },
-    { name: 'Contact', nameHi: 'संपर्क', path: '/contact' },
-  ]
+  useEffect(() => setMenuOpen(false), [location.pathname])
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  // The drawer is a modal surface: lock the page and close on Escape.
+  useEffect(() => {
+    if (!menuOpen) return
+    const onKey = (e) => e.key === 'Escape' && setMenuOpen(false)
+    document.body.style.overflow = 'hidden'
+    window.addEventListener('keydown', onKey)
+    return () => {
+      document.body.style.overflow = ''
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [menuOpen])
 
   const handleGoogleLoginSuccess = async (credentialResponse) => {
-    setIsLoggingIn(true)
     try {
       const response = await googleLogin(credentialResponse.credential)
       if (response.token && response.user) {
         login(response.token, response.user)
+        toast.success(hi ? 'आपका स्वागत है' : 'Welcome back')
       }
     } catch (error) {
-      console.error('Google login failed:', error)
-      alert(language === 'hindi' ? 'लॉगिन विफल: ' + (error.message || 'अज्ञात त्रुटि') : 'Login failed: ' + (error.message || 'Unknown error'))
-    } finally {
-      setIsLoggingIn(false)
+      toast.error(
+        hi
+          ? `लॉगिन विफल: ${error.message || 'अज्ञात त्रुटि'}`
+          : `Login failed: ${error.message || 'Unknown error'}`
+      )
     }
   }
 
-  const handleGoogleLoginError = () => {
-    console.error('Google login error')
-    setIsLoggingIn(false)
-  }
+  const handleGoogleLoginError = () =>
+    toast.error(hi ? 'लॉगिन विफल रहा' : 'Sign in failed')
 
-  const handleLogout = () => {
-    logout()
-  }
+  const label = (link) => (hi ? link.nameHi : link.name)
+
+  const LangToggle = ({ block = false }) => (
+    <div className={`lang-pill${block ? ' lang-pill--block' : ''}`} role="group"
+      aria-label={hi ? 'भाषा चुनें' : 'Choose language'}>
+      <button
+        type="button"
+        className={`lang-pill__btn${hi ? ' is-active' : ''}`}
+        aria-pressed={hi}
+        onClick={() => setLanguage('hindi')}
+      >
+        हिं
+      </button>
+      <button
+        type="button"
+        className={`lang-pill__btn${!hi ? ' is-active' : ''}`}
+        aria-pressed={!hi}
+        onClick={() => setLanguage('english')}
+      >
+        EN
+      </button>
+    </div>
+  )
+
+  const SignIn = ({ inDrawer = false }) => (
+    <GoogleLogin
+      onSuccess={handleGoogleLoginSuccess}
+      onError={handleGoogleLoginError}
+      theme="outline"
+      shape="pill"
+      type="standard"
+      size={inDrawer ? 'large' : 'medium'}
+      // "Sign in with Google" needs width the phone header does not have, so
+      // the label shortens rather than collapsing to an unlabelled G badge.
+      text={compact && !inDrawer ? 'signin' : 'signin_with'}
+      width={inDrawer ? '280' : undefined}
+      locale={hi ? 'hi' : 'en'}
+      useOneTap={false}
+    />
+  )
+
+  const UserMenu = () => (
+    <div className="usermenu">
+      <button type="button" className="usermenu__btn">
+        {user.picture
+          ? <img src={user.picture} alt="" className="usermenu__avatar" />
+          : <span className="usermenu__avatar usermenu__avatar--fallback">{(user.firstName || 'U')[0]}</span>}
+        <span className="usermenu__name">{user.firstName}</span>
+        <IconChevronDown s={14} />
+      </button>
+      <div className="usermenu__panel">
+        <div className="usermenu__info">
+          <p className="usermenu__fullname">{user.firstName} {user.lastName}</p>
+          <p className="usermenu__email">{user.email}</p>
+        </div>
+        <button type="button" className="usermenu__logout" onClick={logout}>
+          {hi ? 'लॉगआउट' : 'Log out'}
+        </button>
+      </div>
+    </div>
+  )
 
   return (
-    <motion.header 
-      className="header"
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.5, ease: 'easeOut' }}
-    >
-      <div className="container">
-        <div className="header-inner">
-          <Link to="/" className="logo">
-            <img src={logoImg} alt="Jyotish Vishwakosh" className="logo-img" />
+    <>
+      <header className={`site-header${scrolled ? ' is-scrolled' : ''}`}>
+        <div className="u-shell site-header__inner">
+          {/* The logo already carries the wordmark — setting it again in text
+              was the same name twice. */}
+          <Link to="/" className="brand" aria-label="ज्योतिष विश्वकोष">
+            <img src={logoImg} alt="ज्योतिष विश्वकोष" className="brand__mark" width="132" height="46" />
           </Link>
 
-          <nav className="nav-desktop">
-            {navLinks.map((link, index) => {
-              // Handle hash links (like /#services) - use regular anchor
-              if (link.path.startsWith('/#')) {
-                return (
-                  <motion.div
-                    key={link.name}
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                  >
-                    <a
-                      href={link.path}
-                      className="nav-link"
-                    >
-                      {language === 'hindi' ? link.nameHi : link.name}
-                    </a>
-                  </motion.div>
-                )
-              }
-              // Use Link for regular routes
-              return (
-                <motion.div
-                  key={link.name}
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                >
-                  <Link
-                    to={link.path}
-                    className="nav-link"
-                  >
-                    {language === 'hindi' ? link.nameHi : link.name}
-                  </Link>
-                </motion.div>
-              )
-            })}
+          <nav className="nav" aria-label={hi ? 'मुख्य नेविगेशन' : 'Main navigation'}>
+            {NAV_LINKS.map((link) => (
+              <NavLink
+                key={link.name}
+                to={link.path}
+                end={link.path === '/'}
+                className={({ isActive }) => `nav__link${isActive ? ' is-active' : ''}`}
+              >
+                {label(link)}
+              </NavLink>
+            ))}
           </nav>
 
-          <div className="header-actions">
-            {/* Language Switcher */}
-            <div className="lang-switcher">
-              <button
-                className={`lang-btn ${language === 'hindi' ? 'active' : ''}`}
-                onClick={() => setLanguage('hindi')}
-              >
-                हिं
-              </button>
-              <button
-                className={`lang-btn ${language === 'english' ? 'active' : ''}`}
-                onClick={() => setLanguage('english')}
-              >
-                EN
-              </button>
-            </div>
+          <div className="site-header__actions">
+            <button
+              type="button"
+              className="searchtrigger"
+              onClick={openSearch}
+              aria-label={hi ? 'खोजें' : 'Search'}
+            >
+              <IconSearch s={17} />
+              <span className="searchtrigger__label">{hi ? 'खोजें' : 'Search'}</span>
+              <kbd className="searchtrigger__kbd">⌘K</kbd>
+            </button>
 
-            {user ? (
-              <motion.div
-                className="user-profile"
-                whileHover={{ scale: 1.05 }}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-              >
-                <div className="user-profile-dropdown">
-                  <button className="user-profile-btn">
-                    {user.picture && (
-                      <img src={user.picture} alt={user.firstName || 'User'} className="user-avatar" />
-                    )}
-                    <span className="user-name">
-                      {user.firstName} {user.lastName}
-                    </span>
-                    <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                      <path d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                  <div className="user-profile-menu">
-                    <div className="user-profile-info">
-                      <div className="user-profile-name">
-                        {user.firstName} {user.lastName}
-                      </div>
-                      <div className="user-profile-email">{user.email}</div>
-                    </div>
-                    <button className="user-profile-logout" onClick={handleLogout}>
-                      {language === 'hindi' ? 'लॉगआउट' : 'Logout'}
-                    </button>
-                  </div>
-                </div>
-              </motion.div>
-            ) : (
-              <div className="google-login-wrapper">
-                <GoogleLogin
-                  onSuccess={handleGoogleLoginSuccess}
-                  onError={handleGoogleLoginError}
-                  theme="outline"
-                  size="medium"
-                  text="signin_with"
-                  shape="rectangular"
-                  locale={language === 'hindi' ? 'hi' : 'en'}
-                  useOneTap={false}
-                />
-              </div>
-            )}
+            <LangToggle />
 
-            <button className="menu-btn" onClick={() => setMenuOpen(!menuOpen)}>
-              <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                {menuOpen ? <path d="M18 6 6 18M6 6l12 12" /> : <path d="M3 12h18M3 6h18M3 18h18" />}
-              </svg>
+            {user ? <UserMenu /> : <SignIn />}
+
+            <button
+              type="button"
+              className="icon-btn menu-toggle"
+              onClick={() => setMenuOpen(true)}
+              aria-label={hi ? 'मेन्यू खोलें' : 'Open menu'}
+              aria-expanded={menuOpen}
+            >
+              <IconMenu s={20} />
             </button>
           </div>
         </div>
-      </div>
+      </header>
 
-      {/* Mobile Menu */}
+      {/* On a phone the primary routes belong under the thumb, not behind a
+          hamburger at the top of the screen. */}
+      <nav className="tabbar" aria-label={hi ? 'मुख्य नेविगेशन' : 'Main navigation'}>
+        {TAB_LINKS.map((tab) => (
+          <NavLink
+            key={tab.path}
+            to={tab.path}
+            end={tab.path === '/'}
+            className={({ isActive }) => `tabbar__item${isActive ? ' is-active' : ''}`}
+          >
+            <tab.Icon s={21} />
+            <span>{hi ? tab.nameHi : tab.name}</span>
+          </NavLink>
+        ))}
+        <button
+          type="button"
+          className="tabbar__item"
+          onClick={() => setMenuOpen(true)}
+          aria-expanded={menuOpen}
+        >
+          <IconMenu s={21} />
+          <span>{hi ? 'और' : 'More'}</span>
+        </button>
+      </nav>
+
       <AnimatePresence>
         {menuOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            style={{
-              background: 'white',
-              borderBottom: '1px solid var(--border)',
-              overflow: 'hidden'
-            }}
-          >
-            <div style={{ padding: '16px 24px' }}>
-              {navLinks.map((link, index) => {
-                // Handle hash links (like /#services) - use regular anchor
-                if (link.path.startsWith('/#')) {
-                  return (
-                    <motion.a
-                      key={link.name}
-                      href={link.path}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.05 }}
-                      style={{
-                        display: 'block',
-                        padding: '12px',
-                        color: 'var(--text-secondary)',
-                        fontSize: '0.95rem',
-                        fontWeight: '700',
-                        textDecoration: 'none'
-                      }}
-                      onClick={() => setMenuOpen(false)}
-                    >
-                      {language === 'hindi' ? link.nameHi : link.name}
-                    </motion.a>
-                  )
-                }
-                // Use Link for regular routes
-                return (
-                  <motion.div
+          <>
+            <motion.div
+              className="drawer__scrim"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: .2 }}
+              onClick={() => setMenuOpen(false)}
+            />
+            <motion.div
+              className="drawer"
+              role="dialog"
+              aria-modal="true"
+              aria-label={hi ? 'मेन्यू' : 'Menu'}
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ duration: .3, ease: EASE }}
+            >
+              <div className="drawer__head">
+                <span className="u-eyebrow" lang={hi ? 'hi' : undefined}>{hi ? 'मेन्यू' : 'Menu'}</span>
+                <button
+                  type="button"
+                  className="icon-btn"
+                  onClick={() => setMenuOpen(false)}
+                  aria-label={hi ? 'बंद करें' : 'Close'}
+                >
+                  <IconX s={19} />
+                </button>
+              </div>
+
+              <nav className="drawer__nav">
+                {NAV_LINKS.map((link) => (
+                  <NavLink
                     key={link.name}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
+                    to={link.path}
+                    end={link.path === '/'}
+                    className={({ isActive }) => `drawer__link${isActive ? ' is-active' : ''}`}
                   >
-                    <Link
-                      to={link.path}
-                      style={{
-                        display: 'block',
-                        padding: '12px',
-                        color: 'var(--text-secondary)',
-                        fontSize: '0.95rem',
-                        fontWeight: '700',
-                        textDecoration: 'none'
-                      }}
-                      onClick={() => setMenuOpen(false)}
-                    >
-                      {language === 'hindi' ? link.nameHi : link.name}
-                    </Link>
-                  </motion.div>
-                )
-              })}
-            </div>
-          </motion.div>
+                    {label(link)}
+                  </NavLink>
+                ))}
+              </nav>
+
+              <div className="drawer__foot">
+                {/* The narrowest phones drop the header's search button, so the
+                    drawer carries it too. */}
+                <button
+                  type="button"
+                  className="u-btn u-btn--ghost u-btn--block"
+                  onClick={() => { setMenuOpen(false); openSearch() }}
+                >
+                  <IconSearch s={17} />{hi ? 'खोजें' : 'Search'}
+                </button>
+
+                <LangToggle block />
+
+                {/* Day/night lives here rather than in the header, where it was
+                    competing with navigation for the same few pixels. */}
+                <button type="button" className="u-btn u-btn--ghost u-btn--block" onClick={toggleTheme}>
+                  {theme === 'dark' ? <IconSun s={17} /> : <IconMoon s={17} />}
+                  {theme === 'dark'
+                    ? (hi ? 'दिन मोड' : 'Day mode')
+                    : (hi ? 'रात्रि मोड' : 'Night mode')}
+                </button>
+
+                {user ? (
+                  <button type="button" className="u-btn u-btn--ghost u-btn--block" onClick={logout}>
+                    {hi ? 'लॉगआउट' : 'Log out'}
+                  </button>
+                ) : <SignIn inDrawer />}
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
-    </motion.header>
+    </>
   )
 }
 

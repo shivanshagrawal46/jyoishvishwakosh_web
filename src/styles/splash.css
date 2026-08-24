@@ -1,0 +1,98 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Splash — points of light arrive from every direction, meet, flare, and the
+   mark resolves out of them with the wordmark beneath. Same dawn light as the
+   hero, so lifting the curtain lands in the same world.
+═══════════════════════════════════════════════════════════════════════════ */
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-splash);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  background:
+    radial-gradient(58% 62% at 50% 104%,
+      color-mix(in srgb, var(--saffron) 18%, transparent) 0%,
+      transparent 72%),
+    radial-gradient(110% 78% at 50% 112%,
+      color-mix(in srgb, var(--gold-soft) 34%, transparent) 0%,
+      transparent 80%),
+    linear-gradient(180deg, var(--page-2), var(--page));
+}
+
+.splash__stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-4);
+  padding-inline: var(--s-5);
+}
+
+/* ── Converging points of light ────────────────────────────────────────── */
+.splash__dots {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.splash__dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--saffron) 60%, transparent);
+}
+
+.splash__bloom {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 180px;
+  height: 180px;
+  margin: -90px 0 0 -90px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--saffron) 55%, transparent) 0%,
+    color-mix(in srgb, var(--gold-soft) 40%, transparent) 42%,
+    transparent 70%
+  );
+  filter: blur(6px);
+}
+
+/* ── Mark and wordmark ─────────────────────────────────────────────────── */
+.splash__logo {
+  position: relative;
+  width: auto;
+  height: clamp(58px, 15vw, 84px);
+  object-fit: contain;
+}
+
+.splash__wordmark {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 .4em;
+  font-family: var(--font-latin);
+  font-size: clamp(1.05rem, .8rem + 1.1vw, 1.45rem);
+  font-weight: 500;
+  letter-spacing: .13em;
+  color: var(--ink-2);
+  text-align: center;
+}
+
+.splash__word { white-space: nowrap; }
+
+.splash__ch {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+@media (max-width: 620px) {
+  .splash__stage { gap: var(--s-3); }
+  .splash__bloom { width: 140px; height: 140px; margin: -70px 0 0 -70px; }
+}

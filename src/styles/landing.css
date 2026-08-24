@@ -1,0 +1,842 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Landing page sections.
+═══════════════════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Brand lead — a human guide first, product navigation second.
+═══════════════════════════════════════════════════════════════════════════ */
+.lead {
+  position: relative;
+  overflow: hidden;
+  padding-bottom: var(--s-6);
+  background:
+    radial-gradient(680px 440px at 76% 4%, color-mix(in srgb, var(--gold-soft) 22%, transparent), transparent 62%),
+    linear-gradient(180deg, var(--page-2), var(--page));
+  border-bottom: 1px solid var(--rule);
+}
+
+.lead__mandala {
+  position: absolute;
+  top: -38%;
+  right: -14%;
+  width: min(600px, 62vw);
+  height: auto;
+  color: var(--gold);
+  opacity: .045;
+  pointer-events: none;
+}
+
+[data-theme='dark'] .lead__mandala { opacity: .09; }
+
+/* Sparse star field. Fixed positions rather than random so it reads as a
+   drawn constellation rather than noise. */
+.lead::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(1.5px 1.5px at 12% 22%, var(--gold) 50%, transparent 50%),
+    radial-gradient(1px 1px at 26% 62%, var(--gold) 50%, transparent 50%),
+    radial-gradient(1.5px 1.5px at 44% 14%, var(--gold) 50%, transparent 50%),
+    radial-gradient(1px 1px at 58% 78%, var(--gold) 50%, transparent 50%),
+    radial-gradient(1.5px 1.5px at 88% 30%, var(--gold) 50%, transparent 50%),
+    radial-gradient(1px 1px at 94% 66%, var(--gold) 50%, transparent 50%),
+    radial-gradient(1px 1px at 70% 8%, var(--gold) 50%, transparent 50%);
+  opacity: .28;
+}
+
+[data-theme='dark'] .lead::before { opacity: .5; }
+
+/* ─────────────────────────────────────────────────────────────
+   Hero — sky, dawn, temple horizon, then the content on top
+───────────────────────────────────────────────────────────── */
+.hero {
+  position: relative;
+  isolation: isolate;
+}
+
+/* Sun coming up behind the temples. Anchored to the horizon and very wide, so
+   it reads as light in the scene rather than as a shape on the page. */
+.hero__dawn {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(48% 58% at 50% 101%,
+      color-mix(in srgb, var(--saffron) 20%, transparent) 0%,
+      transparent 74%),
+    radial-gradient(72% 78% at 50% 105%,
+      color-mix(in srgb, var(--saffron-100) 72%, transparent) 0%,
+      transparent 76%),
+    radial-gradient(120% 76% at 50% 110%,
+      color-mix(in srgb, var(--gold-soft) 38%, transparent) 0%,
+      transparent 82%);
+}
+
+.hero__horizon {
+  position: absolute;
+  inset: auto 0 0 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* The sun itself, sitting on the horizon behind the central shikhara. */
+.hero__sun {
+  position: absolute;
+  left: 50%;
+  bottom: -132px;
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--saffron) 30%, transparent) 0%,
+    color-mix(in srgb, var(--saffron) 15%, transparent) 42%,
+    transparent 68%
+  );
+  filter: blur(22px);
+}
+
+.hero__temples {
+  display: block;
+  width: 100%;
+  color: var(--ink-2);
+}
+
+/* Two ranges at different depths so the horizon has air in it. */
+.hero__temples--far {
+  height: 168px;
+  opacity: .07;
+}
+
+.hero__temples--near {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 118px;
+  opacity: .11;
+}
+
+[data-theme='dark'] .hero__temples { color: var(--gold); }
+[data-theme='dark'] .hero__temples--far { opacity: .13; }
+[data-theme='dark'] .hero__temples--near { opacity: .18; }
+
+.hero__motes {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.hero__motes span {
+  position: absolute;
+  bottom: 4%;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--gold);
+  filter: blur(.5px);
+  opacity: 0;
+  animation-name: mote-drift;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes mote-drift {
+  0%   { opacity: 0;   transform: translate(0, 0) }
+  18%  { opacity: .38 }
+  72%  { opacity: .28 }
+  100% { opacity: 0;   transform: translate(16px, -230px) }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__motes { display: none; }
+}
+
+.hero__inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(250px, .85fr);
+  align-items: center;
+  gap: clamp(1.25rem, 3vw, 2.5rem);
+  padding-block: var(--s-6) var(--s-6);
+}
+
+.hero__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s-3);
+  max-width: 560px;
+}
+
+.hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--saffron-deep);
+  font-family: var(--font-display);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  letter-spacing: .025em;
+}
+
+.hero__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.85rem, 1.1rem + 2.2vw, 2.85rem);
+  font-weight: 600;
+  line-height: 1.16;
+  letter-spacing: -.022em;
+  max-width: 17ch;
+  text-wrap: balance;
+}
+
+.hero__title em {
+  color: var(--saffron-deep);
+  font-style: normal;
+}
+
+.hero__cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin-top: 2px;
+}
+
+/* These sit over the dawn glow, where --ink-3 washed out to nearly nothing. */
+.hero__assurances {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--s-4);
+  font-size: var(--fs-caption);
+  font-weight: 500;
+  color: var(--ink-2);
+}
+
+.hero__assurances span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hero__assurances svg { color: var(--saffron-deep); }
+
+/* Nothing sits behind the portrait. The dawn light and horizon are scene, not a
+   shape, so the cut-out has no edge to fight with — and its own base is masked
+   away so it dissolves into the page rather than stopping against a line. */
+.hero__portrait {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  min-height: 300px;
+  /* Pulled off the right edge on wide screens so he sits nearer the middle. */
+  margin-right: clamp(0rem, 6vw, 6rem);
+}
+
+.hero__portrait img {
+  position: relative;
+  z-index: 1;
+  width: 246px;
+  height: auto;
+  object-fit: contain;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 72%, rgba(0, 0, 0, .45) 89%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 0%, #000 72%, rgba(0, 0, 0, .45) 89%, transparent 100%);
+}
+
+.hero__identity {
+  position: relative;
+  z-index: 2;
+  margin-top: -14px;
+  text-align: center;
+}
+
+.hero__identity strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: .92rem;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.hero__identity span {
+  display: block;
+  font-size: .72rem;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  .hero__inner { grid-template-columns: 1fr minmax(200px, .52fr); gap: var(--s-3); }
+  .hero__portrait { min-height: 250px; }
+  .hero__portrait img { width: 200px; }
+  .hero__temples--far { height: 104px; }
+  .hero__temples--near { height: 76px; }
+}
+
+/* On a phone the headline and Guruji share the top row, then everything else
+   runs full width and centred beneath them. `display: contents` lets the copy's
+   children become grid items directly, so the headline can sit beside the
+   portrait while its siblings span both columns — no extra wrappers needed. */
+@media (max-width: 620px) {
+  .hero__inner {
+    grid-template-columns: minmax(0, 1fr) 122px;
+    grid-template-areas:
+      'title  portrait'
+      'cta    cta'
+      'trust  trust';
+    align-items: center;
+    justify-items: stretch;
+    gap: 10px var(--s-3);
+    padding-block: var(--s-3) var(--s-4);
+  }
+
+  .hero__copy { display: contents; }
+
+  .hero__eyebrow { display: none; }
+
+  .hero__title {
+    grid-area: title;
+    font-size: 1.3rem;
+    line-height: 1.26;
+    max-width: none;
+    text-align: left;
+  }
+
+  .hero__portrait {
+    grid-area: portrait;
+    min-height: 0;
+    margin-right: 0;
+  }
+  .hero__portrait img { width: 118px; }
+
+  .hero__cta {
+    grid-area: cta;
+    justify-content: center;
+    gap: 8px;
+  }
+  .hero__cta .u-btn { flex: 0 0 auto; font-size: .82rem; }
+
+  .hero__assurances {
+    grid-area: trust;
+    justify-content: center;
+    gap: var(--s-1) var(--s-3);
+    font-size: .7rem;
+  }
+
+  .hero__temples--far { height: 72px; }
+  .hero__temples--near { height: 54px; }
+
+  .hero__identity { margin-top: -8px; }
+  .hero__identity strong { font-size: .74rem; }
+  .hero__identity span { font-size: .63rem; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Service dock — illustrations are small navigation cues, not mascots.
+───────────────────────────────────────────────────────────── */
+.services { position: relative; z-index: 3; }
+
+/* Frosted rather than opaque, so the temple horizon carries on behind the dock
+   and the two read as layers in one scene instead of two stacked blocks. */
+.services .u-shell {
+  padding: var(--s-4) var(--s-4) var(--s-3);
+  border: 1px solid color-mix(in srgb, var(--surface) 70%, var(--gold-line));
+  border-radius: var(--r-lg);
+  background: color-mix(in srgb, var(--surface) 76%, transparent);
+  backdrop-filter: saturate(1.2) blur(16px);
+  -webkit-backdrop-filter: saturate(1.2) blur(16px);
+  box-shadow: var(--shadow-3);
+}
+
+.services__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding-bottom: var(--s-2);
+  margin-bottom: var(--s-2);
+  border-bottom: 1px solid var(--rule);
+}
+
+.services__bar h2 {
+  font-family: var(--font-display);
+  font-size: 1.02rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* A hairline that trails off, so the rule reads as an ornament not a divider. */
+.services__bar::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--gold-line), transparent);
+}
+
+.services__count {
+  padding-bottom: 2px;
+  font-size: var(--fs-caption);
+  color: var(--ink-4);
+}
+
+.svc-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.svc {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 9px;
+  height: 100%;
+  min-height: 54px;
+  padding: 7px 8px;
+  border: 1px solid transparent;
+  border-radius: var(--r-sm);
+  text-align: left;
+  text-decoration: none;
+  color: inherit;
+  transition: background-color var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease),
+              transform var(--dur-fast) var(--ease),
+              box-shadow var(--dur-fast) var(--ease);
+}
+
+.svc__cell { display: flex; }
+.svc__cell > .svc { width: 100%; }
+
+.svc:hover {
+  transform: translateY(-1px);
+  background: var(--saffron-50);
+  border-color: var(--gold-line);
+  box-shadow: none;
+}
+
+.svc__tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 38px;
+  height: 38px;
+}
+
+.svc__tile img {
+  width: 35px;
+  height: 35px;
+  object-fit: contain;
+  filter: saturate(.85);
+}
+
+.svc__name {
+  font-family: var(--font-display);
+  font-size: .855rem;
+  font-weight: 600;
+  line-height: 1.24;
+  letter-spacing: -.005em;
+  color: var(--ink-2);
+}
+
+.svc:hover .svc__name { color: var(--saffron-deep); }
+
+.svc--soon { opacity: .48; cursor: not-allowed; }
+.svc--soon:hover { transform: none; background: none; border-color: transparent; box-shadow: none; }
+.svc__soon { margin-top: 2px; }
+
+@media (max-width: 1180px) { .svc-grid { grid-template-columns: repeat(6, 1fr); } }
+@media (max-width: 980px)  { .svc-grid { grid-template-columns: repeat(5, 1fr); } }
+@media (max-width: 760px)  { .svc-grid { grid-template-columns: repeat(4, 1fr); } }
+
+@media (max-width: 560px) {
+  .services .u-shell {
+    width: calc(100% - 20px);
+    padding: var(--s-3) 10px 10px;
+    border-radius: var(--r-md);
+  }
+  .services__bar { padding-bottom: 8px; margin-bottom: 6px; }
+  .services__bar h2 { font-size: .94rem; }
+  .services__count { display: none; }
+  .svc-grid { grid-template-columns: repeat(4, 1fr); gap: 0; }
+  .svc {
+    flex-direction: column;
+    justify-content: flex-start;
+    min-height: 58px;
+    padding: 7px 2px;
+    gap: 4px;
+    text-align: center;
+  }
+  .svc__tile { width: 26px; height: 26px; }
+  .svc__tile img { width: 24px; height: 24px; }
+  .svc__name { font-size: .67rem; line-height: 1.16; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Consultation banner
+───────────────────────────────────────────────────────────── */
+.consult {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: var(--s-7);
+  align-items: center;
+  padding: var(--s-6);
+  border-radius: var(--r-lg);
+  border-top: 3px solid var(--gold);
+  background:
+    radial-gradient(680px 320px at 88% 8%, rgba(217, 119, 6, .16) 0%, transparent 62%),
+    linear-gradient(160deg, var(--plate) 0%, var(--plate-2) 100%);
+  color: #EFE5D3;
+  box-shadow: var(--shadow-2);
+}
+
+.consult__media { border-radius: var(--r-md); overflow: hidden; box-shadow: var(--shadow-2); }
+
+.consult__media img {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 4 / 4.4;
+  object-fit: cover;
+}
+
+.consult__body { display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-4); }
+.consult__eyebrow { color: var(--gold-soft); }
+.consult__eyebrow::before, .consult__eyebrow::after { background: rgba(233, 212, 154, .4); }
+
+.consult__title {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  font-weight: 600;
+  color: #FFF6E6;
+  max-width: 22ch;
+  line-height: 1.28;
+}
+
+.consult__sub { font-size: var(--fs-small); color: #C4B69F; max-width: 48ch; }
+
+.consult__features { list-style: none; display: flex; flex-wrap: wrap; gap: var(--s-2); }
+
+.consult__features li {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 13px;
+  border: 1px solid rgba(233, 212, 154, .3);
+  border-radius: var(--r-full);
+  font-size: var(--fs-caption);
+  color: #E3D6BF;
+}
+
+.consult__features svg { color: var(--gold-soft); }
+
+.consult__actions { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-2); }
+
+.consult__chat {
+  background: transparent;
+  color: #F1E7D6;
+  border-color: rgba(233, 212, 154, .42);
+}
+
+.consult__chat:hover {
+  background: rgba(233, 212, 154, .12);
+  color: #FFF6E6;
+  border-color: var(--gold-soft);
+}
+
+@media (max-width: 860px) {
+  .consult { grid-template-columns: 1fr; gap: var(--s-5); padding: var(--s-5); }
+  .consult__media { max-width: 220px; }
+  .consult__media img { aspect-ratio: 1; }
+}
+
+@media (max-width: 520px) {
+  .consult__actions { width: 100%; }
+  .consult__actions .u-btn { flex: 1 1 100%; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Zodiac medallions
+───────────────────────────────────────────────────────────── */
+.zodiac {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--s-3);
+}
+
+.zodiac__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-4) var(--s-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  text-decoration: none;
+  color: var(--ink);
+  text-align: center;
+  height: 100%;
+  transition: transform var(--dur-fast) var(--ease),
+              box-shadow var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease);
+}
+
+.zodiac__card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-2);
+  border-color: var(--gold-line);
+}
+
+.zodiac__medallion {
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  border: 1px solid var(--gold-line);
+  background: radial-gradient(circle at 50% 34%, var(--saffron-50), var(--page-2));
+  color: var(--gold-deep);
+  transition: all var(--dur-fast) var(--ease);
+}
+
+.zodiac__card:hover .zodiac__medallion {
+  color: var(--saffron-deep);
+  border-color: var(--saffron);
+  background: radial-gradient(circle at 50% 34%, var(--saffron-100), var(--saffron-50));
+}
+
+.zodiac__name { font-family: var(--font-display); font-size: .95rem; font-weight: 600; line-height: 1.25; }
+.zodiac__alt { font-size: .68rem; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-4); }
+
+@media (max-width: 1024px) { .zodiac { grid-template-columns: repeat(4, 1fr); } }
+
+@media (max-width: 640px) {
+  /* A snap rail instead of four screens of vertical cards. */
+  .zodiac {
+    display: flex;
+    gap: var(--s-3);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--s-4);
+    padding-bottom: var(--s-2);
+    margin-inline: calc(var(--s-4) * -1);
+    padding-inline: var(--s-4);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 16px, #000 calc(100% - 16px), transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 16px, #000 calc(100% - 16px), transparent);
+  }
+  .zodiac__cell { flex: 0 0 104px; scroll-snap-align: start; }
+  .zodiac__medallion { width: 50px; height: 50px; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Pooja cards — a medallion, a name, a price. Same medallion
+   language as the zodiac rail and the shop tiles.
+───────────────────────────────────────────────────────────── */
+.pcard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 176px;
+  padding: var(--s-4) var(--s-3);
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: none;
+}
+
+.pcard:hover { box-shadow: var(--shadow-2); }
+
+.pcard__medallion {
+  display: grid;
+  place-items: center;
+  width: 82px;
+  height: 82px;
+  flex: none;
+  border: 1px solid var(--gold-line);
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 32%, var(--saffron-50), var(--page-2));
+  overflow: hidden;
+  transition: border-color var(--dur-fast) var(--ease);
+}
+
+.pcard:hover .pcard__medallion { border-color: var(--saffron); }
+
+/* Deity portraits are full-figure; bias the crop upward to keep the face. */
+.pcard__medallion img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 26%;
+}
+
+.pcard__ph {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 50% 45%, var(--saffron-100), var(--surface-2));
+}
+
+.pcard__title {
+  font-family: var(--font-display);
+  font-size: .93rem;
+  font-weight: 600;
+  line-height: 1.32;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.pcard__title a { text-decoration: none; color: inherit; }
+.pcard:hover .pcard__title { color: var(--saffron-deep); }
+
+.pcard__meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  max-width: 100%;
+  font-size: var(--fs-caption);
+  color: var(--ink-3);
+}
+
+.pcard__meta svg { color: var(--gold); flex: none; }
+.pcard__meta span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.pcard__foot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-3);
+  margin-top: auto;
+  padding-top: var(--s-3);
+}
+
+.pcard__price {
+  font-family: var(--font-display);
+  font-size: .98rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.pcard__free {
+  font-family: var(--font-ui);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--success);
+}
+
+.pcard__foot .u-btn { --btn-h: 31px; padding-inline: var(--s-4); }
+
+/* ─────────────────────────────────────────────────────────────
+   Shop category medallions — same language as the zodiac rail
+───────────────────────────────────────────────────────────── */
+.catcard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-3);
+  width: 150px;
+  padding: var(--s-4) var(--s-3);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  text-align: center;
+  text-decoration: none;
+  color: var(--ink);
+  transition: transform var(--dur-fast) var(--ease),
+              box-shadow var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease);
+}
+
+.catcard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-2);
+  border-color: var(--gold-line);
+}
+
+.catcard__medallion {
+  display: grid;
+  place-items: center;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  border: 1px solid var(--gold-line);
+  background: radial-gradient(circle at 50% 32%, var(--saffron-50), var(--page-2));
+  overflow: hidden;
+  transition: border-color var(--dur-fast) var(--ease);
+}
+
+.catcard:hover .catcard__medallion { border-color: var(--saffron); }
+
+.catcard__medallion img { width: 100%; height: 100%; object-fit: cover; }
+.catcard__medallion svg { color: var(--gold-deep); }
+
+.catcard__name {
+  font-family: var(--font-display);
+  font-size: .93rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.catcard:hover .catcard__name { color: var(--saffron-deep); }
+
+@media (max-width: 560px) {
+  .pcard { width: 168px; }
+  .catcard { width: 132px; }
+  .catcard__medallion { width: 66px; height: 66px; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Calculation tools chip strip
+───────────────────────────────────────────────────────────── */
+.calc-strip { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+
+/* ─────────────────────────────────────────────────────────────
+   404
+───────────────────────────────────────────────────────────── */
+.notfound {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 68vh;
+  overflow: hidden;
+  text-align: center;
+  padding: var(--s-8) var(--s-5);
+}
+
+.notfound__mandala {
+  position: absolute;
+  width: min(560px, 90vw);
+  color: var(--gold);
+  opacity: .08;
+  pointer-events: none;
+}
+
+.notfound__inner { position: relative; display: flex; flex-direction: column; align-items: center; gap: var(--s-4); }
+.notfound__code { font-family: var(--font-display); font-size: clamp(3rem, 12vw, 5rem); color: var(--gold); line-height: 1; }
+.notfound__title { font-family: var(--font-display); font-size: var(--fs-h2); }
+.notfound__body { color: var(--ink-3); max-width: 42ch; font-size: var(--fs-small); }
+
+/* ─────────────────────────────────────────────────────────────
+   Reading progress bar (long-form pages only)
+───────────────────────────────────────────────────────────── */
+.readbar {
+  position: fixed;
+  top: var(--header-h);
+  left: 0;
+  right: 0;
+  height: 2px;
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, var(--saffron), var(--gold));
+  z-index: calc(var(--z-header) - 1);
+}

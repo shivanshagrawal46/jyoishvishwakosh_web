@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import html2canvas from 'html2canvas'
 import Header from '../components/Header'
-import CelebrityStrip from '../components/CelebrityStrip'
 import ServicesStrip from '../components/ServicesStrip'
 import Footer from '../components/Footer'
 import AppDownloadBanner from '../components/AppDownloadBanner'
@@ -237,7 +236,6 @@ https://play.google.com/store/apps/details?id=jyotishvivkosh.mobileapplication
   return (
     <div className="app">
       <Header language={language} setLanguage={handleLanguageChange} />
-      <CelebrityStrip language={language} />
       <ServicesStrip language={language} activeService="divine-quotes" />
 
       <main className="kosh-page-main-new">

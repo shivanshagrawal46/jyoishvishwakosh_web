@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import Header from '../components/Header'
-import CelebrityStrip from '../components/CelebrityStrip'
 import ServicesStrip from '../components/ServicesStrip'
 import Footer from '../components/Footer'
 import AppDownloadBanner from '../components/AppDownloadBanner'
@@ -73,7 +72,6 @@ const EMagazineDetailPage = ({ language: initialLanguage, setLanguage: setLangua
     return (
       <div className="app">
         <Header language={language} setLanguage={handleLanguageChange} />
-        <CelebrityStrip language={language} />
         <ServicesStrip language={language} activeService="emagazine" />
         <main className="emagazine-detail-main">
           <div className="container">
@@ -95,7 +93,6 @@ const EMagazineDetailPage = ({ language: initialLanguage, setLanguage: setLangua
     return (
       <div className="app">
         <Header language={language} setLanguage={handleLanguageChange} />
-        <CelebrityStrip language={language} />
         <ServicesStrip language={language} activeService="emagazine" />
         <main className="emagazine-detail-main">
           <div className="container">
@@ -126,7 +123,6 @@ const EMagazineDetailPage = ({ language: initialLanguage, setLanguage: setLangua
   return (
     <div className="app">
       <Header language={language} setLanguage={handleLanguageChange} />
-      <CelebrityStrip language={language} />
       <ServicesStrip language={language} activeService="emagazine" />
 
       <main className="emagazine-detail-main">

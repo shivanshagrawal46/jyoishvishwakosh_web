@@ -3,91 +3,13 @@
    Sleek • Minimalistic • Elegant
 ═══════════════════════════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=Laila:wght@400;500;600;700&display=swap');
-
-/* ─────────────────────────────────────────────────────────────
-   Colors - Astrosage-Inspired Palette
-───────────────────────────────────────────────────────────── */
-:root {
-  /* Backgrounds - Warm Yellow Tones */
-  --bg-primary: #FEF7E5;
-  --bg-secondary: #FFF9E6;
-  --bg-card: #FFFFFF;
-  --bg-yellow: #FFE97F;
-  --bg-yellow-light: #FFF4CC;
-  --bg-yellow-subtle: #FFFEF5;
-  
-  /* Accent Colors */
-  --orange: #FF6B35;
-  --orange-dark: #E85D2C;
-  --red: #E53935;
-  --green: #43A047;
-  --blue: #2196F3;
-  --purple: #9C27B0;
-  
-  /* Text */
-  --text-primary: #1A1A1A;
-  --text-secondary: #4A4A4A;
-  --text-muted: #757575;
-  
-  /* Borders & Shadows */
-  --border: #E0E0E0;
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
-  
-  /* Typography */
-  --font-hindi: 'Laila', sans-serif;
-  --font-body: 'Laila', sans-serif;
-}
-
-/* ─────────────────────────────────────────────────────────────
-   Reset & Smooth Scrolling
-───────────────────────────────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { 
-  scroll-behavior: smooth;
-  /* `clip` suppresses sideways overflow without turning the root into a scroll
-     container, which would break every position:sticky element on the page.
-     `hidden` is the fallback for browsers without `clip`. */
-  overflow-x: hidden;
-  overflow-x: clip;
-  scroll-snap-type: y proximity;
-}
-body { 
-  font-family: var(--font-body); 
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  line-height: 1.6;
-  padding-top: 100px;
-  padding-bottom: 70px;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-  font-smooth: always;
-  overflow-x: hidden;
-  overflow-x: clip;
-  max-width: 100vw;
-  /* Disable text selection and hide cursor */
-  user-select: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-}
-
-/* Hide text cursor (caret) globally */
-* {
-  caret-color: transparent;
-}
-
-/* Allow text selection only in input fields and textareas */
-input,
-textarea {
-  user-select: text !important;
-  -webkit-user-select: text !important;
-  -moz-user-select: text !important;
-  -ms-user-select: text !important;
-  caret-color: #FF6B35 !important;
-}
+@import './styles/tokens.css';
+@import './styles/base.css';
+@import './styles/ui.css';
+@import './styles/chrome.css';
+@import './styles/landing.css';
+@import './styles/tools.css';
+@import './styles/splash.css';
 
 /* ─────────────────────────────────────────────────────────────
    Scroll Animation Utilities
@@ -262,10 +184,6 @@ textarea {
 .stagger-5 { transition-delay: 0.5s; }
 .stagger-6 { transition-delay: 0.6s; }
 
-@media (min-width: 768px) {
-  body { padding-bottom: 0; }
-}
-
 img { 
   max-width: 100%; 
   display: block; 
@@ -287,12 +205,6 @@ ul { list-style: none; }
   text-rendering: optimizeLegibility;
 }
 
-body, * { 
-  font-family: 'Laila', sans-serif; 
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
 /* Container */
 .container {
   max-width: 1200px;
@@ -302,102 +214,6 @@ body, * {
 
 @media (min-width: 768px) {
   .container { padding: 0 32px; }
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   CELEBRITY STRIP - Compact with Horizontal Moving Animation
-═══════════════════════════════════════════════════════════════ */
-.celebrity-strip {
-  background: linear-gradient(90deg, #FFFDF5 0%, #FFF9E6 50%, #FFFDF5 100%);
-  border-bottom: 1px solid rgba(255, 200, 100, 0.3);
-  position: fixed;
-  top: 64px;
-  left: 0;
-  right: 0;
-  z-index: 999;
-  overflow: hidden;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
-
-.celebrity-strip-track {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  position: relative;
-  overflow: hidden;
-}
-
-.celebrity-strip-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  white-space: nowrap;
-  padding: 0 10px;
-}
-
-.celebrity-image {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #FF6B35;
-  flex-shrink: 0;
-}
-
-.celebrity-text {
-  font-family: var(--font-english), sans-serif;
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: #333;
-  letter-spacing: 0.01em;
-}
-
-.celebrity-separator {
-  color: rgba(255, 107, 53, 0.4);
-  font-size: 0.9rem;
-  margin: 0 12px;
-  font-weight: 300;
-}
-
-.celebrity-app-text {
-  font-family: var(--font-english), sans-serif;
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: #333;
-  letter-spacing: 0.01em;
-}
-
-@media (max-width: 768px) {
-  body {
-    padding-top: 96px;
-  }
-  
-  .celebrity-strip {
-    height: 32px;
-    top: 64px;
-  }
-  
-  .celebrity-image {
-    width: 22px;
-    height: 22px;
-  }
-  
-  .celebrity-text {
-    font-size: 0.75rem;
-  }
-  
-  .celebrity-separator {
-    margin: 0 8px;
-    font-size: 0.8rem;
-  }
-  
-  .celebrity-app-text {
-    font-size: 0.75rem;
-  }
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1025,81 +841,8 @@ body, * {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   AI JYOTISH SECTION - Three Column Layout
+   Shared form controls (numerology, order, calculator pages)
 ═══════════════════════════════════════════════════════════════ */
-.ai-jyotish-section {
-  padding: 40px 0;
-  background: linear-gradient(180deg, #FAFAFA 0%, #FFFFFF 100%);
-}
-
-.ai-jyotish-main-title {
-  font-family: var(--font-hindi);
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: #000000;
-  text-align: center;
-  margin-bottom: 32px;
-  letter-spacing: -0.02em;
-}
-
-.ai-jyotish-main-title:not(.hindi) {
-  font-size: 1.1rem;
-}
-
-.ai-jyotish-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 18px;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-@media (min-width: 1024px) {
-  .ai-jyotish-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-  }
-}
-
-.ai-jyotish-column {
-  display: flex;
-  flex-direction: column;
-}
-
-/* AI Prediction Form Card - Minimalistic & Elegant */
-.ai-prediction-card {
-  background: #FFFFFF;
-  border-radius: 18px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 6px 24px rgba(0, 0, 0, 0.04);
-  border: none;
-  overflow: hidden;
-  height: 100%;
-}
-
-.ai-prediction-header {
-  background: linear-gradient(135deg, var(--orange) 0%, var(--orange-dark) 100%);
-  padding: 16px 20px;
-  text-align: center;
-}
-
-.ai-prediction-title {
-  font-size: 0.82rem;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.95);
-  margin: 0;
-  letter-spacing: 0.04em;
-}
-
-.ai-prediction-title .free {
-  font-weight: 800;
-  font-size: 0.88rem;
-  color: #FFFFFF;
-}
-
-.ai-prediction-form {
-  padding: 20px 20px;
-}
-
 .form-group {
   margin-bottom: 16px;
 }
@@ -1252,183 +995,6 @@ body, * {
   color: var(--orange);
 }
 
-.ai-prediction-submit-btn {
-  width: 100%;
-  padding: 12px 20px;
-  background: linear-gradient(135deg, var(--orange) 0%, var(--orange-dark) 100%);
-  color: white;
-  border: none;
-  border-radius: 12px;
-  font-size: 0.82rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 20px rgba(255, 107, 53, 0.25);
-  letter-spacing: 0.02em;
-}
-
-.ai-prediction-submit-btn:hover {
-  box-shadow: 0 6px 28px rgba(255, 107, 53, 0.35);
-  transform: translateY(-2px);
-}
-
-/* Today's Muhurat Card - Minimalistic & Elegant */
-.today-muhurat-card {
-  background: #FFFFFF;
-  border-radius: 18px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 6px 24px rgba(0, 0, 0, 0.04);
-  border: none;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.muhurat-title-bar {
-  padding: 16px 20px 12px;
-  background: #FFFFFF;
-}
-
-.muhurat-main-title {
-  font-family: var(--font-hindi);
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #000000;
-  margin: 0;
-  letter-spacing: -0.01em;
-}
-
-.muhurat-tabs {
-  display: flex;
-  padding: 0 20px;
-  background: #FAFAFA;
-  border-top: 1px solid #F5F5F5;
-  border-bottom: 1px solid #F5F5F5;
-}
-
-.muhurat-tab {
-  flex: 1;
-  padding: 11px 10px;
-  border: none;
-  background: transparent;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #000000;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  border-bottom: 2px solid transparent;
-  position: relative;
-  margin-bottom: -1px;
-}
-
-.muhurat-tab:hover {
-  color: #000000;
-}
-
-.muhurat-tab.active {
-  color: #000000;
-  background: #FFFFFF;
-  border-bottom-color: var(--orange);
-}
-
-.muhurat-scroll-container {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
-  scrollbar-width: thin;
-  scrollbar-color: #E8E8E8 transparent;
-}
-
-.muhurat-scroll-container::-webkit-scrollbar {
-  width: 3px;
-}
-
-.muhurat-scroll-container::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.muhurat-scroll-container::-webkit-scrollbar-thumb {
-  background: #E0E0E0;
-  border-radius: 3px;
-}
-
-.muhurat-table-content {
-  padding: 8px 0;
-}
-
-.muhurat-row {
-  display: flex;
-  align-items: flex-start;
-  padding: 10px 20px;
-  gap: 12px;
-  transition: all 0.2s ease;
-  border-bottom: 1px solid #FAFAFA;
-}
-
-.muhurat-row:last-child {
-  border-bottom: none;
-}
-
-.muhurat-row:hover {
-  background: #FAFAFA;
-}
-
-.muhurat-row-label {
-  flex: 0 0 85px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #000000;
-}
-
-.muhurat-row-value {
-  flex: 1;
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: #000000;
-  line-height: 1.4;
-}
-
-.muhurat-btn-footer {
-  padding: 14px 20px 18px;
-  text-align: center;
-  border-top: 1px solid #F8F8F8;
-  background: #FFFFFF;
-  margin-top: auto;
-}
-
-.muhurat-know-more {
-  display: inline-block;
-  padding: 10px 32px;
-  background: var(--orange);
-  color: white;
-  border-radius: 10px;
-  font-weight: 600;
-  font-size: 0.8rem;
-  transition: all 0.25s ease;
-  box-shadow: 0 3px 16px rgba(255, 107, 53, 0.2);
-  letter-spacing: 0.02em;
-}
-
-.muhurat-know-more {
-  border: none;
-  cursor: pointer;
-  text-decoration: none;
-}
-
-.muhurat-know-more:hover {
-  box-shadow: 0 5px 24px rgba(255, 107, 53, 0.28);
-  transform: translateY(-2px);
-}
-
-.muhurat-loading,
-.muhurat-error,
-.muhurat-empty {
-  padding: 40px 20px;
-  text-align: center;
-  color: #666;
-}
-
 .muhurat-spinner {
   width: 32px;
   height: 32px;
@@ -1446,11 +1012,6 @@ body, * {
 
 .muhurat-error {
   color: #d32f2f;
-}
-
-.muhurat-know-more-link {
-  text-decoration: none;
-  display: inline-block;
 }
 
 /* Prashan Yantra Card - Minimalistic & Elegant */
@@ -1476,7 +1037,7 @@ body, * {
 }
 
 .prashan-yantra-title {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 0.95rem;
   font-weight: 600;
   color: #000000;
@@ -1564,19 +1125,7 @@ body, * {
   color: var(--orange-dark);
 }
 
-/* Responsive */
 @media (max-width: 1023px) {
-  .ai-jyotish-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .ai-prediction-card,
-  .today-muhurat-card,
-  .prashan-yantra-card {
-    max-width: 400px;
-    margin: 0 auto;
-  }
-  
   .prashan-yantra-number {
     width: 24px;
     height: 24px;
@@ -1602,7 +1151,7 @@ body, * {
 }
 
 .epooja-title {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 1.3rem;
   font-weight: 700;
   color: #2D2D2D;
@@ -1764,7 +1313,7 @@ body, * {
 }
 
 .epooja-name {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 0.85rem;
   font-weight: 700;
   color: #1A1A1A;
@@ -1899,7 +1448,7 @@ body, * {
 }
 
 .calc-title {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 1.2rem;
   font-weight: 700;
   color: #1A1A1A;
@@ -1980,7 +1529,7 @@ body, * {
 
 /* Name */
 .calc-name {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 0.75rem;
   font-weight: 600;
   color: #333;
@@ -2149,7 +1698,7 @@ body, * {
 }
 
 .astrologer-text h2 {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: clamp(1.2rem, 3vw, 1.6rem);
   font-weight: 700;
   color: var(--text-primary);
@@ -2381,7 +1930,7 @@ body, * {
 }
 
 .panchang-main-title {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 1.15rem;
   font-weight: 700;
   color: #1A1A1A;
@@ -2465,7 +2014,7 @@ body, * {
 }
 
 .panchang-section-title {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 1rem;
   font-weight: 700;
   color: #FF6B35;
@@ -2597,7 +2146,7 @@ body, * {
 }
 
 .panchang-page-title {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 2rem;
   font-weight: 700;
   color: #1A1A1A;
@@ -2863,7 +2412,7 @@ body, * {
 }
 
 .panchang-detail-banner-title {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 1.5rem;
   font-weight: 700;
   color: #1A1A1A;
@@ -2923,7 +2472,7 @@ body, * {
 }
 
 .panchang-detail-card-title {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 1.2rem;
   font-weight: 700;
   color: #FF6B35;
@@ -3067,7 +2616,7 @@ body, * {
 }
 
 .page-title {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 2rem;
   font-weight: 700;
   color: #1A1A1A;
@@ -3182,7 +2731,7 @@ body, * {
 }
 
 .muhurat-section-title {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 1.2rem;
   font-weight: 700;
   color: #1A1A1A;
@@ -3386,7 +2935,7 @@ body, * {
 }
 
 .app-download-banner-title {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 2rem;
   font-weight: 700;
   color: #FFFFFF;
@@ -3737,7 +3286,7 @@ body, * {
 }
 
 .footer-title {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 0.95rem;
   font-weight: 700;
   color: var(--text-primary);
@@ -3800,82 +3349,71 @@ body, * {
 /* ═══════════════════════════════════════════════════════════════
    SERVICES STRIP - Horizontal Scrolling (Reusable Component)
 ═══════════════════════════════════════════════════════════════ */
+/* User-driven scroll, not a marquee: an item you want must not slide away. */
 .services-strip {
-  background: #FFFFFF;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-  overflow: hidden;
+  background: var(--surface);
+  border-bottom: 1px solid var(--rule);
   padding: 8px 0;
   flex-shrink: 0;
 }
 
 .services-strip-track {
   display: flex;
-  gap: 20px;
-  animation: servicesStripScroll 40s linear infinite;
-  width: max-content;
-  padding: 0 10px;
-}
-
-.services-strip-track:hover {
-  animation-play-state: paused;
-}
-
-@keyframes servicesStripScroll {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
+  gap: 6px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  padding-inline: var(--s-5);
 }
 
 .services-strip-item {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 14px;
-  background: #F8F8F8;
-  border-radius: 20px;
-  text-decoration: none;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
+  padding: 6px 12px 6px 8px;
   border: 1px solid transparent;
+  border-radius: var(--r-pill);
+  text-decoration: none;
+  scroll-snap-align: start;
+  flex-shrink: 0;
+  transition: background-color var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease);
 }
 
 .services-strip-item:hover {
-  background: #FFF5E6;
-  border-color: rgba(255, 107, 53, 0.3);
-  transform: scale(1.05);
+  background: var(--saffron-50);
+  border-color: var(--gold-line);
 }
 
 .services-strip-item.active {
-  background: linear-gradient(135deg, #FF6B35, #FF8C42);
-  border-color: #FF6B35;
+  background: var(--saffron-50);
+  border-color: var(--saffron);
 }
 
-.services-strip-item.active .services-strip-name {
-  color: #FFFFFF;
-}
+.services-strip-item.active .services-strip-name { color: var(--saffron-deep); }
 
 .services-strip-icon {
-  width: 28px;
-  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
-  overflow: hidden;
+  background: var(--page-2);
+  border: 1px solid var(--gold-line);
   flex-shrink: 0;
 }
 
 .services-strip-icon img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
 }
 
 .services-strip-name {
-  font-family: var(--font-hindi);
-  font-size: 0.8rem;
+  font-family: var(--font-display);
+  font-size: 0.82rem;
   font-weight: 600;
-  color: #333;
+  color: var(--ink-2);
   white-space: nowrap;
 }
 
@@ -3947,7 +3485,7 @@ body, * {
 }
 
 .kosh-sidebar-header h3 {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 1.1rem;
   font-weight: 700;
   color: #000000;
@@ -4028,7 +3566,7 @@ body, * {
 }
 
 .kosh-sidebar-category-name {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 0.9rem;
   font-weight: 600;
   color: #333;
@@ -4186,7 +3724,7 @@ body, * {
 }
 
 .kosh-filter-modal-header h4 {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 1rem;
   font-weight: 700;
   color: #000000;
@@ -4298,7 +3836,7 @@ body, * {
 }
 
 .kosh-contents-card-title {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 1rem;
   font-weight: 700;
   color: #000000;
@@ -4413,7 +3951,7 @@ body, * {
 }
 
 .kosh-content-title {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 0.875rem;
   font-weight: 600;
   color: #000000;
@@ -4668,7 +4206,7 @@ body, * {
 }
 
 .kosh-content-modal-title {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 1.5rem;
   font-weight: 700;
   color: #000000;
@@ -4924,7 +4462,7 @@ body, * {
 }
 
 .kosh-category-name {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 0.9rem;
   font-weight: 600;
   color: #1A1A1A;
@@ -4953,7 +4491,7 @@ body, * {
 }
 
 .kosh-filter-title {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 1.1rem;
   font-weight: 700;
   color: #000000;
@@ -5048,7 +4586,7 @@ body, * {
 }
 
 .kosh-content-word {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 1.15rem;
   font-weight: 700;
   color: #000000;
@@ -5318,7 +4856,7 @@ body, * {
 }
 
 .epooja-page-title.hindi {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 2.2rem;
 }
 
@@ -5448,7 +4986,7 @@ body, * {
 }
 
 .epooja-card-title.hindi {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 1rem;
 }
 
@@ -5664,7 +5202,7 @@ body, * {
 }
 
 .epooja-detail-title.hindi {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 2rem;
 }
 
@@ -5903,7 +5441,7 @@ body, * {
 }
 
 .astroshop-title {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 1.3rem;
   font-weight: 700;
   color: #2D2D2D;
@@ -6062,7 +5600,7 @@ body, * {
 }
 
 .astroshop-name {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 0.85rem;
   font-weight: 700;
   color: #1A1A1A;
@@ -6252,7 +5790,7 @@ body, * {
 }
 
 .visionary-heading-accent {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 1.1rem;
   font-weight: 600;
   color: #FF6B35;
@@ -6261,7 +5799,7 @@ body, * {
 }
 
 .visionary-heading-main {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 1.8rem;
   font-weight: 700;
   color: #1A1A1A;
@@ -6391,7 +5929,7 @@ body, * {
 }
 
 .visionary-name {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 1.6rem;
   font-weight: 700;
   color: #1A1A1A;
@@ -6570,7 +6108,7 @@ body, * {
 }
 
 .about-team-title {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 2rem;
   font-weight: 700;
   color: #1A1A1A;
@@ -6699,7 +6237,7 @@ body, * {
 }
 
 .about-team-member-name {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 1.1rem;
   font-weight: 700;
   color: #1A1A1A;
@@ -6912,7 +6450,7 @@ body, * {
 }
 
 .astroshop-page-title.hindi {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 2.2rem;
 }
 
@@ -7087,7 +6625,7 @@ body, * {
 }
 
 .astroshop-card-title.hindi {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 1rem;
 }
 
@@ -7344,7 +6882,7 @@ body, * {
 }
 
 .astroshop-detail-title.hindi {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 2rem;
 }
 
@@ -8990,7 +8528,7 @@ body, * {
 }
 
 .calc-page-title.hindi {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
 }
 
 .calc-page-subtitle {
@@ -9987,7 +9525,7 @@ body, * {
 }
 
 .emagazine-page-title.hindi {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 2.2rem;
 }
 
@@ -10144,7 +9682,7 @@ body, * {
 }
 
 .emagazine-card-title {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 1rem;
   font-weight: 700;
   color: #000;
@@ -10332,7 +9870,7 @@ body, * {
 }
 
 .emagazine-detail-writer-name {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 1.5rem;
   font-weight: 700;
   color: #000;
@@ -10381,7 +9919,7 @@ body, * {
 }
 
 .emagazine-detail-title {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 2.5rem;
   font-weight: 700;
   color: #000;
@@ -10557,7 +10095,7 @@ body, * {
 }
 
 .videos-page-title {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 2.5rem;
   font-weight: 700;
   color: #000;
@@ -10721,7 +10259,7 @@ body, * {
 }
 
 .video-title {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 1.05rem;
   font-weight: 600;
   color: #000;
@@ -10836,7 +10374,7 @@ body, * {
 }
 
 .quotes-page-title {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 2.5rem;
   font-weight: 700;
   color: #000;
@@ -10896,7 +10434,7 @@ body, * {
 }
 
 .quote-title {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 1.1rem;
   font-weight: 600;
   color: #000;
@@ -11451,7 +10989,7 @@ body, * {
 }
 
 .contact-page-title.hindi {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
 }
 
 .contact-page-subtitle {
@@ -11495,7 +11033,7 @@ body, * {
 }
 
 .contact-org-title {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 1.3rem;
   font-weight: 700;
   color: #1a1a1a;
@@ -11560,7 +11098,7 @@ body, * {
 }
 
 .contact-info-title {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 1.1rem;
   font-weight: 700;
   color: #1a1a1a;
@@ -11597,7 +11135,7 @@ body, * {
 }
 
 .contact-social-title {
-  font-family: var(--font-hindi);
+  font-family: var(--font-display);
   font-size: 1.5rem;
   font-weight: 700;
   color: #1a1a1a;

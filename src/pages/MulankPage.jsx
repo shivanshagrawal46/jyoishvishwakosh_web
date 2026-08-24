@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import Header from '../components/Header'
-import CelebrityStrip from '../components/CelebrityStrip'
 import ServicesStrip from '../components/ServicesStrip'
 import { calculateMulank } from '../services/api'
 
@@ -38,7 +37,6 @@ const MulankPage = ({ language: initialLanguage, setLanguage: setLanguageProp })
   return (
     <div className="app">
       <Header language={language} setLanguage={handleLanguageChange} />
-      <CelebrityStrip language={language} />
       <ServicesStrip language={language} activeService="calculations" />
 
       <main className="calc-page-main">

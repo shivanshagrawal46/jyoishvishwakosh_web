@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import Header from '../components/Header'
-import CelebrityStrip from '../components/CelebrityStrip'
 import Footer from '../components/Footer'
 import AppDownloadBanner from '../components/AppDownloadBanner'
 import { fetchPanchangData, searchCities, fetchPopularCities } from '../services/api'
@@ -243,9 +242,6 @@ const PanchangPage = ({ language: initialLanguage, setLanguage: setLanguageProp 
       dashami: { en: 'Dashami', hi: 'दशमी' },
       dwadashi: { en: 'Dwadashi', hi: 'द्वादशी' },
       trayodashi: { en: 'Trayodashi', hi: 'त्रयोदशी' },
-      // Time related
-      dinman: { en: 'Day Duration', hi: 'दिन की अवधि' },
-      ratriman: { en: 'Night Duration', hi: 'रात्रि की अवधि' },
       // Muhurat related
       shubhMuhurat: { en: 'Shubh Muhurat', hi: 'शुभ मुहूर्त' },
       ashubhMuhurat: { en: 'Ashubh Muhurat', hi: 'अशुभ मुहूर्त' },
@@ -254,8 +250,6 @@ const PanchangPage = ({ language: initialLanguage, setLanguage: setLanguageProp 
       hora: { en: 'Hora', hi: 'होरा' },
       vaar: { en: 'Day of Week', hi: 'वार' },
       // Additional variations
-      suryaRashi: { en: 'Sun Sign', hi: 'सूर्य राशि' },
-      chandraRashi: { en: 'Moon Sign', hi: 'चंद्र राशि' },
       mangalRashi: { en: 'Mars Sign', hi: 'मंगल राशि' },
       budhRashi: { en: 'Mercury Sign', hi: 'बुध राशि' },
       guruRashi: { en: 'Jupiter Sign', hi: 'गुरु राशि' },
@@ -380,7 +374,6 @@ const PanchangPage = ({ language: initialLanguage, setLanguage: setLanguageProp 
   return (
     <>
       <Header language={language} setLanguage={handleLanguageChange} />
-      <CelebrityStrip language={language} />
       
       <main className="panchang-page-main">
         <div className="container">

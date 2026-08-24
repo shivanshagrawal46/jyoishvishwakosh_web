@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { motion, AnimatePresence, useScroll, useSpring, useMotionValueEvent } from 'framer-motion'
 import Header from '../components/Header'
-import CelebrityStrip from '../components/CelebrityStrip'
 import Footer from '../components/Footer'
 import BookText from '../components/book/BookText'
 import ReaderPrefs from '../components/book/ReaderPrefs'
@@ -468,7 +467,6 @@ const BookReaderPage = ({ language: initialLanguage, setLanguage: setLanguagePro
   return (
     <div className="bk" data-lang={language}>
       <Header language={language} setLanguage={handleLanguageChange} />
-      <CelebrityStrip language={language} />
 
       <motion.div className="bk-progress" style={{ scaleX: progressScale }} aria-hidden="true" />
 

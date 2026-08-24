@@ -1,17 +1,30 @@
-import React, { useState } from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
+import { AnimatePresence, motion } from 'framer-motion'
+
+import useLanguage from './hooks/useLanguage'
+import useTheme from './hooks/useTheme'
+import { ChromeProvider } from './contexts/ChromeContext'
+import ToastProvider from './components/ui/Toast'
+import ScrollManager from './components/ScrollManager'
+import CommandSearch from './components/CommandSearch'
+import Splash from './components/Splash'
+
 import Header from './components/Header'
-import CelebrityStrip from './components/CelebrityStrip'
+import Hero from './components/Hero'
 import Services from './components/Services'
-import Rashifal from './components/Rashifal'
-import AIJyotishSection from './components/AIJyotishSection'
-import EPooja from './components/EPooja'
-import CalculationSection from './components/CalculationSection'
 import AstrologerBanner from './components/AstrologerBanner'
-import Panchang from './components/Panchang'
-import FloatingBooks from './components/FloatingBooks'
-import Footer from './components/Footer'
+import AIJyotishSection from './components/AIJyotishSection'
+import CalculationSection from './components/CalculationSection'
+import Rashifal from './components/Rashifal'
+import EPooja from './components/EPooja'
+import AstroShop from './components/AstroShop'
+import AboutTeam from './components/AboutTeam'
 import AppDownloadBanner from './components/AppDownloadBanner'
+import Footer from './components/Footer'
+import { Flourish } from './components/ui'
+import { Mandala } from './components/ui/Icons'
+
 import KoshPage from './pages/KoshPage'
 import HasthRekhaPage from './pages/HasthRekhaPage'
 import VastuPage from './pages/VastuPage'
@@ -22,9 +35,6 @@ import DharmaShastraPage from './pages/DharmaShastraPage'
 import KarmkandPage from './pages/KarmkandPage'
 import EPoojaPage from './pages/EPoojaPage'
 import EPoojaDetailPage from './pages/EPoojaDetailPage'
-import AstroShop from './components/AstroShop'
-import VisionarySection from './components/VisionarySection'
-import AboutTeam from './components/AboutTeam'
 import AstroShopPage from './pages/AstroShopPage'
 import AstroShopDetailPage from './pages/AstroShopDetailPage'
 import JyotishReportPage from './pages/JyotishReportPage'
@@ -50,241 +60,168 @@ import VideosPage from './pages/VideosPage'
 import DivineQuotesPage from './pages/DivineQuotesPage'
 import PrashanYantraPage from './pages/PrashanYantraPage'
 import ContactPage from './pages/ContactPage'
+import NotFoundPage from './pages/NotFoundPage'
 import CsuPrintingPage from './pages/CsuPrintingPage'
 import CsuPrinting2Page from './pages/CsuPrinting2Page'
 import CsuPrinting3Page from './pages/CsuPrinting3Page'
+
+const EASE = [0.22, 1, 0.36, 1]
+
+/** Every route that takes the shared language/theme/search props. */
+const PAGES = [
+  ['/kosh', KoshPage],
+  ['/hasth-rekha', HasthRekhaPage],
+  ['/vastu', VastuPage],
+  ['/ank-jyotish', AnkJyotishPage],
+  ['/chalisa-aarti', ChalisaAartiPage],
+  ['/mantra-tantra', MantraTantraPage],
+  ['/dharma-shastra', DharmaShastraPage],
+  ['/karmkand', KarmkandPage],
+  ['/e-pooja', EPoojaPage],
+  ['/e-pooja/:slug', EPoojaDetailPage],
+  ['/astroshop', AstroShopPage],
+  ['/astroshop/:slug', AstroShopDetailPage],
+  ['/jyotish-report', JyotishReportPage],
+  ['/mulank', MulankPage],
+  ['/bhagyank', BhagyankPage],
+  ['/loshu', LoShuPage],
+  ['/ai-ank', AiAnkPage],
+  ['/numerology-report', NumerologyReportPage],
+  ['/rashi', RashiPage],
+  ['/nakshatra', NakshatraPage],
+  ['/dasha', DashaPage],
+  ['/order', OrderPage],
+  ['/rashi-fal', RashiFalPage],
+  ['/ank-fal', AnkFalPage],
+  ['/panchang', PanchangPage],
+  ['/dainik-muhurat', DainikMuhuratPage],
+  ['/books', BookPage],
+  ['/books/:categoryId', BookPage],
+  ['/books/:categoryId/:bookId', BookDetailPage],
+  ['/books/:categoryId/:bookId/:chapterId', BookReaderPage],
+  ['/emagazine', EMagazinePage],
+  ['/emagazine/:id', EMagazineDetailPage],
+  ['/videos', VideosPage],
+  ['/divine-quotes', DivineQuotesPage],
+  ['/prashan-yantra', PrashanYantraPage],
+  ['/contact', ContactPage],
+]
 
 function HomePage({ language, setLanguage }) {
   return (
     <>
       <Header language={language} setLanguage={setLanguage} />
-      <CelebrityStrip language={language} />
-      <main>
-        <Services language={language} />
-        <div className="main-content-grid">
-          <div className="left-column">
-            <AstrologerBanner language={language} />
-            <Rashifal language={language} />
-          </div>
-          <div className="right-column">
-            <Panchang language={language} />
-          </div>
-        </div>
+      <main id="main">
+        {/* One continuous first view: the pitch and the full service grid. */}
+        <section className="lead">
+          <Mandala className="lead__mandala" aria-hidden="true" />
+          <Hero language={language} />
+          <Services language={language} />
+        </section>
+        <Rashifal language={language} />
         <AIJyotishSection language={language} />
         <EPooja language={language} />
-        <CalculationSection language={language} />
         <AstroShop language={language} />
-        <VisionarySection language={language} />
+        <Flourish />
+        <AstrologerBanner language={language} />
+        <CalculationSection language={language} />
         <AboutTeam language={language} />
+        <AppDownloadBanner language={language} />
       </main>
-      <AppDownloadBanner language={language} />
       <Footer language={language} />
-      <FloatingBooks />
+    </>
+  )
+}
+
+/** Crossfade between routes — short enough to feel instant, long enough to soften. */
+function RouteFade({ children }) {
+  const location = useLocation()
+  return (
+    <AnimatePresence mode="wait" initial={false}>
+      <motion.div
+        key={location.pathname}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.15, ease: EASE }}
+      >
+        {children}
+      </motion.div>
+    </AnimatePresence>
+  )
+}
+
+function AppRoutes({ language, setLanguage, searchOpen, setSearchOpen }) {
+  const location = useLocation()
+  const props = { language, setLanguage }
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault()
+        setSearchOpen((v) => !v)
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [setSearchOpen])
+
+  return (
+    <>
+      <ScrollManager />
+      <a className="skip-link" href="#main">
+        {language === 'hindi' ? 'मुख्य सामग्री पर जाएं' : 'Skip to content'}
+      </a>
+
+      <RouteFade>
+        <Routes location={location}>
+          <Route path="/" element={<HomePage {...props} />} />
+          {PAGES.map(([path, Page]) => (
+            <Route key={path} path={path} element={<Page {...props} />} />
+          ))}
+          <Route path="/csu/printing/guruji/a6" element={<CsuPrintingPage />} />
+          <Route path="/csu/printing/guruji/a6/excel2" element={<CsuPrinting2Page />} />
+          <Route path="/csu/printing/guruji/a6/3" element={<CsuPrinting3Page />} />
+          <Route path="*" element={<NotFoundPage {...props} />} />
+        </Routes>
+      </RouteFade>
+
+      <CommandSearch
+        open={searchOpen}
+        onClose={() => setSearchOpen(false)}
+        language={language}
+      />
     </>
   )
 }
 
 function App() {
-  const [language, setLanguage] = useState('hindi') // 'hindi' or 'english'
+  const [language, setLanguage] = useLanguage()
+  const { theme, toggle: toggleTheme } = useTheme()
+  const [searchOpen, setSearchOpen] = useState(false)
 
-  // Disable right-click and developer tools shortcuts
-  // TEMPORARILY DISABLED FOR DEBUGGING - Re-enable after fixing production issues
-  // React.useEffect(() => {
-  //   // Disable right-click context menu
-  //   const handleContextMenu = (e) => {
-  //     e.preventDefault()
-  //     return false
-  //   }
-
-  //   // Disable common keyboard shortcuts
-  //   const handleKeyDown = (e) => {
-  //     // Disable F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, Ctrl+S
-  //     if (
-  //       e.key === 'F12' ||
-  //       (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
-  //       (e.ctrlKey && (e.key === 'U' || e.key === 'S'))
-  //     ) {
-  //       e.preventDefault()
-  //       return false
-  //     }
-  //   }
-
-  //   document.addEventListener('contextmenu', handleContextMenu)
-  //   document.addEventListener('keydown', handleKeyDown)
-
-  //   return () => {
-  //     document.removeEventListener('contextmenu', handleContextMenu)
-  //     document.removeEventListener('keydown', handleKeyDown)
-  //   }
-  // }, [])
+  const openSearch = useCallback(() => setSearchOpen(true), [])
+  const chrome = useMemo(
+    () => ({ theme, toggleTheme, openSearch }),
+    [theme, toggleTheme, openSearch]
+  )
 
   return (
-    <Router>
-      <div className="app">
-        <Routes>
-          <Route 
-            path="/" 
-            element={<HomePage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route 
-            path="/kosh" 
-            element={<KoshPage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route 
-            path="/hasth-rekha" 
-            element={<HasthRekhaPage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route 
-            path="/vastu" 
-            element={<VastuPage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route 
-            path="/ank-jyotish" 
-            element={<AnkJyotishPage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route 
-            path="/chalisa-aarti" 
-            element={<ChalisaAartiPage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route 
-            path="/mantra-tantra" 
-            element={<MantraTantraPage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route 
-            path="/dharma-shastra" 
-            element={<DharmaShastraPage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route 
-            path="/karmkand" 
-            element={<KarmkandPage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route 
-            path="/e-pooja" 
-            element={<EPoojaPage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route 
-            path="/e-pooja/:slug" 
-            element={<EPoojaDetailPage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route 
-            path="/astroshop" 
-            element={<AstroShopPage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route 
-            path="/astroshop/:slug" 
-            element={<AstroShopDetailPage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route 
-            path="/jyotish-report" 
-            element={<JyotishReportPage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route 
-            path="/mulank" 
-            element={<MulankPage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route 
-            path="/bhagyank" 
-            element={<BhagyankPage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route 
-            path="/loshu" 
-            element={<LoShuPage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route 
-            path="/ai-ank" 
-            element={<AiAnkPage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route 
-            path="/numerology-report" 
-            element={<NumerologyReportPage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route 
-            path="/rashi" 
-            element={<RashiPage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route 
-            path="/nakshatra" 
-            element={<NakshatraPage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route 
-            path="/dasha" 
-            element={<DashaPage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route 
-            path="/order" 
-            element={<OrderPage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route 
-            path="/rashi-fal" 
-            element={<RashiFalPage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route 
-            path="/ank-fal" 
-            element={<AnkFalPage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route 
-            path="/panchang" 
-            element={<PanchangPage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route 
-            path="/dainik-muhurat" 
-            element={<DainikMuhuratPage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route 
-            path="/books" 
-            element={<BookPage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route 
-            path="/books/:categoryId" 
-            element={<BookPage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route 
-            path="/books/:categoryId/:bookId" 
-            element={<BookDetailPage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route 
-            path="/books/:categoryId/:bookId/:chapterId" 
-            element={<BookReaderPage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route 
-            path="/emagazine" 
-            element={<EMagazinePage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route 
-            path="/emagazine/:id" 
-            element={<EMagazineDetailPage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route 
-            path="/videos" 
-            element={<VideosPage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route 
-            path="/divine-quotes" 
-            element={<DivineQuotesPage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route 
-            path="/prashan-yantra" 
-            element={<PrashanYantraPage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route 
-            path="/contact" 
-            element={<ContactPage language={language} setLanguage={setLanguage} />} 
-          />
-          <Route
-            path="/csu/printing/guruji/a6"
-            element={<CsuPrintingPage />}
-          />
-          <Route
-            path="/csu/printing/guruji/a6/excel2"
-            element={<CsuPrinting2Page />}
-          />
-          <Route
-            path="/csu/printing/guruji/a6/3"
-            element={<CsuPrinting3Page />}
-          />
-        </Routes>
-    </div>
-    </Router>
+    <ChromeProvider value={chrome}>
+      <ToastProvider>
+        <Splash />
+        <Router>
+          <div className="app">
+            <AppRoutes
+              language={language}
+              setLanguage={setLanguage}
+              searchOpen={searchOpen}
+              setSearchOpen={setSearchOpen}
+            />
+          </div>
+        </Router>
+      </ToastProvider>
+    </ChromeProvider>
   )
 }
 

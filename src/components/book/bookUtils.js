@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { looksLikeHtml, htmlToText } from './richText'
 
 const MEDIA_HOST = 'https://www.jyotishvishwakosh.in'
 
@@ -339,12 +340,14 @@ export const parseBlocks = (raw) => {
 }
 
 // Searches only the text the reader can actually see, so a hit always has
-// something to highlight. The reader mirrors this choice of commentary.
+// something to highlight. The reader mirrors this choice of commentary, and
+// fields holding editor HTML are searched by their words, not their tags.
 export const topicSearchBlob = (item, language = 'hindi') => {
   const commentary =
     language === 'english' && item.extra?.trim() ? item.extra : item.details
   return [item.title_hn, item.title_en, item.title_hinglish, item.meaning, commentary]
     .filter(Boolean)
+    .map((field) => (looksLikeHtml(field) ? htmlToText(field) : field))
     .join(' ')
     .toLowerCase()
 }

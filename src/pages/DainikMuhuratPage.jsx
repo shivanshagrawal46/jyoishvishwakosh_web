@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { useLocation, useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
-import CelebrityStrip from '../components/CelebrityStrip'
 import Footer from '../components/Footer'
 import AppDownloadBanner from '../components/AppDownloadBanner'
 import { fetchDailyMuhuratData, searchCities, fetchPopularCities } from '../services/api'
@@ -355,7 +354,6 @@ const DainikMuhuratPage = ({ language: initialLanguage, setLanguage: setLanguage
   return (
     <>
       <Header language={language} setLanguage={handleLanguageChange} />
-      <CelebrityStrip language={language} />
 
       <main className="dainik-muhurat-page">
         <div className="container">

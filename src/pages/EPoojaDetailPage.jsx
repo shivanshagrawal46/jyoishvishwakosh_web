@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Header from '../components/Header'
-import CelebrityStrip from '../components/CelebrityStrip'
 import ServicesStrip from '../components/ServicesStrip'
 import Footer from '../components/Footer'
 import AppDownloadBanner from '../components/AppDownloadBanner'
@@ -101,7 +100,6 @@ const EPoojaDetailPage = ({ language: initialLanguage, setLanguage: setLanguageP
     return (
       <div className="app">
         <Header language={language} setLanguage={handleLanguageChange} />
-        <CelebrityStrip language={language} />
         <div className="epooja-detail-loading">
           <div className="epooja-loader"></div>
           <p>{language === 'hindi' ? 'लोड हो रहा है...' : 'Loading...'}</p>
@@ -114,7 +112,6 @@ const EPoojaDetailPage = ({ language: initialLanguage, setLanguage: setLanguageP
     return (
       <div className="app">
         <Header language={language} setLanguage={handleLanguageChange} />
-        <CelebrityStrip language={language} />
         <div className="epooja-detail-error">
           <p>⚠️ {error || (language === 'hindi' ? 'पूजा नहीं मिली' : 'Pooja not found')}</p>
           <button onClick={() => navigate('/e-pooja')}>
@@ -134,7 +131,6 @@ const EPoojaDetailPage = ({ language: initialLanguage, setLanguage: setLanguageP
   return (
     <div className="app">
       <Header language={language} setLanguage={handleLanguageChange} />
-      <CelebrityStrip language={language} />
       <ServicesStrip language={language} activeService="e-pooja" />
 
       <main className="epooja-detail-main">

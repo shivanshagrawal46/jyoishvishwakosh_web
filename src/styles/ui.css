@@ -1,0 +1,449 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   UI kit — primitives promoted from the Granthalaya (book) system so every
+   page speaks the same language. Namespaced `u-`.
+═══════════════════════════════════════════════════════════════════════════ */
+
+.u-shell {
+  width: 100%;
+  max-width: var(--shell);
+  margin: 0 auto;
+  padding-inline: var(--s-5);
+}
+
+.u-shell--wide { max-width: 1440px; }
+
+/* Uniform rhythm between landing sections. */
+.u-section { padding-block: var(--section-gap); }
+.u-section--tight { padding-block: var(--s-7); }
+.u-section--warm { background: var(--page-2); }
+
+@media (max-width: 768px) {
+  :root { --section-gap: var(--s-8); }
+  .u-shell { padding-inline: var(--s-4); }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Eyebrow + section header
+───────────────────────────────────────────────────────────── */
+.u-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-ui);
+  font-size: .69rem;
+  font-weight: 600;
+  letter-spacing: var(--track);
+  text-transform: uppercase;
+  color: var(--saffron-deep);
+}
+
+.u-eyebrow::before,
+.u-eyebrow::after {
+  content: '';
+  width: 26px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-line));
+}
+
+.u-eyebrow::after { background: linear-gradient(270deg, transparent, var(--gold-line)); }
+
+/* Devanagari matras detach under Latin-style tracking. */
+.u-eyebrow[lang="hi"] { letter-spacing: .04em; text-transform: none; font-size: .78rem; }
+
+.u-sechead {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--s-5);
+  margin-bottom: var(--s-6);
+}
+
+.u-sechead__text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--s-3); }
+.u-sechead--center { flex-direction: column; align-items: center; text-align: center; }
+.u-sechead--center .u-sechead__text { align-items: center; }
+
+.u-sechead__title {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  font-weight: 600;
+  line-height: var(--lh-display);
+  color: var(--ink);
+}
+
+.u-sechead__sub {
+  font-size: var(--fs-small);
+  color: var(--ink-3);
+  max-width: 58ch;
+}
+
+.u-sechead__link {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--saffron-deep);
+  text-decoration: none;
+  padding: 6px 2px;
+  transition: gap var(--dur) var(--ease);
+}
+
+.u-sechead__link:hover { gap: 11px; }
+
+@media (max-width: 640px) {
+  .u-sechead { flex-direction: column; align-items: flex-start; }
+  .u-sechead--center { align-items: center; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Flourish divider
+───────────────────────────────────────────────────────────── */
+.u-flourish {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-3);
+  color: var(--gold);
+}
+
+.u-flourish::before,
+.u-flourish::after {
+  content: '';
+  height: 1px;
+  width: min(120px, 22vw);
+  background: linear-gradient(90deg, transparent, var(--gold-line), transparent);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Button
+───────────────────────────────────────────────────────────── */
+.u-btn {
+  --btn-h: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  min-height: var(--btn-h);
+  padding: 0 var(--s-5);
+  border: 1px solid transparent;
+  border-radius: var(--r-full);
+  background: transparent;
+  font-family: var(--font-ui);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease),
+              box-shadow var(--dur-fast) var(--ease),
+              background-color var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease),
+              color var(--dur-fast) var(--ease);
+}
+
+.u-btn--primary {
+  background: linear-gradient(180deg, var(--saffron) 0%, var(--saffron-deep) 100%);
+  color: #FFF9EF;
+  box-shadow: 0 1px 2px rgba(90, 50, 8, .22), 0 6px 16px rgba(217, 119, 6, .26);
+}
+
+.u-btn--primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(90, 50, 8, .24), 0 12px 26px rgba(217, 119, 6, .32);
+}
+
+.u-btn--ghost {
+  border-color: var(--rule-2);
+  color: var(--ink-2);
+  background: var(--surface);
+}
+
+.u-btn--ghost:hover {
+  border-color: var(--saffron);
+  color: var(--saffron-deep);
+  background: var(--saffron-50);
+  transform: translateY(-2px);
+}
+
+.u-btn--quiet { color: var(--ink-3); padding-inline: var(--s-3); }
+.u-btn--quiet:hover { color: var(--saffron-deep); background: var(--saffron-50); }
+
+.u-btn--lg { --btn-h: 52px; padding-inline: var(--s-6); font-size: 1rem; }
+.u-btn--sm { --btn-h: 36px; padding-inline: var(--s-4); font-size: var(--fs-caption); }
+.u-btn--block { width: 100%; }
+
+.u-btn:active { transform: translateY(0); box-shadow: var(--shadow-1); }
+
+.u-btn[disabled],
+.u-btn[aria-disabled='true'] {
+  opacity: .5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Card
+───────────────────────────────────────────────────────────── */
+.u-card {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-1);
+  transition: transform var(--dur-fast) var(--ease),
+              box-shadow var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease);
+}
+
+.u-card--hover:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-2);
+  border-color: var(--gold-line);
+}
+
+/* Light sweep — reserved for featured cards only. */
+.u-shine { position: relative; overflow: hidden; isolation: isolate; }
+
+.u-shine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 34%, rgba(255, 255, 255, .55) 50%, transparent 66%);
+  mix-blend-mode: soft-light;
+  transform: translateX(-110%);
+  transition: transform .75s var(--ease);
+}
+
+.u-shine:hover::after { transform: translateX(110%); }
+
+/* ─────────────────────────────────────────────────────────────
+   Chip / badge
+───────────────────────────────────────────────────────────── */
+.u-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: 40px;
+  padding: 0 var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-full);
+  background: var(--surface);
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all var(--dur-fast) var(--ease);
+}
+
+.u-chip:hover {
+  border-color: var(--saffron);
+  color: var(--saffron-deep);
+  background: var(--saffron-50);
+  transform: translateY(-2px);
+}
+
+.u-chip[aria-disabled='true'] {
+  opacity: .5;
+  cursor: not-allowed;
+  transform: none;
+  border-color: var(--rule);
+  color: var(--ink-3);
+  background: var(--surface);
+}
+
+.u-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  border-radius: var(--r-full);
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  background: var(--gold-soft);
+  color: var(--gold-deep);
+}
+
+.u-badge--soon { background: var(--sunken); color: var(--ink-3); text-transform: none; letter-spacing: 0; }
+
+/* ─────────────────────────────────────────────────────────────
+   Icon tile — one treatment for every service/tool icon
+───────────────────────────────────────────────────────────── */
+.u-tile {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  flex: none;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-md);
+  background: var(--saffron-50);
+  overflow: hidden;
+  transition: all var(--dur-fast) var(--ease);
+}
+
+.u-tile img { width: 60%; height: 60%; object-fit: contain; }
+
+.u-tile--sm { width: 44px; height: 44px; border-radius: var(--r-sm); }
+
+/* ─────────────────────────────────────────────────────────────
+   Skeletons — layout-matched, never spinners
+───────────────────────────────────────────────────────────── */
+.u-skel {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+}
+
+.u-skel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .55), transparent);
+  animation: u-shimmer 1.4s var(--ease-io) infinite;
+}
+
+[data-theme='dark'] .u-skel::after {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .07), transparent);
+}
+
+@keyframes u-shimmer { to { transform: translateX(100%); } }
+
+.u-skel--text { height: .82em; margin-block: .28em; }
+.u-skel--title { height: 1.2em; width: 55%; }
+.u-skel--line { width: 100%; }
+.u-skel--line-2 { width: 82%; }
+.u-skel--line-3 { width: 64%; }
+
+/* ─────────────────────────────────────────────────────────────
+   Empty / error states
+───────────────────────────────────────────────────────────── */
+.u-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-4);
+  text-align: center;
+  padding: var(--s-8) var(--s-5);
+  color: var(--ink-3);
+}
+
+.u-state__glyph { color: var(--gold); opacity: .55; }
+.u-state__title { font-family: var(--font-display); font-size: var(--fs-h3); color: var(--ink); }
+.u-state__body { font-size: var(--fs-small); max-width: 46ch; }
+
+/* ─────────────────────────────────────────────────────────────
+   Toast
+───────────────────────────────────────────────────────────── */
+.u-toasts {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--s-6) + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  z-index: var(--z-toast);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  width: min(420px, calc(100vw - 32px));
+  pointer-events: none;
+}
+
+.u-toast {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-3);
+  font-size: var(--fs-small);
+  color: var(--ink);
+  pointer-events: auto;
+}
+
+.u-toast__dot {
+  width: 8px; height: 8px;
+  margin-top: 7px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--saffron);
+}
+
+.u-toast--error .u-toast__dot { background: var(--danger); }
+.u-toast--success .u-toast__dot { background: var(--success); }
+.u-toast__body { flex: 1; }
+.u-toast__close {
+  flex: none;
+  border: 0;
+  background: none;
+  color: var(--ink-4);
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 4px;
+}
+.u-toast__close:hover { color: var(--ink); }
+
+/* ─────────────────────────────────────────────────────────────
+   Horizontal snap rail
+───────────────────────────────────────────────────────────── */
+.u-rail {
+  display: flex;
+  gap: var(--s-4);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--s-5);
+  padding-block: var(--s-2) var(--s-4);
+  overscroll-behavior-x: contain;
+}
+
+.u-rail > * { scroll-snap-align: start; flex: 0 0 auto; }
+
+.u-railwrap { position: relative; }
+
+.u-railbtn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px; height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  background: var(--surface);
+  box-shadow: var(--shadow-2);
+  color: var(--ink-2);
+  cursor: pointer;
+  z-index: 2;
+  transition: all var(--dur-fast) var(--ease);
+}
+
+.u-railbtn:hover { color: var(--saffron-deep); border-color: var(--saffron); }
+.u-railbtn[disabled] { opacity: 0; pointer-events: none; }
+.u-railbtn--prev { left: -20px; }
+.u-railbtn--next { right: -20px; }
+
+/* No gutter to sit in on a phone, so the arrows ride the rail's own edges. */
+@media (max-width: 1024px) {
+  .u-railbtn {
+    width: 30px;
+    height: 30px;
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    box-shadow: var(--shadow-1);
+  }
+
+  .u-railbtn svg { width: 15px; height: 15px; }
+  .u-railbtn--prev { left: -8px; }
+  .u-railbtn--next { right: -8px; }
+}

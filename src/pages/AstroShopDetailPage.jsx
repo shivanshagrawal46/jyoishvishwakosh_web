@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
-import CelebrityStrip from '../components/CelebrityStrip'
 import ServicesStrip from '../components/ServicesStrip'
 import Footer from '../components/Footer'
 import AppDownloadBanner from '../components/AppDownloadBanner'
@@ -44,7 +43,6 @@ const AstroShopDetailPage = ({ language: initialLanguage, setLanguage: setLangua
     return (
       <div className="app">
         <Header language={language} setLanguage={handleLanguageChange} />
-        <CelebrityStrip language={language} />
         <div className="astroshop-detail-loading">
           <div className="astroshop-loader"></div>
           <p>{language === 'hindi' ? 'लोड हो रहा है...' : 'Loading...'}</p>
@@ -57,7 +55,6 @@ const AstroShopDetailPage = ({ language: initialLanguage, setLanguage: setLangua
     return (
       <div className="app">
         <Header language={language} setLanguage={handleLanguageChange} />
-        <CelebrityStrip language={language} />
         <div className="astroshop-detail-error">
           <p>⚠️ {error || (language === 'hindi' ? 'उत्पाद नहीं मिला' : 'Product not found')}</p>
           <button onClick={() => navigate('/astroshop')}>
@@ -77,7 +74,6 @@ const AstroShopDetailPage = ({ language: initialLanguage, setLanguage: setLangua
   return (
     <div className="app">
       <Header language={language} setLanguage={handleLanguageChange} />
-      <CelebrityStrip language={language} />
       <ServicesStrip language={language} activeService="astroshop" />
 
       <main className="astroshop-detail-main">

@@ -1,261 +1,70 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { fetchAstroShopCategories } from '../services/api'
+import ProductRail from './ProductRail'
+import { SectionHeader, Skeleton } from './ui'
+import { IconGem } from './ui/Icons'
+
+const imageUrlOf = (path) =>
+  path ? (path.startsWith('http') ? path : `https://jyotishvishwakosh.in${path}`) : null
+
+const CardSkeleton = () => (
+  <div className="catcard" aria-hidden="true">
+    <Skeleton w="76px" h="76px" r="50%" />
+    <Skeleton w="72%" h="14px" />
+  </div>
+)
 
 const AstroShop = ({ language }) => {
-  const scrollRef = useRef(null)
-  const autoScrollIntervalRef = useRef(null)
+  const hi = language === 'hindi'
   const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const loadCategories = async () => {
-      try {
-        setLoading(true)
-        const result = await fetchAstroShopCategories()
-        // Show all categories
-        setCategories(result || [])
-      } catch (error) {
-        console.error('Error loading categories:', error)
-        setCategories([])
-      } finally {
-        setLoading(false)
-      }
-    }
-    loadCategories()
+    let cancelled = false
+    fetchAstroShopCategories()
+      .then((result) => { if (!cancelled) setCategories(result || []) })
+      .catch(() => { if (!cancelled) setCategories([]) })
+      .finally(() => { if (!cancelled) setLoading(false) })
+    return () => { cancelled = true }
   }, [])
 
-  // Auto-scroll effect
-  useEffect(() => {
-    const scrollContainer = scrollRef.current
-    if (!scrollContainer || categories.length === 0) return
-
-    let scrollAmount = scrollContainer.scrollLeft || 0
-    const cardWidth = 240
-    const gap = 16
-    const totalWidth = (cardWidth + gap) * categories.length
-    let direction = 1
-
-    const startAutoScroll = () => {
-      autoScrollIntervalRef.current = setInterval(() => {
-        if (scrollContainer) {
-          scrollAmount += direction * 0.6
-          
-          if (scrollAmount >= totalWidth - scrollContainer.clientWidth) {
-            direction = -1
-          } else if (scrollAmount <= 0) {
-            direction = 1
-          }
-          
-          scrollContainer.scrollLeft = scrollAmount
-        }
-      }, 30)
-    }
-
-    startAutoScroll()
-
-    const handleMouseEnter = () => {
-      if (autoScrollIntervalRef.current) {
-        clearInterval(autoScrollIntervalRef.current)
-        autoScrollIntervalRef.current = null
-      }
-    }
-
-    const handleMouseLeave = () => {
-      if (!autoScrollIntervalRef.current) {
-        scrollAmount = scrollContainer.scrollLeft
-        startAutoScroll()
-      }
-    }
-
-    scrollContainer.addEventListener('mouseenter', handleMouseEnter)
-    scrollContainer.addEventListener('mouseleave', handleMouseLeave)
-    
-    return () => {
-      if (autoScrollIntervalRef.current) {
-        clearInterval(autoScrollIntervalRef.current)
-      }
-      scrollContainer.removeEventListener('mouseenter', handleMouseEnter)
-      scrollContainer.removeEventListener('mouseleave', handleMouseLeave)
-    }
-  }, [categories])
-
-  const scrollLeft = () => {
-    const scrollContainer = scrollRef.current
-    if (!scrollContainer) return
-    
-    // Pause auto-scroll temporarily
-    if (autoScrollIntervalRef.current) {
-      clearInterval(autoScrollIntervalRef.current)
-      autoScrollIntervalRef.current = null
-    }
-    
-    const cardWidth = 240
-    const gap = 16
-    scrollContainer.scrollBy({
-      left: -(cardWidth + gap),
-      behavior: 'smooth'
-    })
-    
-    // Resume auto-scroll after a delay
-    setTimeout(() => {
-      if (!autoScrollIntervalRef.current && scrollContainer) {
-        let scrollAmount = scrollContainer.scrollLeft
-        const totalWidth = (cardWidth + gap) * categories.length
-        let direction = scrollAmount >= totalWidth - scrollContainer.clientWidth ? -1 : 1
-        
-        autoScrollIntervalRef.current = setInterval(() => {
-          if (scrollContainer) {
-            scrollAmount += direction * 0.6
-            
-            if (scrollAmount >= totalWidth - scrollContainer.clientWidth) {
-              direction = -1
-            } else if (scrollAmount <= 0) {
-              direction = 1
-            }
-            
-            scrollContainer.scrollLeft = scrollAmount
-          }
-        }, 30)
-      }
-    }, 2000)
-  }
-
-  const scrollRight = () => {
-    const scrollContainer = scrollRef.current
-    if (!scrollContainer) return
-    
-    // Pause auto-scroll temporarily
-    if (autoScrollIntervalRef.current) {
-      clearInterval(autoScrollIntervalRef.current)
-      autoScrollIntervalRef.current = null
-    }
-    
-    const cardWidth = 240
-    const gap = 16
-    scrollContainer.scrollBy({
-      left: cardWidth + gap,
-      behavior: 'smooth'
-    })
-    
-    // Resume auto-scroll after a delay
-    setTimeout(() => {
-      if (!autoScrollIntervalRef.current && scrollContainer) {
-        let scrollAmount = scrollContainer.scrollLeft
-        const totalWidth = (cardWidth + gap) * categories.length
-        let direction = scrollAmount >= totalWidth - scrollContainer.clientWidth ? -1 : 1
-        
-        autoScrollIntervalRef.current = setInterval(() => {
-          if (scrollContainer) {
-            scrollAmount += direction * 0.6
-            
-            if (scrollAmount >= totalWidth - scrollContainer.clientWidth) {
-              direction = -1
-            } else if (scrollAmount <= 0) {
-              direction = 1
-            }
-            
-            scrollContainer.scrollLeft = scrollAmount
-          }
-        }, 30)
-      }
-    }, 2000)
-  }
+  if (!loading && categories.length === 0) return null
 
   return (
-    <section id="astroshop" className="astroshop-section">
-      <div className="container">
-        <div className="astroshop-header">
-          <h2 className={`astroshop-title ${language === 'hindi' ? 'hindi' : ''}`}>
-            {language === 'hindi' ? '🛍️ एस्ट्रो शॉप' : '🛍️ Astro Shop'}
-          </h2>
-          <Link to="/astroshop" className="astroshop-view-all">
-            {language === 'hindi' ? 'सभी देखें →' : 'View All →'}
-          </Link>
-        </div>
+    <section id="astroshop" className="u-section u-section--tight u-section--warm">
+      <div className="u-shell">
+        <SectionHeader
+          language={language}
+          eyebrow={hi ? 'एस्ट्रो शॉप' : 'Astro Shop'}
+          title={hi ? 'शुद्ध रत्न, रुद्राक्ष और यंत्र' : 'Authentic gemstones, rudraksha and yantra'}
+          subtitle={hi
+            ? 'ज्योतिषीय परामर्श के अनुसार चुने गए, प्रमाणित और अभिमंत्रित।'
+            : 'Chosen to match your chart — certified and energised before dispatch.'}
+          linkTo="/astroshop"
+          linkLabel={hi ? 'पूरी दुकान' : 'Browse shop'}
+        />
 
-        <div className="astroshop-scroll-container">
-          <button 
-            className="astroshop-nav-btn astroshop-nav-btn-prev"
-            onClick={scrollLeft}
-            aria-label="Previous"
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M15 18l-6-6 6-6"/>
-            </svg>
-          </button>
-          
-          <div className="astroshop-scroll-wrapper" ref={scrollRef}>
-            <div className="astroshop-cards-track">
-            {loading ? (
-              <div style={{ padding: '40px', textAlign: 'center', color: '#666' }}>
-                {language === 'hindi' ? 'लोड हो रहा है...' : 'Loading...'}
-              </div>
-            ) : categories.length === 0 ? (
-              <div style={{ padding: '40px', textAlign: 'center', color: '#666' }}>
-                {language === 'hindi' ? 'कोई श्रेणी उपलब्ध नहीं' : 'No categories available'}
-              </div>
-            ) : (
-              categories.map((category) => {
-                const imageUrl = category.image
-                  ? (category.image.startsWith('http') ? category.image : `https://jyotishvishwakosh.in${category.image}`)
-                  : null
-                
-                return (
-                  <Link 
-                    key={category._id}
-                    to="/astroshop"
-                    className="astroshop-card-link"
-                  >
-                    <div className="astroshop-card">
-                      {/* Card Top with Image */}
-                      <div className="astroshop-card-top">
-                        {imageUrl ? (
-                          <img 
-                            src={imageUrl} 
-                            alt={category.name}
-                            className="astroshop-card-image"
-                            loading="lazy"
-                          />
-                        ) : (
-                          <div className="astroshop-card-image-placeholder">
-                            <span>🛍️</span>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Card Body */}
-                      <div className="astroshop-card-body">
-                        <h3 className={`astroshop-name ${language === 'hindi' ? 'hindi' : ''}`}>
-                          {category.name}
-                        </h3>
-
-                        <button className="astroshop-book-btn">
-                          {language === 'hindi' ? 'देखें →' : 'View →'}
-                        </button>
-                      </div>
-                    </div>
-                  </Link>
-                )
-              })
-            )}
-            </div>
-          </div>
-          
-          <button 
-            className="astroshop-nav-btn astroshop-nav-btn-next"
-            onClick={scrollRight}
-            aria-label="Next"
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M9 18l6-6-6-6"/>
-            </svg>
-          </button>
-        </div>
+        <ProductRail label={hi ? 'शॉप श्रेणियां' : 'Shop categories'}>
+          {loading
+            ? Array.from({ length: 5 }, (_, i) => <CardSkeleton key={i} />)
+            : categories.map((category) => {
+              const img = imageUrlOf(category.image)
+              return (
+                <Link key={category._id} to="/astroshop" className="catcard">
+                  <span className="catcard__medallion">
+                    {img
+                      ? <img src={img} alt="" loading="lazy" decoding="async" />
+                      : <IconGem s={30} />}
+                  </span>
+                  <span className="catcard__name">{category.name}</span>
+                </Link>
+              )
+            })}
+        </ProductRail>
       </div>
     </section>
   )
 }
 
 export default AstroShop
-

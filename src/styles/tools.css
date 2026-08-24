@@ -1,0 +1,316 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   AI Jyotish tool trio — free prediction, today's muhurat, prashan yantra.
+   Namespaced `aj-` so it never collides with the legacy page stylesheets.
+═══════════════════════════════════════════════════════════════════════════ */
+
+.aj-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s-4);
+}
+
+@media (min-width: 1000px) {
+  .aj-grid { grid-template-columns: 1.04fr 1fr 1fr; gap: var(--s-5); }
+}
+
+/* ── Card shell ──────────────────────────────────────────────────── */
+.aj-grid > * { min-width: 0; }
+
+.aj {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-1);
+  overflow: hidden;
+  transition: box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+.aj:focus-within,
+.aj:hover { box-shadow: var(--shadow-2); border-color: var(--gold-line); }
+
+.aj__head {
+  padding: var(--s-5) var(--s-5) var(--s-4);
+  border-bottom: 1px solid var(--rule);
+  background: linear-gradient(180deg, var(--page-2), var(--surface));
+}
+
+.aj__title {
+  font-family: var(--font-display);
+  font-size: 1.08rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+.aj__note {
+  margin-top: 5px;
+  font-size: var(--fs-caption);
+  color: var(--ink-3);
+}
+
+.aj__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  padding: var(--s-5);
+  flex: 1;
+  min-height: 0;
+}
+
+.aj__foot {
+  margin-top: auto;
+  padding: var(--s-4) var(--s-5) var(--s-5);
+  border-top: 1px solid var(--rule);
+}
+
+.aj__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--saffron-deep);
+  text-decoration: none;
+  transition: gap var(--dur) var(--ease);
+}
+
+.aj__link:hover { gap: 11px; }
+
+/* ── Fields ──────────────────────────────────────────────────────── */
+.aj-fld {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.aj-fld__label {
+  font-family: var(--font-ui);
+  font-size: .7rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+}
+
+html[lang='hi'] .aj-fld__label {
+  font-size: .78rem;
+  letter-spacing: .03em;
+  text-transform: none;
+}
+
+.aj-fld__box { position: relative; display: block; }
+
+.aj-fld__box input {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 40px 0 var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-sm);
+  background: var(--page-2);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: var(--fs-small);
+  transition: border-color var(--dur-fast) var(--ease),
+              background-color var(--dur-fast) var(--ease),
+              box-shadow var(--dur-fast) var(--ease);
+}
+
+.aj-fld__box input::placeholder { color: var(--ink-4); }
+
+.aj-fld__box input:focus {
+  outline: none;
+  border-color: var(--saffron);
+  background: var(--surface);
+  box-shadow: var(--glow);
+}
+
+.aj-fld__icon {
+  position: absolute;
+  right: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ink-4);
+  pointer-events: none;
+  transition: color var(--dur-fast) var(--ease);
+}
+
+.aj-fld__box input:focus ~ .aj-fld__icon { color: var(--saffron-deep); }
+
+/* Let the whole right edge open the native picker, but show our own glyph. */
+.aj-fld__box input::-webkit-calendar-picker-indicator {
+  position: absolute;
+  inset-block: 0;
+  right: 0;
+  width: 44px;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* ── Segmented control (gender, AM/PM, muhurat tabs) ─────────────── */
+.aj-seg {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-sm);
+  background: var(--page-2);
+}
+
+.aj-seg button {
+  flex: 1;
+  min-height: 38px;
+  padding: 0 var(--s-3);
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink-3);
+  font-family: var(--font-ui);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease),
+              background-color var(--dur-fast) var(--ease),
+              box-shadow var(--dur-fast) var(--ease);
+}
+
+.aj-seg button:hover { color: var(--ink); }
+
+.aj-seg button[aria-pressed='true'],
+.aj-seg button[aria-selected='true'] {
+  background: var(--surface);
+  color: var(--saffron-deep);
+  box-shadow: var(--shadow-1);
+}
+
+.aj-row { display: flex; gap: var(--s-3); align-items: flex-end; }
+.aj-row > .aj-fld { flex: 1; }
+.aj-row > .aj-seg { flex: 0 0 104px; }
+
+/* ── City suggestions ────────────────────────────────────────────── */
+.aj-drop {
+  position: absolute;
+  z-index: var(--z-dropdown);
+  left: 0;
+  right: 0;
+  top: calc(100% + 6px);
+  max-height: 212px;
+  overflow-y: auto;
+  padding: 5px;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  box-shadow: var(--shadow-2);
+}
+
+.aj-drop button {
+  display: block;
+  width: 100%;
+  padding: 9px 11px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  text-align: left;
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.aj-drop button:hover { background: var(--saffron-50); color: var(--saffron-deep); }
+
+.aj-hint { font-size: var(--fs-caption); color: var(--ink-4); }
+.aj-err { font-size: var(--fs-caption); color: var(--danger); }
+
+/* ── Data rows (muhurat) ─────────────────────────────────────────── */
+.aj-rows {
+  flex: 1;
+  min-height: 0;
+  max-height: 292px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.aj-item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-3);
+  padding: 11px 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.aj-item:last-child { border-bottom: 0; }
+
+.aj-item__k {
+  flex: 0 0 auto;
+  max-width: 46%;
+  font-size: var(--fs-small);
+  font-weight: 500;
+  color: var(--ink-2);
+}
+
+.aj-item__v {
+  text-align: right;
+  font-size: var(--fs-small);
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Prashan yantra ──────────────────────────────────────────────── */
+.aj-yantra {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding-block: var(--s-2);
+  text-decoration: none;
+  color: inherit;
+}
+
+.aj-yantra__aura {
+  position: absolute;
+  inset: -6% -2%;
+  background: radial-gradient(ellipse at 50% 50%, var(--saffron-50) 0%, transparent 68%);
+  pointer-events: none;
+}
+
+.aj-yrow { position: relative; display: flex; justify-content: center; gap: 3px; }
+
+/* Scales with the column so the diamond always fills the card without clipping. */
+.aj-num {
+  width: clamp(22px, 2.1vw, 28px);
+  height: clamp(22px, 2.1vw, 28px);
+  display: grid;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink-2);
+  font-family: var(--font-ui);
+  font-size: clamp(.66rem, .56vw, .76rem);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  transition: color var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease),
+              background-color var(--dur-fast) var(--ease);
+}
+
+.aj-num:hover {
+  color: var(--saffron-deep);
+  border-color: var(--gold-line);
+  background: var(--saffron-50);
+}
+
+.aj-num--seed {
+  margin-block: 7px;
+  color: var(--gold-deep);
+  border-color: var(--gold-line);
+  background: var(--gold-soft);
+}

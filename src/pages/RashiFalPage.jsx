@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Header from '../components/Header'
-import CelebrityStrip from '../components/CelebrityStrip'
 import ServicesStrip from '../components/ServicesStrip'
 import {
   fetchRashifalDates,
@@ -219,7 +218,6 @@ const RashiFalPage = ({ language: initialLanguage, setLanguage: setLanguageProp 
   return (
     <div className="app">
       <Header language={language} setLanguage={handleLanguageChange} />
-      <CelebrityStrip language={language} />
       <ServicesStrip language={language} activeService="rashifal" />
 
       <main className="rashifal-page-main">

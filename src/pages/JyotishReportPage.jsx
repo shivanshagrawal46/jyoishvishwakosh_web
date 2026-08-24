@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
-import CelebrityStrip from '../components/CelebrityStrip'
 import ServicesStrip from '../components/ServicesStrip'
 
 const JyotishReportPage = ({ language: initialLanguage, setLanguage: setLanguageProp }) => {
@@ -91,7 +90,6 @@ const JyotishReportPage = ({ language: initialLanguage, setLanguage: setLanguage
     return (
       <div className="app">
         <Header language={language} setLanguage={handleLanguageChange} />
-        <CelebrityStrip language={language} />
         <main className="jyotish-report-empty-main">
           <div className="jyotish-report-empty-card">
             <svg width="120" height="120" viewBox="0 0 24 24" fill="none">
@@ -118,7 +116,6 @@ const JyotishReportPage = ({ language: initialLanguage, setLanguage: setLanguage
   return (
     <div className="app">
       <Header language={language} setLanguage={handleLanguageChange} />
-      <CelebrityStrip language={language} />
       <ServicesStrip language={language} activeService="ai-jyotish" />
 
       <main className="jyotish-report-main">

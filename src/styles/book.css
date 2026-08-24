@@ -5,70 +5,78 @@
    leaks into the global stylesheet.
 ═══════════════════════════════════════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Sanskrit:ital@0;1&family=Noto+Serif+Devanagari:wght@400;500;600;700&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap');
+/* Fonts are loaded once in index.html — the whole app shares this type system. */
 
+/* The `bk-` tokens are now thin aliases over the global design tokens, so the
+   books section inherits palette changes and the night theme automatically. */
 .bk {
   /* ── Surfaces: warm parchment, not white ───────────────────────── */
-  --bk-page: #F7F1E4;
-  --bk-page-2: #FDFAF3;
-  --bk-surface: #FFFDF8;
-  --bk-surface-2: #F4EDDD;
-  --bk-sunken: #EFE6D2;
+  --bk-page: var(--page);
+  --bk-page-2: var(--page-2);
+  --bk-surface: var(--surface);
+  --bk-surface-2: var(--surface-2);
+  --bk-sunken: var(--sunken);
 
   /* ── Ink: warm blacks and browns, kept dark enough to read on parchment ── */
-  --bk-ink: #1F1710;
-  --bk-ink-2: #45382C;
-  --bk-ink-3: #6B5B48;
-  --bk-ink-4: #8D7B64;
+  --bk-ink: var(--ink);
+  --bk-ink-2: var(--ink-2);
+  --bk-ink-3: var(--ink-3);
+  --bk-ink-4: var(--ink-4);
 
   /* ── Accents: saffron, vermilion, gold leaf, indigo ────────────── */
-  --bk-saffron: #D97706;
-  --bk-saffron-deep: #B45309;
-  --bk-vermilion: #C0392B;
-  --bk-gold: #B08419;
-  --bk-gold-soft: #E9D49A;
-  --bk-gold-deep: #7A5B0F;         /* gold dark enough for text on parchment */
-  --bk-gold-line: rgba(176, 132, 25, .42);
-  --bk-indigo: #3D4E8C;
-  --bk-jade: #3F7A5E;
+  --bk-saffron: var(--saffron);
+  --bk-saffron-deep: var(--saffron-deep);
+  --bk-vermilion: var(--vermilion);
+  --bk-gold: var(--gold);
+  --bk-gold-soft: var(--gold-soft);
+  --bk-gold-deep: var(--gold-deep);
+  --bk-gold-line: var(--gold-line);
+  --bk-indigo: var(--indigo);
+  --bk-jade: var(--jade);
 
   /* Deep ink for header bands — the one dark anchor on a cream page */
-  --bk-plate: #2A2017;
-  --bk-plate-2: #3B2E20;
+  --bk-plate: var(--plate);
+  --bk-plate-2: var(--plate-2);
 
   /* ── Lines & shadows ───────────────────────────────────────────── */
-  --bk-rule: #DCCEB1;
-  --bk-rule-2: #C9B896;
-  --bk-shadow-1: 0 1px 2px rgba(60, 44, 24, .06), 0 2px 8px rgba(60, 44, 24, .05);
-  --bk-shadow-2: 0 2px 6px rgba(60, 44, 24, .07), 0 10px 28px rgba(60, 44, 24, .09);
-  --bk-shadow-3: 0 8px 20px rgba(60, 44, 24, .10), 0 24px 60px rgba(60, 44, 24, .14);
-  --bk-glow: 0 0 0 4px rgba(217, 119, 6, .14);
+  --bk-rule: var(--rule);
+  --bk-rule-2: var(--rule-2);
+  --bk-shadow-1: var(--shadow-1);
+  --bk-shadow-2: var(--shadow-2);
+  --bk-shadow-3: var(--shadow-3);
+  --bk-glow: var(--glow);
 
   /* ── Type ──────────────────────────────────────────────────────── */
-  --bk-font-verse: 'Tiro Devanagari Sanskrit', 'Noto Serif Devanagari', serif;
-  --bk-font-deva: 'Noto Serif Devanagari', 'Tiro Devanagari Sanskrit', serif;
-  --bk-font-latin: 'Spectral', Georgia, serif;
-  --bk-font-ui: 'Inter', 'Laila', system-ui, sans-serif;
+  --bk-font-verse: var(--font-verse);
+  --bk-font-deva: var(--font-display);
+  --bk-font-latin: var(--font-latin);
+  --bk-font-ui: var(--font-ui);
 
-  --bk-radius: 14px;
-  --bk-radius-sm: 9px;
-  --bk-radius-lg: 22px;
+  --bk-radius: var(--r-md);
+  --bk-radius-sm: var(--r-sm);
+  --bk-radius-lg: var(--r-lg);
 
-  --bk-ease: cubic-bezier(.22, 1, .36, 1);
-  --bk-ease-io: cubic-bezier(.4, 0, .2, 1);
+  --bk-ease: var(--ease);
+  --bk-ease-io: var(--ease-io);
 
   /* Wide tracking on small caps-style labels is a Latin idiom; in Devanagari it
      pulls matras away from their consonants, so it is dialled back per language. */
-  --bk-track: .13em;
+  --bk-track: var(--track);
+
+  /* The page glow is built from the accent tokens so it inverts with the theme. */
+  --bk-glow-1: color-mix(in srgb, var(--gold-soft) 40%, var(--page-2));
+  --bk-glow-2: color-mix(in srgb, var(--saffron-100) 55%, var(--page-2));
 
   font-family: var(--bk-font-ui);
   color: var(--bk-ink);
   background:
-    radial-gradient(1200px 600px at 12% -8%, #FFF7E4 0%, transparent 62%),
-    radial-gradient(1000px 520px at 92% 4%, #FBEFDD 0%, transparent 58%),
+    radial-gradient(1200px 600px at 12% -8%, var(--bk-glow-1) 0%, transparent 62%),
+    radial-gradient(1000px 520px at 92% 4%, var(--bk-glow-2) 0%, transparent 58%),
     linear-gradient(180deg, var(--bk-page-2) 0%, var(--bk-page) 100%);
   min-height: 100vh;
 }
+
+[data-theme='dark'] .bk::before { opacity: .22; }
 
 /* Fine parchment tooth over the whole section */
 .bk::before {
@@ -2027,7 +2035,10 @@
 @media (max-width: 640px) { .bk-piece-inner { padding: 2px 14px 20px; } }
 
 /* ── Reading blocks ──────────────────────────────────────────── */
-.bk-block { display: grid; gap: 10px; }
+/* min-width: 0 stops a wide child — a table, above all — from forcing the
+   grid track open: it has to fit the column and scroll inside it instead. */
+.bk-block { display: grid; gap: 10px; min-width: 0; }
+.bk-block > * { min-width: 0; }
 
 .bk-block-label {
   display: inline-flex;
@@ -2164,6 +2175,123 @@
   color: color-mix(in srgb, var(--rd-accent) 82%, #000);
   white-space: nowrap;
   vertical-align: baseline;
+}
+
+/* ── Editor HTML (tables and the like) ───────────────────────────
+   A few content fields are authored in a rich-text editor instead of the
+   plain-text convention. Their markup is stripped of the editor's own
+   colours and borders, so it is styled here to sit inside the page. */
+.bk-prose--html > :first-child { margin-top: 0; }
+.bk-prose--html > :last-child { margin-bottom: 0; }
+
+.bk-prose--html h1,
+.bk-prose--html h2,
+.bk-prose--html h3,
+.bk-prose--html h4,
+.bk-prose--html h5,
+.bk-prose--html h6 {
+  margin: 1.2em 0 .5em;
+  font-family: inherit;
+  font-size: calc(var(--rd-size) * 1.08);
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--rd-ink);
+}
+
+.bk-prose--html ul,
+.bk-prose--html ol { margin: 0 0 1.05em; padding-inline-start: 1.6em; }
+.bk-prose--html li { margin-bottom: .35em; }
+.bk-prose--html li[data-list="bullet"] { list-style: disc; }
+
+.bk-prose--html blockquote {
+  margin: 0 0 1.05em;
+  padding: 12px 18px;
+  border-inline-start: 2px solid var(--rd-verse-bd);
+  background: color-mix(in srgb, var(--rd-accent) 5%, transparent);
+}
+
+.bk-prose--html strong, .bk-prose--html b { font-weight: 700; color: var(--rd-ink); }
+.bk-prose--html a { color: var(--rd-accent); text-underline-offset: 3px; }
+.bk-prose--html img { max-width: 100%; height: auto; border-radius: var(--bk-radius-sm); }
+.bk-prose--html hr { margin: 1.4em 0; border: 0; border-top: 1px solid var(--rd-rule); }
+
+.bk-prose--html [data-align="center"] { text-align: center; }
+.bk-prose--html [data-align="right"] { text-align: right; }
+.bk-prose--html [data-align="left"] { text-align: left; }
+.bk-prose--html [data-align="justify"] { text-align: justify; }
+
+/* Tables can be wider than the measure, so they scroll on their own */
+.bk-tablewrap {
+  margin: 0 0 1.15em;
+  max-width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--rd-rule);
+  border-radius: var(--bk-radius-sm);
+  background: var(--rd-paper);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rd-rule-2) transparent;
+}
+
+/* A slim, always-visible bar is the only hint that a table scrolls */
+.bk-tablewrap::-webkit-scrollbar { height: 8px; }
+.bk-tablewrap::-webkit-scrollbar-track { background: transparent; }
+.bk-tablewrap::-webkit-scrollbar-thumb {
+  border-radius: 99px;
+  background: var(--rd-rule-2);
+}
+
+/* Left to size itself: a table narrower than the measure keeps its natural
+   width, and a wider one pushes past the wrapper, which then scrolls. */
+.bk-tablewrap table {
+  width: auto;
+  min-width: 100%;
+  border-collapse: collapse;
+  font-size: calc(var(--rd-size) * .92);
+  line-height: 1.75;
+  text-align: start;
+}
+
+.bk-tablewrap caption {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--rd-rule);
+  font-size: .8em;
+  font-weight: 700;
+  color: var(--rd-ink-3);
+  text-align: start;
+}
+
+.bk-tablewrap th,
+.bk-tablewrap td {
+  padding: 10px 14px;
+  border-inline-end: 1px solid var(--rd-rule);
+  border-bottom: 1px solid var(--rd-rule);
+  color: var(--rd-ink-2);
+  vertical-align: top;
+}
+
+.bk-tablewrap th:last-child,
+.bk-tablewrap td:last-child { border-inline-end: 0; }
+.bk-tablewrap tr:last-child td { border-bottom: 0; }
+
+/* The editor writes header rows as bold cells; both get the same plate */
+.bk-tablewrap th,
+.bk-tablewrap thead td,
+.bk-tablewrap tr[data-head] td {
+  background: var(--rd-accent-soft);
+  font-weight: 700;
+  color: var(--rd-ink);
+  text-align: start;
+  white-space: nowrap;
+}
+
+.bk-tablewrap tbody tr:nth-child(even):not([data-head]) td {
+  background: color-mix(in srgb, var(--rd-ink) 3%, transparent);
+}
+
+@media (max-width: 640px) {
+  .bk-tablewrap table { font-size: calc(var(--rd-size) * .85); line-height: 1.65; }
+  .bk-tablewrap th, .bk-tablewrap td { padding: 8px 11px; }
 }
 
 /* Search hit highlight */

@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 import { parseBlocks, normalizeText } from './bookUtils'
+import { looksLikeHtml, sanitizeHtml } from './richText'
 
 // `#बृoजाo1-1#` style source references embedded in the prose.
 const CITE_RE = /#([^#\n]{1,80})#/g
@@ -50,7 +51,7 @@ const inlineNodes = (text, query, keyBase) => {
 }
 
 /**
- * Renders one of the book's plain-text fields as typeset prose.
+ * Renders one of the book's content fields as typeset prose.
  *
  * `variant` picks the type treatment:
  *   - 'verse'  Sanskrit śloka: centred, preserves the source's line breaks
@@ -58,10 +59,30 @@ const inlineNodes = (text, query, keyBase) => {
  *   - 'latin'  English translation
  */
 const BookText = ({ text, variant = 'deva', query = '', id }) => {
+  // A handful of fields hold editor HTML — tables, mostly — rather than the
+  // plain text the rest of the corpus uses. Those bypass the block parser,
+  // including in a verse slot: a table cannot be typeset as a śloka.
+  const isHtml = looksLikeHtml(text)
+
+  const html = useMemo(() => (isHtml ? sanitizeHtml(text, query) : ''), [isHtml, text, query])
+
   const content = useMemo(() => {
+    if (isHtml) return null
     if (variant === 'verse') return normalizeText(text)
     return parseBlocks(text)
-  }, [text, variant])
+  }, [isHtml, text, variant])
+
+  const className = `bk-prose ${variant === 'latin' ? 'bk-prose--latin' : 'bk-prose--deva'}`
+
+  if (isHtml) {
+    if (!html) return null
+    return (
+      <div
+        className={`${className} bk-prose--html`}
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
+    )
+  }
 
   if (!content || (Array.isArray(content) && content.length === 0)) return null
 
@@ -70,8 +91,6 @@ const BookText = ({ text, variant = 'deva', query = '', id }) => {
   if (variant === 'verse') {
     return <div className="bk-verse">{inlineNodes(content, query, `${id}-v`)}</div>
   }
-
-  const className = `bk-prose ${variant === 'latin' ? 'bk-prose--latin' : 'bk-prose--deva'}`
 
   // Line breaks inside a run are meaningful in this corpus, so they are kept.
   const lineNodes = (lines, keyBase) =>

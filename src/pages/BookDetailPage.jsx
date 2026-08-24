@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import Header from '../components/Header'
-import CelebrityStrip from '../components/CelebrityStrip'
 import Footer from '../components/Footer'
 import AppDownloadBanner from '../components/AppDownloadBanner'
 import BookCover from '../components/book/BookCover'
@@ -108,7 +107,6 @@ const BookDetailPage = ({ language: initialLanguage, setLanguage: setLanguagePro
   return (
     <div className="bk" data-lang={language}>
       <Header language={language} setLanguage={handleLanguageChange} />
-      <CelebrityStrip language={language} />
 
       <main>
         <div className="bk-shell">

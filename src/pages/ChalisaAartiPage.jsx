@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Header from '../components/Header'
-import CelebrityStrip from '../components/CelebrityStrip'
 import ServicesStrip from '../components/ServicesStrip'
 import { useAuth } from '../contexts/AuthContext'
 import { fetchKoshCategories, fetchKoshContents } from '../services/api'
@@ -296,7 +295,6 @@ const ChalisaAartiPage = ({ language: initialLanguage, setLanguage: setLanguageP
   return (
     <div className="app kosh-app-fixed">
       <Header language={language} setLanguage={handleLanguageChange} />
-      <CelebrityStrip language={language} />
       
       {/* Horizontal Services Strip */}
       <ServicesStrip language={language} activeService="chalisa-aarti" />
