@@ -315,12 +315,22 @@
   }
   .hero__portrait img { width: 118px; }
 
+  /* Both actions stay on one line and split the width evenly. */
   .hero__cta {
     grid-area: cta;
+    flex-wrap: nowrap;
     justify-content: center;
     gap: 8px;
   }
-  .hero__cta .u-btn { flex: 0 0 auto; font-size: .82rem; }
+
+  .hero__cta .u-btn {
+    flex: 1 1 0;
+    min-width: 0;
+    padding-inline: var(--s-3);
+    font-size: .8rem;
+  }
+
+  .hero__cta .u-btn svg { flex: none; }
 
   .hero__assurances {
     grid-area: trust;
@@ -335,6 +345,11 @@
   .hero__identity { margin-top: -8px; }
   .hero__identity strong { font-size: .74rem; }
   .hero__identity span { font-size: .63rem; }
+}
+
+/* Narrowest phones: shave the buttons rather than let them wrap. */
+@media (max-width: 360px) {
+  .hero__cta .u-btn { padding-inline: 10px; font-size: .74rem; gap: 5px; }
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -654,8 +669,8 @@
 .pcard:hover { box-shadow: var(--shadow-2); }
 
 .pcard__medallion {
-  display: grid;
-  place-items: center;
+  position: relative;
+  display: block;
   width: 82px;
   height: 82px;
   flex: none;
@@ -668,18 +683,23 @@
 
 .pcard:hover .pcard__medallion { border-color: var(--saffron); }
 
-/* Deity portraits are full-figure; bias the crop upward to keep the face. */
-.pcard__medallion img {
+/* Absolute inset rather than a percentage height: iOS Safari would not resolve
+   `height: 100%` against the medallion, leaving the portrait its own aspect
+   ratio and unclipped. The radius is repeated on the image for the same reason.
+   Crop biased upward because the deity portraits are full-figure. */
+.pcard__medallion img,
+.pcard__ph {
+  position: absolute;
+  inset: 0;
+  display: block;
   width: 100%;
   height: 100%;
+  border-radius: 50%;
   object-fit: cover;
   object-position: 50% 26%;
 }
 
 .pcard__ph {
-  display: block;
-  width: 100%;
-  height: 100%;
   background: radial-gradient(circle at 50% 45%, var(--saffron-100), var(--surface-2));
 }
 
@@ -765,10 +785,12 @@
 }
 
 .catcard__medallion {
+  position: relative;
   display: grid;
   place-items: center;
   width: 76px;
   height: 76px;
+  flex: none;
   border-radius: 50%;
   border: 1px solid var(--gold-line);
   background: radial-gradient(circle at 50% 32%, var(--saffron-50), var(--page-2));
@@ -778,7 +800,17 @@
 
 .catcard:hover .catcard__medallion { border-color: var(--saffron); }
 
-.catcard__medallion img { width: 100%; height: 100%; object-fit: cover; }
+/* Absolute so it fills the disc on every engine; the grid centring above stays
+   for the icon fallback, which is not absolutely positioned. */
+.catcard__medallion img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
 .catcard__medallion svg { color: var(--gold-deep); }
 
 .catcard__name {

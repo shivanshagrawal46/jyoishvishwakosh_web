@@ -117,7 +117,9 @@ const Hero = ({ language }) => {
               {hi ? 'गुरुजी से मार्गदर्शन लें' : 'Consult Guruji'}
             </Button>
             <Button variant="ghost" to="/books">
-              {hi ? 'ग्रंथालय देखें' : 'Explore the library'}
+              {hi
+                ? 'ग्रंथालय देखें'
+                : <>Explore<span className="u-roomy-only"> the</span> library</>}
               <IconArrowRight s={16} />
             </Button>
           </motion.div>

@@ -12,6 +12,10 @@
 
 .u-shell--wide { max-width: 1440px; }
 
+/* Trims a word out of a label where a phone has no room for it. */
+.u-roomy-only { display: inline; }
+@media (max-width: 620px) { .u-roomy-only { display: none; } }
+
 /* Uniform rhythm between landing sections. */
 .u-section { padding-block: var(--section-gap); }
 .u-section--tight { padding-block: var(--s-7); }

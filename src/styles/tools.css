@@ -102,10 +102,12 @@ html[lang='hi'] .aj-fld__label {
   text-transform: none;
 }
 
-.aj-fld__box { position: relative; display: block; }
+.aj-fld__box { position: relative; display: block; min-width: 0; }
 
 .aj-fld__box input {
   width: 100%;
+  min-width: 0;
+  max-width: 100%;
   min-height: 44px;
   padding: 0 40px 0 var(--s-4);
   border: 1px solid var(--rule);
@@ -150,6 +152,23 @@ html[lang='hi'] .aj-fld__label {
   cursor: pointer;
 }
 
+/* Safari sizes date and time fields from their native control and will not
+   shrink them, so on a phone the date overflowed the card and pushed AM/PM out
+   of the row. Stripping the native appearance lets them obey the field width;
+   the value then needs re-aligning because Safari centres it in its own box. */
+.aj-fld__box input[type='date'],
+.aj-fld__box input[type='time'] {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.aj-fld__box input[type='date']::-webkit-date-and-time-value,
+.aj-fld__box input[type='time']::-webkit-date-and-time-value {
+  margin: 0;
+  text-align: left;
+  line-height: 42px;
+}
+
 /* ── Segmented control (gender, AM/PM, muhurat tabs) ─────────────── */
 .aj-seg {
   display: flex;
@@ -188,8 +207,14 @@ html[lang='hi'] .aj-fld__label {
 }
 
 .aj-row { display: flex; gap: var(--s-3); align-items: flex-end; }
-.aj-row > .aj-fld { flex: 1; }
+.aj-row > .aj-fld { flex: 1 1 auto; min-width: 0; }
 .aj-row > .aj-seg { flex: 0 0 104px; }
+
+@media (max-width: 420px) {
+  .aj-row { gap: var(--s-2); }
+  .aj-row > .aj-seg { flex: 0 0 88px; }
+  .aj-row > .aj-seg button { padding-inline: 4px; }
+}
 
 /* ── City suggestions ────────────────────────────────────────────── */
 .aj-drop {
