@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { GoogleLogin } from '@react-oauth/google'
@@ -25,6 +25,71 @@ const TAB_LINKS = [
   { path: '/books',     name: 'Granth',    nameHi: 'ग्रंथ',     Icon: IconBook },
 ]
 
+/* These three live at module scope on purpose. Declared inside Header they
+   would be a fresh component type on every render, so React would unmount and
+   remount them — and Google's button rebuilds its iframe when it mounts, which
+   read as a flicker in the header on every scroll or language change. */
+const LangToggle = ({ hi, setLanguage, block = false }) => (
+  <div className={`lang-pill${block ? ' lang-pill--block' : ''}`} role="group"
+    aria-label={hi ? 'भाषा चुनें' : 'Choose language'}>
+    <button
+      type="button"
+      className={`lang-pill__btn${hi ? ' is-active' : ''}`}
+      aria-pressed={hi}
+      onClick={() => setLanguage('hindi')}
+    >
+      हिं
+    </button>
+    <button
+      type="button"
+      className={`lang-pill__btn${!hi ? ' is-active' : ''}`}
+      aria-pressed={!hi}
+      onClick={() => setLanguage('english')}
+    >
+      EN
+    </button>
+  </div>
+)
+
+const SignIn = React.memo(function SignIn({ compact, inDrawer = false, onSuccess, onError }) {
+  return (
+    <GoogleLogin
+      onSuccess={onSuccess}
+      onError={onError}
+      theme="outline"
+      shape="pill"
+      type="standard"
+      size={inDrawer ? 'large' : 'medium'}
+      // "Sign in with Google" needs width the phone header does not have, so
+      // the label shortens rather than collapsing to an unlabelled G badge.
+      text={compact && !inDrawer ? 'signin' : 'signin_with'}
+      width={inDrawer ? '280' : undefined}
+      useOneTap={false}
+    />
+  )
+})
+
+const UserMenu = ({ user, hi, logout }) => (
+  <div className="usermenu">
+    <button type="button" className="usermenu__btn">
+      {user.picture
+        ? <img src={user.picture} alt="" className="usermenu__avatar" />
+        : <span className="usermenu__avatar usermenu__avatar--fallback">{(user.firstName || 'U')[0]}</span>}
+      <span className="usermenu__name">{user.firstName}</span>
+      <IconChevronDown s={14} />
+    </button>
+    <div className="usermenu__panel">
+      <div className="usermenu__info">
+        <p className="usermenu__fullname">{user.firstName} {user.lastName}</p>
+        <p className="usermenu__email">{user.email}</p>
+      </div>
+      <button type="button" className="usermenu__logout" onClick={logout}>
+        {hi ? 'लॉगआउट' : 'Log out'}
+      </button>
+    </div>
+  </div>
+)
+
 const Header = ({ language, setLanguage }) => {
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -40,10 +105,22 @@ const Header = ({ language, setLanguage }) => {
   useEffect(() => setMenuOpen(false), [location.pathname])
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8)
-    onScroll()
+    let frame = 0
+    // Read once per frame, and keep a dead zone around the threshold: iOS
+    // momentum and rubber-band scrolling cross a single pixel line repeatedly,
+    // which flipped this state — and re-rendered the header — mid-gesture.
+    const read = () => {
+      frame = 0
+      const y = window.scrollY
+      setScrolled((was) => (was ? y > 4 : y > 16))
+    }
+    const onScroll = () => { if (!frame) frame = requestAnimationFrame(read) }
+    read()
     window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      if (frame) cancelAnimationFrame(frame)
+    }
   }, [])
 
   // The drawer is a modal surface: lock the page and close on Escape.
@@ -58,7 +135,7 @@ const Header = ({ language, setLanguage }) => {
     }
   }, [menuOpen])
 
-  const handleGoogleLoginSuccess = async (credentialResponse) => {
+  const handleGoogleLoginSuccess = useCallback(async (credentialResponse) => {
     try {
       const response = await googleLogin(credentialResponse.credential)
       if (response.token && response.user) {
@@ -72,72 +149,14 @@ const Header = ({ language, setLanguage }) => {
           : `Login failed: ${error.message || 'Unknown error'}`
       )
     }
-  }
+  }, [hi, login, toast])
 
-  const handleGoogleLoginError = () =>
-    toast.error(hi ? 'लॉगिन विफल रहा' : 'Sign in failed')
+  const handleGoogleLoginError = useCallback(
+    () => toast.error(hi ? 'लॉगिन विफल रहा' : 'Sign in failed'),
+    [hi, toast]
+  )
 
   const label = (link) => (hi ? link.nameHi : link.name)
-
-  const LangToggle = ({ block = false }) => (
-    <div className={`lang-pill${block ? ' lang-pill--block' : ''}`} role="group"
-      aria-label={hi ? 'भाषा चुनें' : 'Choose language'}>
-      <button
-        type="button"
-        className={`lang-pill__btn${hi ? ' is-active' : ''}`}
-        aria-pressed={hi}
-        onClick={() => setLanguage('hindi')}
-      >
-        हिं
-      </button>
-      <button
-        type="button"
-        className={`lang-pill__btn${!hi ? ' is-active' : ''}`}
-        aria-pressed={!hi}
-        onClick={() => setLanguage('english')}
-      >
-        EN
-      </button>
-    </div>
-  )
-
-  const SignIn = ({ inDrawer = false }) => (
-    <GoogleLogin
-      onSuccess={handleGoogleLoginSuccess}
-      onError={handleGoogleLoginError}
-      theme="outline"
-      shape="pill"
-      type="standard"
-      size={inDrawer ? 'large' : 'medium'}
-      // "Sign in with Google" needs width the phone header does not have, so
-      // the label shortens rather than collapsing to an unlabelled G badge.
-      text={compact && !inDrawer ? 'signin' : 'signin_with'}
-      width={inDrawer ? '280' : undefined}
-      locale={hi ? 'hi' : 'en'}
-      useOneTap={false}
-    />
-  )
-
-  const UserMenu = () => (
-    <div className="usermenu">
-      <button type="button" className="usermenu__btn">
-        {user.picture
-          ? <img src={user.picture} alt="" className="usermenu__avatar" />
-          : <span className="usermenu__avatar usermenu__avatar--fallback">{(user.firstName || 'U')[0]}</span>}
-        <span className="usermenu__name">{user.firstName}</span>
-        <IconChevronDown s={14} />
-      </button>
-      <div className="usermenu__panel">
-        <div className="usermenu__info">
-          <p className="usermenu__fullname">{user.firstName} {user.lastName}</p>
-          <p className="usermenu__email">{user.email}</p>
-        </div>
-        <button type="button" className="usermenu__logout" onClick={logout}>
-          {hi ? 'लॉगआउट' : 'Log out'}
-        </button>
-      </div>
-    </div>
-  )
 
   return (
     <>
@@ -174,9 +193,15 @@ const Header = ({ language, setLanguage }) => {
               <kbd className="searchtrigger__kbd">⌘K</kbd>
             </button>
 
-            <LangToggle />
+            <LangToggle hi={hi} setLanguage={setLanguage} />
 
-            {user ? <UserMenu /> : <SignIn />}
+            {user
+              ? <UserMenu user={user} hi={hi} logout={logout} />
+              : <SignIn
+                  compact={compact}
+                  onSuccess={handleGoogleLoginSuccess}
+                  onError={handleGoogleLoginError}
+                />}
 
             <button
               type="button"
@@ -273,7 +298,7 @@ const Header = ({ language, setLanguage }) => {
                   <IconSearch s={17} />{hi ? 'खोजें' : 'Search'}
                 </button>
 
-                <LangToggle block />
+                <LangToggle hi={hi} setLanguage={setLanguage} block />
 
                 {/* Day/night lives here rather than in the header, where it was
                     competing with navigation for the same few pixels. */}
@@ -288,7 +313,14 @@ const Header = ({ language, setLanguage }) => {
                   <button type="button" className="u-btn u-btn--ghost u-btn--block" onClick={logout}>
                     {hi ? 'लॉगआउट' : 'Log out'}
                   </button>
-                ) : <SignIn inDrawer />}
+                ) : (
+                  <SignIn
+                    inDrawer
+                    compact={compact}
+                    onSuccess={handleGoogleLoginSuccess}
+                    onError={handleGoogleLoginError}
+                  />
+                )}
               </div>
             </motion.div>
           </>
