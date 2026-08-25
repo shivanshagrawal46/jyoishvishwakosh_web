@@ -1075,7 +1075,12 @@ html[lang='hi'] .kosh-sidebar-header h3 {
 
   .kosh-sidebar-category-name { font-size: .82rem; }
 
+  /* Out of flex layout altogether. The desktop pane sizes its children with
+     `flex: 1` against a viewport-height parent; once that parent is auto-height
+     the flex base of 0 collapses the list to nothing on WebKit, which left the
+     card showing only its header. Plain block flow has no such ambiguity. */
   .kosh-main-content-wrapper {
+    display: block;
     height: auto;
     padding: 0;
     border: 1px solid var(--rule);
@@ -1083,6 +1088,27 @@ html[lang='hi'] .kosh-sidebar-header h3 {
     background: var(--surface);
     box-shadow: var(--shadow-1);
     overflow: hidden;
+  }
+
+  .kosh-contents-card {
+    display: block;
+    flex: none;
+    height: auto;
+    min-height: 0;
+    margin: 0;
+  }
+
+  /* Sizes to its rows and caps out, so a five-item category is not padded to
+     the full screen while a long one still scrolls and drives load-more.
+     `dvh` tracks the iOS URL bar; `vh` is the fallback. */
+  .kosh-contents-list-scroll {
+    display: block;
+    flex: none;
+    height: auto;
+    max-height: 60vh;
+    max-height: 60dvh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .kosh-search-filter-bar {
@@ -1097,10 +1123,6 @@ html[lang='hi'] .kosh-sidebar-header h3 {
   .kosh-filter-btn { flex: none; padding: 0 var(--s-3); min-height: 40px; }
   .kosh-contents-card-header,
   .kosh-content-item { padding-inline: var(--s-4); }
-
-  /* Without the viewport-height pane, the inner scroller has no height to
-     resolve against, so it needs its own. */
-  .kosh-contents-list-scroll { max-height: 62vh; }
 }
 
 /* ─────────────────────────────────────────────────────────────
