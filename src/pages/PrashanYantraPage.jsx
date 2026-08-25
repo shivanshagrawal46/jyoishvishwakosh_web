@@ -137,7 +137,7 @@ const PrashanYantraPage = ({ language: initialLanguage, setLanguage: setLanguage
                   exit={{ scale: 0.9, opacity: 0 }}
                   onClick={(e) => e.stopPropagation()}
                   style={{
-                    backgroundColor: '#FFFFFF',
+                    backgroundColor: 'var(--surface)',
                     borderRadius: '12px',
                     padding: '24px',
                     maxWidth: '600px',
@@ -156,7 +156,7 @@ const PrashanYantraPage = ({ language: initialLanguage, setLanguage: setLanguage
                       border: 'none',
                       fontSize: '24px',
                       cursor: 'pointer',
-                      color: '#666',
+                      color: 'var(--ink-3)',
                       width: '32px',
                       height: '32px',
                       display: 'flex',
@@ -165,7 +165,7 @@ const PrashanYantraPage = ({ language: initialLanguage, setLanguage: setLanguage
                       borderRadius: '50%',
                       transition: 'background-color 0.2s'
                     }}
-                    onMouseEnter={(e) => e.target.style.backgroundColor = '#f0f0f0'}
+                    onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--surface-2)'}
                     onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
                   >
                     ×
@@ -174,7 +174,7 @@ const PrashanYantraPage = ({ language: initialLanguage, setLanguage: setLanguage
                   <h2 style={{
                     fontSize: '24px',
                     fontWeight: 'bold',
-                    color: '#333',
+                    color: 'var(--ink-2)',
                     marginBottom: '20px',
                     marginTop: '0'
                   }}>
@@ -184,7 +184,7 @@ const PrashanYantraPage = ({ language: initialLanguage, setLanguage: setLanguage
                   <div style={{
                     fontSize: '16px',
                     lineHeight: '1.6',
-                    color: '#555',
+                    color: 'var(--ink-3)',
                     marginBottom: '20px'
                   }}>
                     <p style={{ marginBottom: '12px' }}>
@@ -203,8 +203,8 @@ const PrashanYantraPage = ({ language: initialLanguage, setLanguage: setLanguage
                     <button
                       onClick={closeInstruction}
                       style={{
-                        backgroundColor: '#FF6B35',
-                        color: '#FFFFFF',
+                        backgroundColor: 'var(--saffron)',
+                        color: 'var(--surface)',
                         border: 'none',
                         padding: '12px 32px',
                         borderRadius: '6px',
@@ -213,8 +213,8 @@ const PrashanYantraPage = ({ language: initialLanguage, setLanguage: setLanguage
                         cursor: 'pointer',
                         transition: 'background-color 0.2s'
                       }}
-                      onMouseEnter={(e) => e.target.style.backgroundColor = '#e55a2b'}
-                      onMouseLeave={(e) => e.target.style.backgroundColor = '#FF6B35'}
+                      onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--saffron-deep)'}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--saffron)'}
                     >
                       Close
                     </button>
@@ -250,7 +250,7 @@ const PrashanYantraPage = ({ language: initialLanguage, setLanguage: setLanguage
                   alignItems: 'center', 
                   minHeight: '400px',
                   fontSize: '18px',
-                  color: '#666'
+                  color: 'var(--ink-3)'
                 }}>
                   {language === 'hindi' ? 'लोड हो रहा है...' : 'Loading...'}
                 </div>
@@ -321,7 +321,7 @@ const PrashanYantraPage = ({ language: initialLanguage, setLanguage: setLanguage
                   exit={{ scale: 0.9, opacity: 0 }}
                   onClick={(e) => e.stopPropagation()}
                   style={{
-                    backgroundColor: '#FFFFFF',
+                    backgroundColor: 'var(--surface)',
                     borderRadius: '12px',
                     padding: '24px',
                     maxWidth: '600px',
@@ -342,7 +342,7 @@ const PrashanYantraPage = ({ language: initialLanguage, setLanguage: setLanguage
                       border: 'none',
                       fontSize: '24px',
                       cursor: 'pointer',
-                      color: '#666',
+                      color: 'var(--ink-3)',
                       width: '32px',
                       height: '32px',
                       display: 'flex',
@@ -351,7 +351,7 @@ const PrashanYantraPage = ({ language: initialLanguage, setLanguage: setLanguage
                       borderRadius: '50%',
                       transition: 'background-color 0.2s'
                     }}
-                    onMouseEnter={(e) => e.target.style.backgroundColor = '#f0f0f0'}
+                    onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--surface-2)'}
                     onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
                   >
                     ×
@@ -360,7 +360,7 @@ const PrashanYantraPage = ({ language: initialLanguage, setLanguage: setLanguage
                   <h2 style={{
                     fontSize: '20px',
                     fontWeight: 'bold',
-                    color: '#000000',
+                    color: 'var(--ink)',
                     marginBottom: '16px',
                     marginTop: '0'
                   }}>
@@ -370,7 +370,7 @@ const PrashanYantraPage = ({ language: initialLanguage, setLanguage: setLanguage
                   <div style={{
                     fontSize: '16px',
                     lineHeight: '1.8',
-                    color: '#000000',
+                    color: 'var(--ink)',
                     whiteSpace: 'pre-line',
                     fontWeight: '500'
                   }}>
@@ -381,8 +381,8 @@ const PrashanYantraPage = ({ language: initialLanguage, setLanguage: setLanguage
                     <button
                       onClick={closeAnswer}
                       style={{
-                        backgroundColor: '#FF6B35',
-                        color: '#FFFFFF',
+                        backgroundColor: 'var(--saffron)',
+                        color: 'var(--surface)',
                         border: 'none',
                         padding: '12px 32px',
                         borderRadius: '6px',
@@ -391,8 +391,8 @@ const PrashanYantraPage = ({ language: initialLanguage, setLanguage: setLanguage
                         cursor: 'pointer',
                         transition: 'background-color 0.2s'
                       }}
-                      onMouseEnter={(e) => e.target.style.backgroundColor = '#e55a2b'}
-                      onMouseLeave={(e) => e.target.style.backgroundColor = '#FF6B35'}
+                      onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--saffron-deep)'}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--saffron)'}
                     >
                       {language === 'hindi' ? 'बंद करें' : 'Close'}
                     </button>

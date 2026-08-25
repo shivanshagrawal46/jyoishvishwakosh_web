@@ -1,11 +1,13 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { CONTACT, FOOTER_GROUPS } from '../data/site'
+import { useChrome } from '../contexts/ChromeContext'
 import { IconMail, IconPhone, IconWhatsapp, Ornament } from './ui/Icons'
 import logoImg from '../assets/icons/logo_new.png'
 
 const Footer = ({ language }) => {
   const hi = language === 'hindi'
+  const { openAppPrompt } = useChrome()
 
   return (
     <footer className="sitefoot">
@@ -59,11 +61,16 @@ const Footer = ({ language }) => {
             <nav key={group.title} className="sitefoot__col" aria-label={hi ? group.titleHi : group.title}>
               <h4 className="sitefoot__title">{hi ? group.titleHi : group.title}</h4>
               <ul>
-                {group.links.map((link) => (
-                  <li key={link.path}>
-                    <Link to={link.path}>{hi ? link.nameHi : link.name}</Link>
-                  </li>
-                ))}
+                {group.links.map((link) => {
+                  const name = hi ? link.nameHi : link.name
+                  return (
+                    <li key={link.path}>
+                      {link.appOnly
+                        ? <button type="button" onClick={() => openAppPrompt(name)}>{name}</button>
+                        : <Link to={link.path}>{name}</Link>}
+                    </li>
+                  )
+                })}
               </ul>
             </nav>
           ))}

@@ -4,8 +4,10 @@ import { AnimatePresence, motion } from 'framer-motion'
 
 import useLanguage from './hooks/useLanguage'
 import useTheme from './hooks/useTheme'
+import useContentGuard from './hooks/useContentGuard'
 import { ChromeProvider } from './contexts/ChromeContext'
 import ToastProvider from './components/ui/Toast'
+import AppPromptDialog from './components/ui/AppPromptDialog'
 import ScrollManager from './components/ScrollManager'
 import CommandSearch from './components/CommandSearch'
 import Splash from './components/Splash'
@@ -198,12 +200,17 @@ function AppRoutes({ language, setLanguage, searchOpen, setSearchOpen }) {
 function App() {
   const [language, setLanguage] = useLanguage()
   const { theme, toggle: toggleTheme } = useTheme()
+  useContentGuard()
   const [searchOpen, setSearchOpen] = useState(false)
+  const [appPrompt, setAppPrompt] = useState(null)
 
   const openSearch = useCallback(() => setSearchOpen(true), [])
+  const openAppPrompt = useCallback((feature) => setAppPrompt(feature || ''), [])
+  const closeAppPrompt = useCallback(() => setAppPrompt(null), [])
+
   const chrome = useMemo(
-    () => ({ theme, toggleTheme, openSearch }),
-    [theme, toggleTheme, openSearch]
+    () => ({ theme, toggleTheme, openSearch, openAppPrompt }),
+    [theme, toggleTheme, openSearch, openAppPrompt]
   )
 
   return (
@@ -220,6 +227,12 @@ function App() {
             />
           </div>
         </Router>
+        <AppPromptDialog
+          open={appPrompt !== null}
+          feature={appPrompt}
+          language={language}
+          onClose={closeAppPrompt}
+        />
       </ToastProvider>
     </ChromeProvider>
   )

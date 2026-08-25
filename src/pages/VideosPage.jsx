@@ -78,7 +78,7 @@ const VideosPage = ({ language: initialLanguage, setLanguage: setLanguageProp })
         <div className="container">
           <div className="videos-page-header">
             <h1 className={`videos-page-title ${language === 'hindi' ? 'hindi' : ''}`}>
-              {language === 'hindi' ? '📹 वीडियो' : '📹 Videos'}
+              {language === 'hindi' ? 'वीडियो' : 'Videos'}
             </h1>
             <p className="videos-page-subtitle">
               {language === 'hindi' 

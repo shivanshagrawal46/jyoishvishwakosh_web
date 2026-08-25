@@ -1,6 +1,7 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
+import { useChrome } from '../contexts/ChromeContext'
 import { SERVICES } from '../data/site'
 
 const EASE = [0.22, 1, 0.36, 1]
@@ -15,13 +16,14 @@ const item = {
  * Every service, on the first screen. This grid is both the storefront and the
  * primary navigation, so nothing is hidden behind a toggle or a carousel.
  */
-const ServiceTile = ({ service, hi }) => {
+const ServiceTile = ({ service, hi, onAppOnly }) => {
+  const label = hi ? service.nameHi : service.name
   const body = (
     <>
       <span className="svc__tile" aria-hidden="true">
         <img src={service.icon} alt="" loading="eager" decoding="async" />
       </span>
-      <span className="svc__name">{hi ? service.nameHi : service.name}</span>
+      <span className="svc__name">{label}</span>
     </>
   )
 
@@ -29,6 +31,14 @@ const ServiceTile = ({ service, hi }) => {
     return (
       <motion.div className="svc svc--soon" variants={item} aria-disabled="true">
         {body}
+      </motion.div>
+    )
+  }
+
+  if (service.appOnly) {
+    return (
+      <motion.div variants={item} className="svc__cell">
+        <button type="button" className="svc" onClick={() => onAppOnly(label)}>{body}</button>
       </motion.div>
     )
   }
@@ -46,6 +56,7 @@ const ServiceTile = ({ service, hi }) => {
 
 const Services = ({ language }) => {
   const hi = language === 'hindi'
+  const { openAppPrompt } = useChrome()
 
   return (
     <section id="services" className="services">
@@ -61,7 +72,7 @@ const Services = ({ language }) => {
           animate="visible"
         >
           {SERVICES.map((service) => (
-            <ServiceTile key={service.id} service={service} hi={hi} />
+            <ServiceTile key={service.id} service={service} hi={hi} onAppOnly={openAppPrompt} />
           ))}
         </motion.div>
       </div>

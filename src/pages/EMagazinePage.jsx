@@ -118,7 +118,7 @@ const EMagazinePage = ({ language: initialLanguage, setLanguage: setLanguageProp
         <div className="container">
           <div className="emagazine-page-header">
             <h1 className={`emagazine-page-title ${language === 'hindi' ? 'hindi' : ''}`}>
-              {language === 'hindi' ? '📰 ई-मैगजीन' : '📰 E-Magazine'}
+              {language === 'hindi' ? 'ई-मैगजीन' : 'E-Magazine'}
             </h1>
             <p className="emagazine-page-subtitle">
               {language === 'hindi' 

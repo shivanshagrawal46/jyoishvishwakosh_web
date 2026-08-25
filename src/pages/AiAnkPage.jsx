@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import Header from '../components/Header'
-import ServicesStrip from '../components/ServicesStrip'
+import ServicesStrip from '../components/ServicesStrip'
+import Footer from '../components/Footer'
 import { calculateCompleteNumerology } from '../services/api'
 import { useNavigate } from 'react-router-dom'
 
@@ -46,7 +47,7 @@ const AiAnkPage = ({ language: initialLanguage, setLanguage: setLanguageProp }) 
       <main className="calc-page-main">
         <div className="calc-page-container">
           <div className="calc-page-hero">
-            <div className="calc-hero-badge">🤖 AI Powered</div>
+            <div className="calc-hero-badge">AI Powered</div>
             <h1 className={`calc-page-title ${language === 'hindi' ? 'hindi' : ''}`}>
               {language === 'hindi' ? 'AI अंक ज्योतिष' : 'AI Numerology'}
             </h1>
@@ -121,14 +122,14 @@ const AiAnkPage = ({ language: initialLanguage, setLanguage: setLanguageProp }) 
               <div className="jyotish-loading-content">
                 <div className="jyotish-loading-icon">
                   <svg width="60" height="60" viewBox="0 0 24 24" fill="none">
-                    <circle cx="12" cy="12" r="10" stroke="#FF6B35" strokeWidth="0.5" opacity="0.2"/>
+                    <circle cx="12" cy="12" r="10" stroke="var(--saffron)" strokeWidth="0.5" opacity="0.2"/>
                     <circle cx="12" cy="12" r="10" stroke="url(#grad-ai)" strokeWidth="2" strokeLinecap="round" strokeDasharray="60 30">
                       <animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="1.2s" repeatCount="indefinite"/>
                     </circle>
                     <defs>
                       <linearGradient id="grad-ai" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#FF6B35"/>
-                        <stop offset="100%" stopColor="#FF9A56"/>
+                        <stop offset="0%" stopColor="var(--saffron)"/>
+                        <stop offset="100%" stopColor="var(--saffron-deep)"/>
                       </linearGradient>
                     </defs>
                   </svg>
@@ -147,6 +148,8 @@ const AiAnkPage = ({ language: initialLanguage, setLanguage: setLanguageProp }) 
 
         </div>
       </main>
+
+      <Footer language={language} />
     </div>
   )
 }

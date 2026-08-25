@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import Header from '../components/Header'
-import ServicesStrip from '../components/ServicesStrip'
+import ServicesStrip from '../components/ServicesStrip'
+import Footer from '../components/Footer'
 import { fetchNakshatra } from '../services/api'
 
 const NakshatraPage = ({ language: initialLanguage, setLanguage: setLanguageProp }) => {
@@ -42,7 +43,7 @@ const NakshatraPage = ({ language: initialLanguage, setLanguage: setLanguageProp
       <main className="calc-page-main">
         <div className="calc-page-container">
           <div className="calc-page-hero">
-            <div className="calc-hero-badge">⭐ Nakshatra</div>
+            <div className="calc-hero-badge">Nakshatra</div>
             <h1 className={`calc-page-title ${language === 'hindi' ? 'hindi' : ''}`}>
               {language === 'hindi' ? 'नक्षत्र कैलकुलेटर' : 'Nakshatra Calculator'}
             </h1>
@@ -100,7 +101,7 @@ const NakshatraPage = ({ language: initialLanguage, setLanguage: setLanguageProp
           {result && (
             <div className="calc-result-card">
               <div className="calc-result-header">
-                <div className="calc-result-badge">⭐ Nakshatra</div>
+                <div className="calc-result-badge">Nakshatra</div>
                 <h2 className="calc-result-title">{result.nakshatra?.name}</h2>
               </div>
 
@@ -121,6 +122,8 @@ const NakshatraPage = ({ language: initialLanguage, setLanguage: setLanguageProp
           )}
         </div>
       </main>
+
+      <Footer language={language} />
     </div>
   )
 }

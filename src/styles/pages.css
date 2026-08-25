@@ -1,0 +1,1319 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Inner pages — the landing page's shapes applied to the pre-redesign markup.
+
+   The 30-odd inner pages predate the design system and each grew its own card,
+   button and hero. Their colours are already tokenised in index.css; this file
+   settles the rest — one radius scale, one shadow, one type ramp, one page
+   rhythm — by class family rather than by rewriting thirty components.
+
+   Loaded after index.css (see main.jsx) so it wins on equal specificity.
+   Granthalaya (`bk-`) and the CSU print tools are deliberately untouched.
+═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────────
+   0. Services strip — it sits outside <main>, so the fixed header
+      was covering it on every inner page
+───────────────────────────────────────────────────────────── */
+.services-strip {
+  position: sticky;
+  top: var(--header-h);
+  z-index: var(--z-sticky);
+  margin-top: var(--header-h);
+  padding-block: var(--s-2);
+  border-bottom: 1px solid var(--rule);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: saturate(1.3) blur(10px);
+  -webkit-backdrop-filter: saturate(1.3) blur(10px);
+}
+
+/* `main` carries the header offset globally; with a strip above it, the strip
+   has already done that job. */
+.services-strip + main { padding-top: 0; }
+
+.services-strip-item { border-radius: var(--r-full); }
+.services-strip-name { font-family: var(--font-display); }
+
+@media (max-width: 640px) {
+  .services-strip-track { padding-inline: var(--s-4); }
+  .services-strip-icon { width: 26px; height: 26px; }
+  .services-strip-icon img { width: 19px; height: 19px; }
+  .services-strip-name { font-size: .76rem; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   1. Page shells — one background and one vertical rhythm
+───────────────────────────────────────────────────────────── */
+.kosh-page-main-new,
+.calc-page-main,
+.epooja-page-main,
+.epooja-detail-main,
+.astroshop-page-main,
+.astroshop-detail-main,
+.emagazine-page-main,
+.emagazine-detail-main,
+.videos-page-main,
+.rashifal-page-main,
+.panchang-page-main,
+.jyotish-report-main,
+.jyotish-report-empty-main,
+.contact-page-main,
+.dainik-muhurat-page {
+  background: var(--page);
+  /* Several of these set `padding` as a shorthand, which silently wiped the
+     header offset that base.css puts on every `main`. */
+  padding-top: calc(var(--header-h) + var(--s-5));
+  padding-bottom: var(--s-9);
+}
+
+.kosh-page-layout,
+.calc-page-container,
+.rashifal-page-container,
+.panchang-page-container,
+.jyotish-report-container,
+.contact-page-container,
+.dainik-muhurat-content,
+.container {
+  width: 100%;
+  max-width: var(--shell);
+  margin-inline: auto;
+  padding-inline: var(--s-5);
+}
+
+@media (max-width: 640px) {
+  .kosh-page-layout,
+  .calc-page-container,
+  .rashifal-page-container,
+  .panchang-page-container,
+  .jyotish-report-container,
+  .contact-page-container,
+  .dainik-muhurat-content,
+  .container {
+    padding-inline: var(--s-4);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   2. Page headers — the SectionHeader treatment, ported
+───────────────────────────────────────────────────────────── */
+.calc-page-hero,
+.rashifal-page-hero,
+.epooja-page-header,
+.astroshop-page-header,
+.emagazine-page-header,
+.videos-page-header,
+.contact-page-hero,
+.panchang-page-header {
+  padding-block: var(--s-7) var(--s-6);
+  text-align: center;
+  background: none;
+  border: 0;
+}
+
+.calc-page-title,
+.rashifal-page-hero h1,
+.epooja-page-title,
+.astroshop-page-title,
+.emagazine-page-title,
+.videos-page-title,
+.contact-page-hero h1,
+.panchang-page-title,
+.page-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  font-weight: 600;
+  line-height: var(--lh-display);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  /* Several of these were painted with a clipped gradient. */
+  background: none;
+  -webkit-text-fill-color: currentColor;
+}
+
+.calc-page-subtitle,
+.rashifal-page-subtitle,
+.epooja-page-subtitle,
+.astroshop-page-subtitle,
+.emagazine-page-subtitle,
+.videos-page-subtitle,
+.contact-page-hero p,
+.panchang-page-subtitle {
+  max-width: 62ch;
+  margin: var(--s-3) auto 0;
+  font-family: var(--font-ui);
+  font-size: var(--fs-small);
+  line-height: 1.75;
+  color: var(--ink-3);
+}
+
+/* Loud gradient pills become the quiet tracked eyebrow used on the home page. */
+.calc-hero-badge,
+.rashifal-hero-badge,
+.jyotish-report-badge,
+.contact-badge {
+  display: inline-block;
+  margin-bottom: var(--s-3);
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  color: var(--saffron-deep);
+  font-family: var(--font-ui);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  letter-spacing: var(--track);
+  text-transform: uppercase;
+}
+
+html[lang='hi'] .calc-hero-badge,
+html[lang='hi'] .rashifal-hero-badge,
+html[lang='hi'] .contact-badge {
+  letter-spacing: .04em;
+  text-transform: none;
+}
+
+/* The badge markup wraps an icon; without a box around it, it just floats. */
+.contact-badge svg { display: none; }
+
+/* ─────────────────────────────────────────────────────────────
+   3. Cards — one border, one radius, one elevation
+───────────────────────────────────────────────────────────── */
+.calc-form-card,
+.calc-result-card,
+.epooja-card-grid,
+.astroshop-card-grid,
+.emagazine-card,
+.video-card,
+.rashifal-card,
+.rashifal-selector-card,
+.panchang-detail-card,
+.panchang-input-card,
+.contact-info-card,
+.contact-org-card,
+.jyotish-report-section,
+.muhurat-section,
+.prashan-yantra-card,
+.loshu-analysis-section,
+.order-summary-card {
+  border: 1px solid var(--rule);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
+  overflow: hidden;
+}
+
+.epooja-card-grid,
+.astroshop-card-grid,
+.emagazine-card,
+.video-card,
+.rashifal-card,
+.contact-info-card {
+  transition: transform var(--dur-fast) var(--ease),
+              box-shadow var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease);
+}
+
+.epooja-card-grid:hover,
+.astroshop-card-grid:hover,
+.emagazine-card:hover,
+.video-card:hover,
+.rashifal-card:hover,
+.contact-info-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--gold-line);
+  box-shadow: var(--shadow-2);
+}
+
+/* Card typography */
+.epooja-card-title,
+.astroshop-card-title,
+.emagazine-card-title,
+.video-card-title,
+.calc-result-title,
+.calc-result-meaning-title,
+.kosh-contents-card-title,
+.panchang-detail-card h3,
+.contact-info-card h3,
+.muhurat-section h2,
+.muhurat-section h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.epooja-card-description,
+.astroshop-card-description,
+.emagazine-card-intro,
+.calc-result-meaning-text,
+.epooja-card-tagline,
+.astroshop-card-tagline {
+  font-family: var(--font-ui);
+  font-size: var(--fs-small);
+  line-height: 1.7;
+  color: var(--ink-3);
+}
+
+/* Body copy of wildly varying length was spilling out of the card. */
+.epooja-card-description,
+.astroshop-card-description,
+.emagazine-card-intro {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.epooja-card-title,
+.astroshop-card-title,
+.emagazine-card-title,
+.video-card-title {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: var(--fs-h3);
+}
+
+.error-icon:empty { display: none; }
+
+/* Prices read as data, so they get the serif and tabular figures. */
+.epooja-card-price,
+.astroshop-card-price,
+.epooja-price-value,
+.astroshop-price-value {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.epooja-card-original-price,
+.astroshop-card-original-price {
+  color: var(--ink-4);
+  text-decoration: line-through;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   4. Buttons — the u-btn shapes, without touching the markup
+───────────────────────────────────────────────────────────── */
+.calc-form-submit,
+.epooja-card-button,
+.astroshop-card-button,
+.epooja-detail-button,
+.astroshop-detail-button,
+.emagazine-card-read-more,
+.jyotish-report-home-btn,
+.order-submit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  min-height: 44px;
+  padding: 0 var(--s-5);
+  border: 1px solid var(--saffron-deep);
+  border-radius: var(--r-full);
+  background: var(--saffron);
+  box-shadow: var(--shadow-1);
+  color: #FFFDF8;
+  font-family: var(--font-ui);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  letter-spacing: .01em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease),
+              box-shadow var(--dur-fast) var(--ease),
+              transform var(--dur-fast) var(--ease);
+}
+
+.calc-form-submit:hover,
+.epooja-card-button:hover,
+.astroshop-card-button:hover,
+.epooja-detail-button:hover,
+.astroshop-detail-button:hover,
+.emagazine-card-read-more:hover,
+.jyotish-report-home-btn:hover,
+.order-submit-btn:hover {
+  background: var(--saffron-deep);
+  box-shadow: var(--shadow-2);
+}
+
+.calc-form-submit:disabled,
+.order-submit-btn:disabled { opacity: .55; cursor: not-allowed; }
+
+.epooja-card-button,
+.astroshop-card-button,
+.emagazine-card-read-more { min-height: 36px; padding-inline: var(--s-4); font-size: var(--fs-caption); }
+
+/* Secondary / quiet buttons */
+.kosh-filter-btn,
+.epooja-pagination-btn,
+.astroshop-pagination-btn,
+.emagazine-pagination-btn,
+.astroshop-nav-btn,
+.kosh-content-modal-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-full);
+  background: var(--surface);
+  box-shadow: none;
+  color: var(--ink-2);
+  font-family: var(--font-ui);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--dur-fast) var(--ease);
+}
+
+.kosh-filter-btn:hover,
+.epooja-pagination-btn:hover:not(:disabled),
+.astroshop-pagination-btn:hover:not(:disabled),
+.emagazine-pagination-btn:hover:not(:disabled),
+.astroshop-nav-btn:hover,
+.kosh-content-modal-close:hover {
+  border-color: var(--saffron);
+  background: var(--saffron-50);
+  color: var(--saffron-deep);
+}
+
+.epooja-pagination-btn:disabled,
+.astroshop-pagination-btn:disabled,
+.emagazine-pagination-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+/* ─────────────────────────────────────────────────────────────
+   5. Form fields — matched to the AI Jyotish card
+───────────────────────────────────────────────────────────── */
+.calc-form-label,
+.selector-label,
+.emagazine-filter-label,
+.order-form-label {
+  font-family: var(--font-ui);
+  font-size: .7rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+}
+
+html[lang='hi'] .calc-form-label,
+html[lang='hi'] .selector-label,
+html[lang='hi'] .emagazine-filter-label {
+  font-size: .78rem;
+  letter-spacing: .03em;
+  text-transform: none;
+}
+
+.calc-form-input,
+.kosh-search-input,
+.selector-input,
+.emagazine-filter-select,
+.panchang-date-input,
+.panchang-city-input,
+.order-form-input,
+.order-form-textarea {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 44px;
+  padding: 0 var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-sm);
+  background: var(--page-2);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: var(--fs-small);
+  box-shadow: none;
+  transition: border-color var(--dur-fast) var(--ease),
+              background-color var(--dur-fast) var(--ease),
+              box-shadow var(--dur-fast) var(--ease);
+}
+
+.order-form-textarea { min-height: 96px; padding-block: var(--s-3); }
+
+.calc-form-input:focus,
+.kosh-search-input:focus,
+.selector-input:focus,
+.emagazine-filter-select:focus,
+.panchang-date-input:focus,
+.panchang-city-input:focus,
+.order-form-input:focus,
+.order-form-textarea:focus {
+  outline: none;
+  border-color: var(--saffron);
+  background: var(--surface);
+  box-shadow: var(--glow);
+}
+
+/* Safari will not shrink native date and time controls below their intrinsic
+   width, which overflowed these cards on a phone. */
+.calc-form-input[type='date'],
+.calc-form-input[type='time'],
+.selector-input[type='date'],
+.panchang-date-input[type='date'] {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.calc-form-input[type='date']::-webkit-date-and-time-value,
+.calc-form-input[type='time']::-webkit-date-and-time-value,
+.selector-input[type='date']::-webkit-date-and-time-value,
+.panchang-date-input[type='date']::-webkit-date-and-time-value {
+  margin: 0;
+  text-align: left;
+  line-height: 42px;
+}
+
+.calc-error-message,
+.order-error-message {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-3) var(--s-4);
+  border: 1px solid color-mix(in srgb, var(--danger) 34%, transparent);
+  border-radius: var(--r-sm);
+  background: color-mix(in srgb, var(--danger) 8%, transparent);
+  color: var(--danger);
+  font-size: var(--fs-caption);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   6. Tabs, chips and pills
+───────────────────────────────────────────────────────────── */
+.rashifal-tabs,
+.dainik-muhurat-tabs,
+.emagazine-filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--s-2);
+  padding: 4px;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-full);
+  background: var(--page-2);
+  box-shadow: none;
+  width: fit-content;
+  margin-inline: auto;
+}
+
+.rashifal-tab,
+.dainik-muhurat-tab {
+  min-height: 38px;
+  padding-inline: var(--s-5);
+  white-space: nowrap;
+  border: 0;
+  border-radius: var(--r-full);
+  background: transparent;
+  color: var(--ink-3);
+  font-family: var(--font-ui);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.rashifal-tab.active,
+.dainik-muhurat-tab.active {
+  background: var(--surface);
+  color: var(--saffron-deep);
+  box-shadow: var(--shadow-1);
+}
+
+.rashifal-tab .tab-icon { display: none; }
+
+/* The sign already shows as an illustration; the colour-emoji glyph beside it
+   rendered as a purple tile in the wrong typeface. */
+.rashifal-emoji { display: none; }
+
+.rashifal-icon-circle {
+  width: 46px;
+  height: 46px;
+  border: 1px solid var(--gold-line);
+  border-radius: 50%;
+  overflow: hidden;
+  flex: none;
+}
+
+.rashifal-icon-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.rashifal-card-header {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-4);
+  border-bottom: 1px solid var(--rule);
+  background: var(--page-2);
+}
+
+.rashifal-card-title { font-size: var(--fs-h3); margin: 0; }
+.rashifal-card-content { padding: var(--s-4); }
+
+.rashifal-card-details {
+  font-size: var(--fs-small);
+  line-height: var(--lh-body);
+  color: var(--ink-2);
+}
+
+.astroshop-category-btn,
+.calc-pill,
+.city-chip,
+.interest-tag,
+.life-area-tag,
+.remedy-chip,
+.career-field,
+.ai-gift-tag,
+.report-mini-tag {
+  border: 1px solid var(--rule);
+  border-radius: var(--r-full);
+  background: var(--surface);
+  color: var(--ink-2);
+  font-family: var(--font-ui);
+  font-size: var(--fs-caption);
+  box-shadow: none;
+}
+
+.astroshop-category-btn.active {
+  border-color: var(--saffron);
+  background: var(--saffron-50);
+  color: var(--saffron-deep);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   7. Kosh library shell — nine pages share this exact markup
+
+   It is a two-pane reading app rather than a scrolling document:
+   a category rail beside a list that scrolls on its own. Treated
+   as one composed surface, not a stack of separate cards.
+───────────────────────────────────────────────────────────── */
+.kosh-page-main-new {
+  /* The strip is sticky above this pane, so it comes out of the height too. */
+  --strip-h: 55px;
+  height: calc(100vh - var(--header-h) - var(--strip-h));
+  padding: 0;
+  overflow: hidden;
+  background: var(--page);
+}
+
+.kosh-page-layout,
+.kosh-page-layout.karmkand-layout {
+  display: flex;
+  gap: 0;
+  height: 100%;
+  max-width: 1480px;
+  margin-inline: auto;
+  padding: 0;
+  border-inline: 1px solid var(--rule);
+  background: var(--surface);
+}
+
+/* ── Category rail ── */
+.kosh-sidebar,
+.karmkand-categories-sidebar,
+.karmkand-subcategories-sidebar {
+  width: 262px;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  border-right: 1px solid var(--rule);
+  border-radius: 0;
+  background: var(--page-2);
+  box-shadow: none;
+}
+
+.kosh-sidebar-header {
+  padding: var(--s-4) var(--s-4) var(--s-3);
+  border-bottom: 1px solid var(--rule);
+  background: transparent;
+}
+
+.kosh-sidebar-header h3 {
+  font-family: var(--font-ui);
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: var(--track);
+  text-transform: uppercase;
+  color: var(--ink-4);
+}
+
+html[lang='hi'] .kosh-sidebar-header h3 {
+  font-size: .78rem;
+  letter-spacing: .03em;
+  text-transform: none;
+}
+
+.kosh-sidebar-categories { gap: 2px; padding: var(--s-3) var(--s-2); }
+
+.kosh-sidebar-category {
+  gap: var(--s-3);
+  margin: 0;
+  padding: 7px 10px;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease);
+}
+
+/* Replaced by an inset rule on the active row, which needs no extra element. */
+.kosh-sidebar-category::before { display: none; }
+
+.kosh-sidebar-category:hover { background: var(--saffron-50); }
+
+.kosh-sidebar-category.active {
+  background: var(--saffron-50);
+  box-shadow: inset 2px 0 0 var(--saffron);
+}
+
+.kosh-sidebar-category-image {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--gold-line);
+  border-radius: 50%;
+  background: var(--surface-2);
+  box-shadow: none;
+  overflow: hidden;
+}
+
+/* The lift was the only thing moving on the page and it read as jitter. */
+.kosh-sidebar-category:hover .kosh-sidebar-category-image {
+  transform: none;
+  box-shadow: none;
+  border-color: var(--saffron);
+}
+
+.kosh-sidebar-category-image img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Many categories have no cover image in the CMS; they get an initial. */
+.kosh-cat-initial {
+  font-family: var(--font-display);
+  font-size: .84rem;
+  font-weight: 600;
+  color: var(--gold-deep);
+  line-height: 1;
+}
+
+.kosh-sidebar-category-name {
+  font-family: var(--font-display);
+  font-size: .85rem;
+  font-weight: 500;
+  color: var(--ink-2);
+}
+
+.kosh-sidebar-category.active .kosh-sidebar-category-name {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* ── Reading pane ── */
+.kosh-main-content-wrapper {
+  height: 100%;
+  padding: 0;
+  background: var(--surface);
+}
+
+.kosh-search-filter-bar {
+  gap: var(--s-2);
+  padding: var(--s-3) var(--s-4);
+  border-bottom: 1px solid var(--rule);
+  background: var(--surface);
+  box-shadow: none;
+}
+
+.kosh-search-wrapper {
+  min-height: 40px;
+  padding: 0 var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-full);
+  background: var(--page-2);
+  transition: border-color var(--dur-fast) var(--ease),
+              box-shadow var(--dur-fast) var(--ease);
+}
+
+.kosh-search-wrapper:focus-within {
+  border-color: var(--saffron);
+  box-shadow: var(--glow);
+}
+
+.kosh-search-input {
+  font-family: var(--font-ui);
+  font-size: var(--fs-small);
+}
+
+.kosh-filter-btn { min-height: 40px; padding-inline: var(--s-4); }
+
+.kosh-filter-badge {
+  background: var(--saffron);
+  border-color: var(--surface);
+  color: #FFFDF8;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The list already sits inside the pane; framing it again boxed a box. */
+.kosh-contents-card {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.kosh-contents-card-header {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-3);
+  padding: var(--s-4) var(--s-5);
+  border-bottom: 1px solid var(--rule);
+  background: transparent;
+}
+
+.kosh-contents-card-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.kosh-contents-count,
+.kosh-active-filter {
+  font-family: var(--font-ui);
+  font-size: var(--fs-caption);
+  font-weight: 400;
+  color: var(--ink-4);
+  font-variant-numeric: tabular-nums;
+}
+
+.kosh-contents-list-scroll { padding: 0; }
+
+.kosh-content-item {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  margin: 0;
+  padding: 10px var(--s-5);
+  border: 0;
+  border-bottom: 1px solid var(--rule);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  transition: background-color var(--dur-fast) var(--ease);
+}
+
+.kosh-content-item:hover { background: var(--saffron-50); }
+.kosh-content-item:last-child { border-bottom: 0; }
+
+/* The tint is set inline per row so the list has a gentle rhythm. */
+.kosh-content-icon {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border: 1px solid var(--gold-line);
+  border-radius: 50%;
+  color: var(--gold-deep);
+  font-family: var(--font-display);
+  font-size: .8rem;
+  font-weight: 600;
+  box-shadow: none;
+}
+
+.kosh-content-title {
+  font-family: var(--font-display);
+  font-size: .92rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.kosh-content-title-clickable { cursor: pointer; }
+.kosh-content-title-clickable:hover { color: var(--saffron-deep); }
+
+/* ─────────────────────────────────────────────────────────────
+   8. Modals and overlays
+───────────────────────────────────────────────────────────── */
+.kosh-filter-modal-overlay,
+.kosh-content-modal-overlay,
+.quote-modal-overlay,
+.instruction-modal-overlay,
+.answer-modal-overlay {
+  background: rgba(31, 23, 16, .52);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: var(--z-modal);
+}
+
+.kosh-filter-modal,
+.kosh-content-modal,
+.quote-modal,
+.instruction-modal,
+.answer-modal {
+  border: 1px solid var(--gold-line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-3);
+  z-index: var(--z-modal);
+}
+
+.kosh-filter-modal-header,
+.kosh-content-modal-header { border-bottom: 1px solid var(--rule); }
+
+.kosh-content-modal-header h3,
+.kosh-filter-modal-header h3 {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   9. Loading, empty and error states
+───────────────────────────────────────────────────────────── */
+.epooja-loader,
+.astroshop-loader,
+.emagazine-loader,
+.kosh-loader,
+.kosh-loader-small,
+.calc-spinner,
+.panchang-spinner,
+.muhurat-spinner,
+.report-spinner,
+.loading-spinner {
+  border-color: var(--rule);
+  border-top-color: var(--saffron);
+}
+
+.epooja-empty,
+.astroshop-empty,
+.emagazine-empty,
+.kosh-no-results-inline,
+.epooja-error,
+.astroshop-error,
+.emagazine-error,
+.kosh-error-inline,
+.rashifal-error {
+  padding: var(--s-8) var(--s-5);
+  border: 1px dashed var(--rule);
+  border-radius: var(--r-md);
+  background: var(--page-2);
+  color: var(--ink-3);
+  font-size: var(--fs-small);
+  text-align: center;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   10. Report pages
+───────────────────────────────────────────────────────────── */
+.jyotish-report-hero {
+  border: 1px solid var(--gold-line);
+  border-radius: var(--r-lg);
+  background:
+    radial-gradient(120% 80% at 50% 0%, var(--saffron-50), transparent 64%),
+    var(--surface);
+  box-shadow: var(--shadow-1);
+}
+
+.jyotish-report-hero-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  background: none;
+  -webkit-text-fill-color: currentColor;
+  color: var(--ink);
+}
+
+.jyotish-meta-item {
+  border: 1px solid var(--rule);
+  border-radius: var(--r-full);
+  background: var(--page-2);
+  font-size: var(--fs-caption);
+  color: var(--ink-2);
+}
+
+.jyotish-report-section-title,
+.jyotish-report-section h2,
+.jyotish-report-section h3 {
+  font-family: var(--font-display);
+  color: var(--ink);
+}
+
+.strength-progress,
+.jyotish-loading-progress,
+.report-progress { background: var(--surface-2); }
+
+.strength-fill,
+.jyotish-loading-progress-bar,
+.report-progress-bar { background: var(--saffron); }
+
+/* ─────────────────────────────────────────────────────────────
+   11. Grids — consistent gutters and graceful phone columns
+───────────────────────────────────────────────────────────── */
+.epooja-grid,
+.astroshop-grid,
+.emagazine-grid,
+.videos-grid,
+.rashifal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--s-5);
+}
+
+.rashifal-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+
+@media (max-width: 720px) {
+  .epooja-grid,
+  .astroshop-grid,
+  .emagazine-grid,
+  .videos-grid,
+  .rashifal-grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+    gap: var(--s-4);
+  }
+}
+
+/* The Kosh shell puts a fixed sidebar beside the list; on a phone the sidebar
+   becomes a scrolling chip row above it. */
+@media (max-width: 900px) {
+  /* The two-pane shell collapses: the page scrolls normally and the rail
+     becomes a row of chips above the list. */
+  .kosh-page-main-new {
+    height: auto;
+    overflow: visible;
+    padding-bottom: var(--s-7);
+  }
+
+  .kosh-page-layout,
+  .kosh-page-layout.karmkand-layout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-4);
+    height: auto;
+    padding-block: var(--s-4);
+    border: 0;
+    background: none;
+  }
+
+  .kosh-sidebar,
+  .karmkand-categories-sidebar,
+  .karmkand-subcategories-sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+    max-height: none;
+    overflow: visible;
+    border: 0;
+    background: none;
+    box-shadow: none;
+    padding: 0;
+  }
+
+  .kosh-sidebar-header { display: none; }
+
+  .kosh-sidebar-categories {
+    display: flex;
+    gap: var(--s-2);
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 0 0 4px;
+  }
+
+  .kosh-sidebar-categories::-webkit-scrollbar { display: none; }
+
+  /* Each category collapses to a pill: small thumbnail, label beside it. */
+  .kosh-sidebar-category {
+    flex: 0 0 auto;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--s-2);
+    width: auto;
+    min-width: 0;
+    margin: 0;
+    padding: 5px 12px 5px 6px;
+    border: 1px solid var(--rule);
+    border-radius: var(--r-full);
+    background: var(--surface);
+    white-space: nowrap;
+  }
+
+  .kosh-sidebar-category-image {
+    width: 26px;
+    height: 26px;
+    min-width: 26px;
+    margin: 0;
+  }
+
+  .kosh-cat-initial { font-size: .72rem; }
+
+  .kosh-sidebar-category-image img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  /* An inset rule down one edge of a pill just looks like a printing error. */
+  .kosh-sidebar-category.active {
+    border-color: var(--saffron);
+    background: var(--saffron-50);
+    box-shadow: none;
+  }
+
+  .kosh-sidebar-category-name { font-size: .82rem; }
+
+  .kosh-main-content-wrapper {
+    height: auto;
+    padding: 0;
+    border: 1px solid var(--rule);
+    border-radius: var(--r-md);
+    background: var(--surface);
+    box-shadow: var(--shadow-1);
+    overflow: hidden;
+  }
+
+  .kosh-search-filter-bar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--s-2);
+    padding: var(--s-3);
+  }
+
+  .kosh-search-wrapper { flex: 1; min-width: 0; }
+  .kosh-filter-btn { flex: none; padding: 0 var(--s-3); min-height: 40px; }
+  .kosh-contents-card-header,
+  .kosh-content-item { padding-inline: var(--s-4); }
+
+  /* Without the viewport-height pane, the inner scroller has no height to
+     resolve against, so it needs its own. */
+  .kosh-contents-list-scroll { max-height: 62vh; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   12. Two-column detail pages
+───────────────────────────────────────────────────────────── */
+.epooja-detail-layout,
+.astroshop-detail-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  gap: var(--s-7);
+  align-items: start;
+  padding-block: var(--s-6);
+}
+
+.epooja-detail-image-wrapper,
+.astroshop-detail-image-wrapper {
+  border: 1px solid var(--rule);
+  border-radius: var(--r-lg);
+  background: var(--page-2);
+  box-shadow: var(--shadow-1);
+  overflow: hidden;
+}
+
+.epooja-detail-header h1,
+.astroshop-detail-header h1 {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+}
+
+.epooja-detail-tagline,
+.astroshop-detail-tagline {
+  font-family: var(--font-ui);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  letter-spacing: var(--track);
+  text-transform: uppercase;
+  color: var(--saffron-deep);
+}
+
+.epooja-detail-description,
+.astroshop-detail-description {
+  font-size: var(--fs-small);
+  line-height: var(--lh-body);
+  color: var(--ink-2);
+}
+
+.epooja-detail-action,
+.astroshop-detail-action {
+  display: flex;
+  align-items: center;
+  gap: var(--s-5);
+  flex-wrap: wrap;
+  padding: var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-md);
+  background: var(--page-2);
+}
+
+@media (max-width: 860px) {
+  .epooja-detail-layout,
+  .astroshop-detail-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-5);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   13. Panchang and muhurat tables
+───────────────────────────────────────────────────────────── */
+.panchang-detail-item,
+.muhurat-list-item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-3);
+  padding: 11px var(--s-4);
+  border-bottom: 1px solid var(--rule);
+  font-size: var(--fs-small);
+}
+
+.panchang-detail-item:last-child,
+.muhurat-list-item:last-child { border-bottom: 0; }
+
+.panchang-detail-item span:last-child,
+.muhurat-list-item span:last-child {
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.panchang-detail-banner {
+  border: 1px solid var(--gold-line);
+  border-radius: var(--r-md);
+  background: var(--saffron-50);
+  color: var(--ink-2);
+  box-shadow: none;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   14. Prashan Yantra page — it has no <main>, so it clears the
+       fixed header itself
+───────────────────────────────────────────────────────────── */
+.prashan-yantra-card {
+  margin-top: var(--header-h);
+}
+
+.prashan-yantra-header h1,
+.prashan-yantra-header h2 { font-family: var(--font-display); }
+
+/* ─────────────────────────────────────────────────────────────
+   15. App download banner — the deep ink plate the rest of the
+       site uses for its one dark anchor, not a tilted gradient
+───────────────────────────────────────────────────────────── */
+.app-download-banner { background: transparent; }
+
+.app-download-banner-card {
+  border: 1px solid var(--gold-line);
+  border-radius: var(--r-lg);
+  background: var(--plate);
+  box-shadow: var(--shadow-2);
+  /* The 3D tilt fought every straight edge around it. */
+  transform: none;
+}
+
+.app-download-banner-card::before,
+.app-download-banner-card::after { display: none; }
+
+.app-download-banner-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: #FFF6E6;
+}
+
+@media (max-width: 900px) {
+  .app-download-banner-card { transform: none; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   16. Image placeholders — a quiet mark, not a 120px emoji
+───────────────────────────────────────────────────────────── */
+.epooja-card-image-placeholder,
+.astroshop-card-image-placeholder,
+.epooja-detail-image-placeholder,
+.astroshop-detail-image-placeholder,
+.emagazine-card-writer-placeholder {
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 50% 40%, var(--saffron-50), var(--surface-2));
+  color: var(--gold);
+}
+
+.epooja-card-image-placeholder span,
+.astroshop-card-image-placeholder span,
+.epooja-detail-image-placeholder span,
+.astroshop-detail-image-placeholder span {
+  font-size: 2.2rem !important;
+  opacity: .38;
+  filter: grayscale(1);
+}
+
+/* Date and stock flags */
+.epooja-last-day-badge,
+.astroshop-last-day-badge,
+.emagazine-last-day-badge {
+  border-radius: var(--r-full);
+  padding: 4px 11px;
+  background: var(--saffron);
+  color: #FFFDF8;
+  font-family: var(--font-ui);
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  box-shadow: var(--shadow-1);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   17. Contact page
+───────────────────────────────────────────────────────────── */
+.contact-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--s-5);
+}
+
+/* The three cards were green, blue and orange; one medallion reads as a set. */
+.contact-info-icon,
+.contact-info-icon.address-icon,
+.contact-info-icon.phone-icon,
+.contact-info-icon.email-icon,
+.contact-org-icon {
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--gold-line);
+  border-radius: 50%;
+  background: var(--saffron-50);
+  color: var(--saffron-deep);
+  box-shadow: none;
+}
+
+.contact-info-card a { color: var(--saffron-deep); text-decoration: none; }
+.contact-info-card a:hover { text-decoration: underline; }
+
+.contact-social-section a,
+.social-link {
+  border: 1px solid var(--rule);
+  background: var(--surface);
+  color: var(--ink-2);
+  transition: all var(--dur-fast) var(--ease);
+}
+
+.contact-social-section a:hover,
+.social-link:hover {
+  border-color: var(--saffron);
+  color: var(--saffron-deep);
+}

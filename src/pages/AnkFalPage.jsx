@@ -171,15 +171,15 @@ const AnkFalPage = ({ language: initialLanguage, setLanguage: setLanguageProp })
   }, [selectedYearlyYear])
 
   const numberMap = useMemo(() => [
-    { num: 1, hi: 'अंक 1', emoji: '1️⃣', color: 'linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%)' },
-    { num: 2, hi: 'अंक 2', emoji: '2️⃣', color: 'linear-gradient(135deg, #4ECDC4 0%, #6EDDD6 100%)' },
-    { num: 3, hi: 'अंक 3', emoji: '3️⃣', color: 'linear-gradient(135deg, #FFE66D 0%, #FFF087 100%)' },
-    { num: 4, hi: 'अंक 4', emoji: '4️⃣', color: 'linear-gradient(135deg, #A8E6CF 0%, #C4F2E0 100%)' },
-    { num: 5, hi: 'अंक 5', emoji: '5️⃣', color: 'linear-gradient(135deg, #FFB347 0%, #FFC870 100%)' },
-    { num: 6, hi: 'अंक 6', emoji: '6️⃣', color: 'linear-gradient(135deg, #95E1D3 0%, #B0ECE2 100%)' },
-    { num: 7, hi: 'अंक 7', emoji: '7️⃣', color: 'linear-gradient(135deg, #F38181 0%, #F8A3A3 100%)' },
-    { num: 8, hi: 'अंक 8', emoji: '8️⃣', color: 'linear-gradient(135deg, #AA96DA 0%, #C4B5E5 100%)' },
-    { num: 9, hi: 'अंक 9', emoji: '9️⃣', color: 'linear-gradient(135deg, #FCBAD3 0%, #FFD4E5 100%)' }
+    { num: 1, hi: 'अंक 1', emoji: '1️⃣', color: 'linear-gradient(135deg, var(--saffron-100) 0%, var(--saffron-50) 100%)' },
+    { num: 2, hi: 'अंक 2', emoji: '2️⃣', color: 'linear-gradient(135deg, var(--surface-2) 0%, var(--page-2) 100%)' },
+    { num: 3, hi: 'अंक 3', emoji: '3️⃣', color: 'linear-gradient(135deg, var(--gold-soft) 0%, var(--gold-soft) 100%)' },
+    { num: 4, hi: 'अंक 4', emoji: '4️⃣', color: 'linear-gradient(135deg, var(--surface-2) 0%, var(--page-2) 100%)' },
+    { num: 5, hi: 'अंक 5', emoji: '5️⃣', color: 'linear-gradient(135deg, var(--gold-soft) 0%, var(--gold-soft) 100%)' },
+    { num: 6, hi: 'अंक 6', emoji: '6️⃣', color: 'linear-gradient(135deg, var(--surface-2) 0%, var(--page-2) 100%)' },
+    { num: 7, hi: 'अंक 7', emoji: '7️⃣', color: 'linear-gradient(135deg, var(--saffron-100) 0%, var(--saffron-50) 100%)' },
+    { num: 8, hi: 'अंक 8', emoji: '8️⃣', color: 'linear-gradient(135deg, var(--surface-2) 0%, var(--page-2) 100%)' },
+    { num: 9, hi: 'अंक 9', emoji: '9️⃣', color: 'linear-gradient(135deg, var(--saffron-100) 0%, var(--saffron-50) 100%)' }
   ], [])
 
   const getNumberData = (title) => {
@@ -249,7 +249,7 @@ const AnkFalPage = ({ language: initialLanguage, setLanguage: setLanguageProp })
               animate={{ scale: 1 }}
               transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
             >
-              ✨ Ank Fal
+              Ank Fal
             </motion.div>
             <h1 className={`rashifal-page-title ${language === 'hindi' ? 'hindi' : ''}`}>
               {language === 'hindi' ? 'आपका अंक फल' : 'Your Ank Fal'}
@@ -455,7 +455,7 @@ const AnkFalPage = ({ language: initialLanguage, setLanguage: setLanguageProp })
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
             >
-              <span className="error-icon">⚠️</span>
+              <span className="error-icon"></span>
               <p>{error}</p>
             </motion.div>
           )}
@@ -466,7 +466,7 @@ const AnkFalPage = ({ language: initialLanguage, setLanguage: setLanguageProp })
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
             >
-              <span className="error-icon">ℹ️</span>
+              <span className="error-icon">ℹ</span>
               <p>{language === 'hindi' ? 'इस महीने के लिए कोई अंक फल उपलब्ध नहीं है' : 'No numerology predictions available for this month'}</p>
             </motion.div>
           )}
@@ -516,7 +516,7 @@ const AnkFalPage = ({ language: initialLanguage, setLanguage: setLanguageProp })
                             justifyContent: 'center',
                             fontSize: '2.5rem',
                             fontWeight: 'bold',
-                            color: '#fff',
+                            color: 'var(--surface)',
                             textShadow: '0 2px 4px rgba(0,0,0,0.2)',
                             boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
                           }}

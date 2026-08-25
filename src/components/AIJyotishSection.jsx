@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import TodayMuhurat from './TodayMuhurat'
 import PrashanYantra from './PrashanYantra'
+import useMediaQuery from '../hooks/useMediaQuery'
 import { Button, SectionHeader } from './ui'
 import { IconCalendar, IconClock, IconPin, IconUser } from './ui/Icons'
 import {
@@ -20,6 +21,9 @@ const column = {
 
 const AIJyotishSection = ({ language }) => {
   const hi = language === 'hindi'
+  // The yantra is a full-screen ritual, not a preview. Stacked on a phone it was
+  // a third long scroll before the next section, so it stays on its own page.
+  const phone = useMediaQuery('(max-width: 720px)')
 
   const [formData, setFormData] = useState({
     name: '',
@@ -262,9 +266,11 @@ const AIJyotishSection = ({ language }) => {
             <TodayMuhurat language={language} />
           </motion.div>
 
-          <motion.div variants={column} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.15 }}>
-            <PrashanYantra language={language} />
-          </motion.div>
+            {!phone && (
+              <motion.div variants={column} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.15 }}>
+                <PrashanYantra language={language} />
+              </motion.div>
+            )}
         </div>
       </div>
     </section>

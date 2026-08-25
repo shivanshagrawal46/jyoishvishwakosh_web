@@ -282,7 +282,7 @@ const KarmkandPage = ({ language: initialLanguage, setLanguage: setLanguageProp 
 
   // Color palette for icons
   const getIconColor = useCallback((index) => {
-    const colors = ['#17A2B8', '#FF6B9D', '#4ECDC4', '#FFC107', '#9C27B0', '#FF9800', '#2196F3', '#E91E63', '#00BCD4', '#8BC34A']
+    const colors = ['var(--saffron-50)', 'var(--surface-2)', 'var(--saffron-100)', 'var(--sunken)']
     return colors[index % colors.length]
   }, [])
 
@@ -353,7 +353,9 @@ const KarmkandPage = ({ language: initialLanguage, setLanguage: setLanguageProp 
                   whileHover={{ x: 4 }}
                 >
                   <div className="kosh-sidebar-category-image">
-                    <img src={category.cover_image || ''} alt={category.name} loading="lazy" />
+                    {category.cover_image
+                      ? <img src={category.cover_image} alt="" loading="lazy" />
+                      : <span className="kosh-cat-initial" aria-hidden="true">{(category.name || '').trim().charAt(0)}</span>}
                   </div>
                   <span className="kosh-sidebar-category-name">{category.name}</span>
                 </motion.button>
@@ -379,13 +381,15 @@ const KarmkandPage = ({ language: initialLanguage, setLanguage: setLanguageProp 
                     whileHover={{ x: 4 }}
                   >
                     <div className="kosh-sidebar-category-image">
-                      <img src={subcategory.cover_image || ''} alt={subcategory.name} loading="lazy" />
+                      {subcategory.cover_image
+                      ? <img src={subcategory.cover_image} alt="" loading="lazy" />
+                      : <span className="kosh-cat-initial" aria-hidden="true">{(subcategory.name || '').trim().charAt(0)}</span>}
                     </div>
                     <span className="kosh-sidebar-category-name">{subcategory.name}</span>
                   </motion.button>
                 ))
               ) : (
-                <div className="kosh-no-results-inline" style={{ padding: '20px', textAlign: 'center', color: '#999' }}>
+                <div className="kosh-no-results-inline" style={{ padding: '20px', textAlign: 'center', color: 'var(--ink-4)' }}>
                   <p>{language === 'hindi' ? 'कोई उप-श्रेणी नहीं' : 'No subcategories'}</p>
                 </div>
               )}
@@ -534,7 +538,7 @@ const KarmkandPage = ({ language: initialLanguage, setLanguage: setLanguageProp 
                     )}
                   </>
                 ) : (
-                  <p style={{ padding: '20px', textAlign: 'center', color: '#666' }}>
+                  <p style={{ padding: '20px', textAlign: 'center', color: 'var(--ink-3)' }}>
                     {language === 'hindi' ? 'कोई विशेष सूची उपलब्ध नहीं' : 'No special list available'}
                   </p>
                 )}

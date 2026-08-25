@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import Header from '../components/Header'
-import ServicesStrip from '../components/ServicesStrip'
+import ServicesStrip from '../components/ServicesStrip'
+import Footer from '../components/Footer'
 import { createOrder } from '../services/api'
 
 const OrderPage = ({ language: initialLanguage, setLanguage: setLanguageProp }) => {
@@ -104,7 +105,7 @@ const OrderPage = ({ language: initialLanguage, setLanguage: setLanguageProp }) 
       <main className="calc-page-main">
         <div className="calc-page-container">
           <div className="calc-page-hero">
-            <div className="calc-hero-badge">🧾 Order</div>
+            <div className="calc-hero-badge">Order</div>
             <h1 className={`calc-page-title ${language === 'hindi' ? 'hindi' : ''}`}>
               {language === 'hindi' ? 'ऑर्डर बनाएँ' : 'Create Order'}
             </h1>
@@ -209,7 +210,7 @@ const OrderPage = ({ language: initialLanguage, setLanguage: setLanguageProp }) 
           {success && (
             <div className="calc-result-card">
               <div className="calc-result-header">
-                <div className="calc-result-badge">✅ {language === 'hindi' ? 'ऑर्डर सफल' : 'Order Success'}</div>
+                <div className="calc-result-badge">{language === 'hindi' ? 'ऑर्डर सफल' : 'Order Success'}</div>
                 <h2 className="calc-result-title">
                   {language === 'hindi' ? 'धन्यवाद!' : 'Thank you!'}
                 </h2>
@@ -234,6 +235,8 @@ const OrderPage = ({ language: initialLanguage, setLanguage: setLanguageProp }) 
           )}
         </div>
       </main>
+
+      <Footer language={language} />
     </div>
   )
 }

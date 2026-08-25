@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import Header from '../components/Header'
-import ServicesStrip from '../components/ServicesStrip'
+import ServicesStrip from '../components/ServicesStrip'
+import Footer from '../components/Footer'
 import { calculateMulank } from '../services/api'
 
 const MulankPage = ({ language: initialLanguage, setLanguage: setLanguageProp }) => {
@@ -42,7 +43,7 @@ const MulankPage = ({ language: initialLanguage, setLanguage: setLanguageProp })
       <main className="calc-page-main">
         <div className="calc-page-container">
           <div className="calc-page-hero">
-            <div className="calc-hero-badge">🔢 Numerology</div>
+            <div className="calc-hero-badge">Numerology</div>
             <h1 className={`calc-page-title ${language === 'hindi' ? 'hindi' : ''}`}>
               {language === 'hindi' ? 'मूलांक कैलकुलेटर' : 'Mulank Calculator'}
             </h1>
@@ -100,7 +101,7 @@ const MulankPage = ({ language: initialLanguage, setLanguage: setLanguageProp })
           {result && (
             <div className="calc-result-card">
               <div className="calc-result-header">
-                <div className="calc-result-badge">✨ Your Result</div>
+                <div className="calc-result-badge">Your Result</div>
                 <h2 className="calc-result-title">{result.description}</h2>
               </div>
 
@@ -126,6 +127,8 @@ const MulankPage = ({ language: initialLanguage, setLanguage: setLanguageProp })
           )}
         </div>
       </main>
+
+      <Footer language={language} />
     </div>
   )
 }

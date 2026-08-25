@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import Header from '../components/Header'
-import ServicesStrip from '../components/ServicesStrip'
+import ServicesStrip from '../components/ServicesStrip'
+import Footer from '../components/Footer'
 import { fetchDashaPeriods } from '../services/api'
 
 const DashaPage = ({ language: initialLanguage, setLanguage: setLanguageProp }) => {
@@ -42,7 +43,7 @@ const DashaPage = ({ language: initialLanguage, setLanguage: setLanguageProp }) 
       <main className="calc-page-main">
         <div className="calc-page-container">
           <div className="calc-page-hero">
-            <div className="calc-hero-badge">🕰️ Dasha</div>
+            <div className="calc-hero-badge">Dasha</div>
             <h1 className={`calc-page-title ${language === 'hindi' ? 'hindi' : ''}`}>
               {language === 'hindi' ? 'दशा कैलकुलेटर' : 'Dasha Calculator'}
             </h1>
@@ -100,7 +101,7 @@ const DashaPage = ({ language: initialLanguage, setLanguage: setLanguageProp }) 
           {result && (
             <div className="calc-result-card">
               <div className="calc-result-header">
-                <div className="calc-result-badge">🕰️ Dasha Periods</div>
+                <div className="calc-result-badge">Dasha Periods</div>
                 <h2 className="calc-result-title">
                   {language === 'hindi' ? 'वर्तमान दशा' : 'Current Dasha'}: {result.currentDasha?.planet}
                 </h2>
@@ -137,6 +138,8 @@ const DashaPage = ({ language: initialLanguage, setLanguage: setLanguageProp }) 
           )}
         </div>
       </main>
+
+      <Footer language={language} />
     </div>
   )
 }

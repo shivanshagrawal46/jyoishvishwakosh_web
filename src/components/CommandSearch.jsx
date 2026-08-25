@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { CALC_TOOLS, FOOTER_GROUPS, SERVICES } from '../data/site'
+import { useChrome } from '../contexts/ChromeContext'
 import { IconArrowRight, IconSearch, IconX } from './ui/Icons'
 
 const EASE = [0.22, 1, 0.36, 1]
@@ -24,6 +25,7 @@ function buildIndex(hi) {
     sub: hi ? s.descHi : s.desc,
     alt: `${s.name} ${s.nameHi}`,
     path: s.path,
+    appOnly: s.appOnly,
     icon: s.icon,
     group: hi ? 'सेवाएं' : 'Services',
   }))
@@ -63,6 +65,7 @@ const CommandSearch = ({ open, onClose, language }) => {
   const inputRef = useRef(null)
   const listRef = useRef(null)
   const navigate = useNavigate()
+  const { openAppPrompt } = useChrome()
 
   const index = useMemo(() => buildIndex(hi), [hi])
 
@@ -101,7 +104,9 @@ const CommandSearch = ({ open, onClose, language }) => {
 
   const go = (item) => {
     onClose()
-    if (item.path.startsWith('/#')) {
+    if (item.appOnly) {
+      openAppPrompt(item.label)
+    } else if (item.path.startsWith('/#')) {
       const id = item.path.slice(2)
       navigate('/')
       requestAnimationFrame(() =>

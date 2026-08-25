@@ -46,14 +46,14 @@ const NumerologyReportPage = ({ language: initialLanguage, setLanguage: setLangu
         <div className="jyotish-loading-content">
           <div className="jyotish-loading-icon">
             <svg width="80" height="80" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="10" stroke="#FF6B35" strokeWidth="0.5" opacity="0.2"/>
+              <circle cx="12" cy="12" r="10" stroke="var(--saffron)" strokeWidth="0.5" opacity="0.2"/>
               <circle cx="12" cy="12" r="10" stroke="url(#grad-num)" strokeWidth="2" strokeLinecap="round" strokeDasharray="60 30">
                 <animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="1.5s" repeatCount="indefinite"/>
               </circle>
               <defs>
                 <linearGradient id="grad-num" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#FF6B35"/>
-                  <stop offset="100%" stopColor="#FF9A56"/>
+                  <stop offset="0%" stopColor="var(--saffron)"/>
+                  <stop offset="100%" stopColor="var(--saffron-deep)"/>
                 </linearGradient>
               </defs>
             </svg>
@@ -81,8 +81,8 @@ const NumerologyReportPage = ({ language: initialLanguage, setLanguage: setLangu
         <main className="jyotish-report-empty-main">
           <div className="jyotish-report-empty-card">
             <svg width="120" height="120" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="10" stroke="#E0E0E0" strokeWidth="2"/>
-              <path d="M12 8v4M12 16h.01" stroke="#FF6B35" strokeWidth="2" strokeLinecap="round"/>
+              <circle cx="12" cy="12" r="10" stroke="var(--rule)" strokeWidth="2"/>
+              <path d="M12 8v4M12 16h.01" stroke="var(--saffron)" strokeWidth="2" strokeLinecap="round"/>
             </svg>
             <h3>{language === 'hindi' ? 'रिपोर्ट नहीं मिली' : 'No Report Found'}</h3>
             <p>{language === 'hindi' ? 'कृपया होम पेज पर जाकर अपना विवरण भरें।' : 'Please fill your details on the home page first.'}</p>

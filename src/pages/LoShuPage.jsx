@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import Header from '../components/Header'
-import ServicesStrip from '../components/ServicesStrip'
+import ServicesStrip from '../components/ServicesStrip'
+import Footer from '../components/Footer'
 import { calculateLoShu } from '../services/api'
 
 const LoShuPage = ({ language: initialLanguage, setLanguage: setLanguageProp }) => {
@@ -70,7 +71,7 @@ const LoShuPage = ({ language: initialLanguage, setLanguage: setLanguageProp }) 
       <main className="calc-page-main">
         <div className="calc-page-container">
           <div className="calc-page-hero">
-            <div className="calc-hero-badge">🔳 Lo Shu Grid</div>
+            <div className="calc-hero-badge">Lo Shu Grid</div>
             <h1 className={`calc-page-title ${language === 'hindi' ? 'hindi' : ''}`}>
               {language === 'hindi' ? 'लो शू ग्रिड कैलकुलेटर' : 'Lo Shu Grid Calculator'}
             </h1>
@@ -128,7 +129,7 @@ const LoShuPage = ({ language: initialLanguage, setLanguage: setLanguageProp }) 
           {result && (
             <div className="calc-result-card">
               <div className="calc-result-header">
-                <div className="calc-result-badge">✨ Your Lo Shu Grid</div>
+                <div className="calc-result-badge">Your Lo Shu Grid</div>
                 <h2 className="calc-result-title">Your Numerological Blueprint</h2>
               </div>
 
@@ -200,6 +201,8 @@ const LoShuPage = ({ language: initialLanguage, setLanguage: setLanguageProp }) 
           )}
         </div>
       </main>
+
+      <Footer language={language} />
     </div>
   )
 }

@@ -37,7 +37,24 @@ body {
   overflow-x: hidden;
   overflow-x: clip;
   max-width: 100vw;
+  /* The scriptures and readings are the product, so they are not selectable.
+     `touch-callout` is the iOS long-press menu, which offers Copy separately
+     from the desktop right-click menu. See hooks/useContentGuard.js. */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
+
+/* Typing still needs a caret, a selection and paste. */
+input,
+textarea,
+select,
+[contenteditable='true'] {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+img { -webkit-user-drag: none; }
 
 /* The header is fixed; only the page content is offset by its height. */
 main {

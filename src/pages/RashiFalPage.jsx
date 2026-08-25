@@ -234,7 +234,7 @@ const RashiFalPage = ({ language: initialLanguage, setLanguage: setLanguageProp 
               animate={{ scale: 1 }}
               transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
             >
-              ✨ Rashifal
+              Rashifal
             </motion.div>
             <h1 className={`rashifal-page-title ${language === 'hindi' ? 'hindi' : ''}`}>
               {language === 'hindi' ? 'आपका राशिफल' : 'Your Rashifal'}
@@ -436,7 +436,7 @@ const RashiFalPage = ({ language: initialLanguage, setLanguage: setLanguageProp 
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
             >
-              <span className="error-icon">⚠️</span>
+              <span className="error-icon"></span>
               <p>{error}</p>
             </motion.div>
           )}

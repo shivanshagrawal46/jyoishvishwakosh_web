@@ -81,7 +81,7 @@ const DivineQuotesPage = ({ language: initialLanguage, setLanguage: setLanguageP
 
   // Color palette for icons
   const getIconColor = useCallback((index) => {
-    const colors = ['#17A2B8', '#FF6B9D', '#4ECDC4', '#FFC107', '#9C27B0', '#FF9800', '#2196F3', '#E91E63', '#00BCD4', '#8BC34A']
+    const colors = ['var(--saffron-50)', 'var(--surface-2)', 'var(--saffron-100)', 'var(--sunken)']
     return colors[index % colors.length]
   }, [])
 

@@ -99,7 +99,7 @@ const EMagazineDetailPage = ({ language: initialLanguage, setLanguage: setLangua
             <div className="emagazine-detail-error">
               <p>⚠️ {error || (language === 'hindi' ? 'मैगजीन नहीं मिली' : 'Magazine not found')}</p>
               {isAuthError && (
-                <p style={{ marginTop: '10px', fontSize: '0.9rem', color: '#666' }}>
+                <p style={{ marginTop: '10px', fontSize: '0.9rem', color: 'var(--ink-3)' }}>
                   {language === 'hindi' ? 'आपको मैगजीन पढ़ने के लिए लॉगिन करना होगा' : 'You need to login to read the magazine'}
                 </p>
               )}

@@ -41,7 +41,9 @@ export const CONTACT = {
 export const SERVICES = [
   { id: 'panchang',   name: 'Panchang',       nameHi: 'पंचांग',        icon: panchangIcon,       path: '/panchang',       category: 'daily',   featured: true,  descHi: 'आज का शुभ-अशुभ समय',        desc: "Today's auspicious timings" },
   { id: 'rashifal',   name: 'Rashifal',       nameHi: 'राशिफल',       icon: rashifalsIcon,      path: '/rashi-fal',      category: 'daily',   featured: true,  descHi: 'बारह राशियों का दैनिक फल',  desc: 'Daily horoscope for all signs' },
-  { id: 'kundli',     name: 'Kundli',         nameHi: 'कुंडली',        icon: kundliIcon,         path: '/jyotish-report', category: 'reports', featured: true,  descHi: 'जन्म कुंडली और विश्लेषण',   desc: 'Birth chart and analysis' },
+  // The full chart is only computed in the mobile app, so the web tiles open a
+  // download prompt instead of routing to a report that has no data.
+  { id: 'kundli',     name: 'Kundli',         nameHi: 'कुंडली',        icon: kundliIcon,         path: '/jyotish-report', appOnly: true, category: 'reports', featured: true,  descHi: 'जन्म कुंडली और विश्लेषण',   desc: 'Birth chart and analysis' },
   { id: 'epooja',     name: 'E-Pooja',        nameHi: 'ई-पूजा',        icon: epoojaIcon,         path: '/e-pooja',        category: 'seva',    featured: true,  descHi: 'ऑनलाइन पूजा बुकिंग',        desc: 'Book a pooja online' },
   { id: 'astroshop',  name: 'AstroShop',      nameHi: 'एस्ट्रो शॉप',    icon: astroshopIcon,      path: '/astroshop',      category: 'shop',    featured: true,  descHi: 'रत्न, रुद्राक्ष और यंत्र',    desc: 'Gemstones, rudraksha, yantra' },
   { id: 'aijyotish',  name: 'AI Jyotish',     nameHi: 'AI ज्योतिष',    icon: jyotishPredIcon,    path: '/#ai-jyotish',    category: 'tools',   featured: true,  descHi: 'मुफ़्त भविष्यवाणी',          desc: 'Free instant prediction' },
@@ -93,7 +95,7 @@ export const FOOTER_GROUPS = [
     links: [
       { name: 'Panchang',  nameHi: 'पंचांग',      path: '/panchang' },
       { name: 'Rashifal',  nameHi: 'राशिफल',     path: '/rashi-fal' },
-      { name: 'Kundli',    nameHi: 'कुंडली',      path: '/jyotish-report' },
+      { name: 'Kundli',    nameHi: 'कुंडली',      path: '/jyotish-report', appOnly: true },
       { name: 'E-Pooja',   nameHi: 'ई-पूजा',      path: '/e-pooja' },
       { name: 'Karmkand',  nameHi: 'कर्मकांड',    path: '/karmkand' },
       { name: 'Muhurat',   nameHi: 'दैनिक मुहूर्त', path: '/dainik-muhurat' },

@@ -616,14 +616,23 @@
 
 .sitefoot__col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
 
-.sitefoot__col a {
+/* App-only destinations render as buttons, so they are styled alongside links. */
+.sitefoot__col a,
+.sitefoot__col button {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: inherit;
   font-size: var(--fs-small);
+  text-align: left;
   color: #C4B69F;
   text-decoration: none;
+  cursor: pointer;
   transition: color var(--dur-fast) var(--ease);
 }
 
-.sitefoot__col a:hover { color: #FFF6E6; }
+.sitefoot__col a:hover,
+.sitefoot__col button:hover { color: #FFF6E6; }
 
 .sitefoot__rule {
   display: flex;

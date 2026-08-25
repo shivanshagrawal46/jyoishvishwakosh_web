@@ -9,6 +9,7 @@ const ChromeContext = createContext({
   theme: 'light',
   toggleTheme: () => {},
   openSearch: () => {},
+  openAppPrompt: () => {},
 })
 
 export const ChromeProvider = ({ value, children }) => (
