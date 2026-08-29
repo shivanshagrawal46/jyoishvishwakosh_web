@@ -9,6 +9,7 @@
 @import './styles/chrome.css';
 @import './styles/landing.css';
 @import './styles/tools.css';
+@import './styles/quiz.css';
 @import './styles/splash.css';
 
 /* ─────────────────────────────────────────────────────────────
@@ -3412,6 +3413,9 @@ ul { list-style: none; }
   height: 22px;
   object-fit: contain;
 }
+
+/* Services drawn as a stroke glyph rather than a painted illustration. */
+.services-strip-icon svg { color: var(--saffron-deep); }
 
 .services-strip-name {
   font-family: var(--font-display);

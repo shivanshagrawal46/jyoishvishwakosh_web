@@ -37,6 +37,7 @@
   .services-strip-track { padding-inline: var(--s-4); }
   .services-strip-icon { width: 26px; height: 26px; }
   .services-strip-icon img { width: 19px; height: 19px; }
+  .services-strip-icon svg { width: 16px; height: 16px; }
   .services-strip-name { font-size: .76rem; }
 }
 

@@ -9,20 +9,22 @@ import { googleLogin } from '../services/api'
 import { useToast } from './ui/Toast'
 import {
   IconMenu, IconMoon, IconSearch, IconSun, IconX, IconChevronDown,
-  IconHome, IconCalendar, IconZodiac, IconBook,
+  IconHome, IconCalendar, IconZodiac, IconBook, IconQuiz,
 } from './ui/Icons'
 import { NAV_LINKS } from '../data/site'
 import logoImg from '../assets/icons/logo_new.png'
 
 const EASE = [0.22, 1, 0.36, 1]
 
-/* Four destinations plus More. Anything beyond five targets stops being a
-   tab bar and starts being a menu. */
+/* Five destinations plus More. Anything beyond this stops being a tab bar and
+   starts being a menu, so a new tab has to earn its place against these. */
 const TAB_LINKS = [
-  { path: '/',          name: 'Home',      nameHi: 'होम',     Icon: IconHome },
-  { path: '/panchang',  name: 'Panchang',  nameHi: 'पंचांग',   Icon: IconCalendar },
-  { path: '/rashi-fal', name: 'Horoscope', nameHi: 'राशिफल',  Icon: IconZodiac },
-  { path: '/books',     name: 'Granth',    nameHi: 'ग्रंथ',     Icon: IconBook },
+  { path: '/',          name: 'Home',      nameHi: 'होम',      Icon: IconHome },
+  { path: '/panchang',  name: 'Panchang',  nameHi: 'पंचांग',    Icon: IconCalendar },
+  { path: '/rashi-fal', name: 'Rashifal',  nameHi: 'राशिफल',   Icon: IconZodiac },
+  // Shortened from प्रश्नोत्तरी, which does not fit a sixth of a phone.
+  { path: '/quiz',      name: 'Quiz',      nameHi: 'अभ्यास',    Icon: IconQuiz },
+  { path: '/books',     name: 'Granth',    nameHi: 'ग्रंथ',      Icon: IconBook },
 ]
 
 /* These three live at module scope on purpose. Declared inside Header they

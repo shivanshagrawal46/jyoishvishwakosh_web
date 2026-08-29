@@ -61,6 +61,11 @@ import EMagazineDetailPage from './pages/EMagazineDetailPage'
 import VideosPage from './pages/VideosPage'
 import DivineQuotesPage from './pages/DivineQuotesPage'
 import PrashanYantraPage from './pages/PrashanYantraPage'
+import QuizPage from './pages/QuizPage'
+import QuizSetsPage from './pages/QuizSetsPage'
+import QuizPlayPage from './pages/QuizPlayPage'
+import QuizReviewPage from './pages/QuizReviewPage'
+import QuizBookmarksPage from './pages/QuizBookmarksPage'
 import ContactPage from './pages/ContactPage'
 import NotFoundPage from './pages/NotFoundPage'
 import CsuPrintingPage from './pages/CsuPrintingPage'
@@ -107,6 +112,14 @@ const PAGES = [
   ['/divine-quotes', DivineQuotesPage],
   ['/prashan-yantra', PrashanYantraPage],
   ['/contact', ContactPage],
+
+  // Static segments outrank `:categoryId` in the router's own ranking, so the
+  // order here is for the reader's benefit rather than the matcher's.
+  ['/quiz', QuizPage],
+  ['/quiz/play', QuizPlayPage],
+  ['/quiz/bookmarks', QuizBookmarksPage],
+  ['/quiz/review/:attemptId', QuizReviewPage],
+  ['/quiz/:categoryId', QuizSetsPage],
 ]
 
 function HomePage({ language, setLanguage }) {

@@ -353,6 +353,42 @@
 }
 
 /* ─────────────────────────────────────────────────────────────
+   TEMPORARY — hero with the portrait switched off
+
+   Paired with SHOW_PORTRAIT in components/Hero.jsx. Without it the copy
+   would sit in the left column against an empty one, so it centres into
+   the full width instead. Delete this whole block when the portrait
+   comes back; every rule above it is left untouched.
+───────────────────────────────────────────────────────────── */
+.hero--solo .hero__inner {
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  padding-block: var(--s-7);
+}
+
+.hero--solo .hero__copy {
+  align-items: center;
+  max-width: 720px;
+  text-align: center;
+}
+
+/* The narrow measure was set to leave room for Guruji beside it. */
+.hero--solo .hero__title { max-width: 21ch; }
+
+@media (max-width: 620px) {
+  .hero--solo .hero__inner {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'title'
+      'cta'
+      'trust';
+    padding-block: var(--s-5) var(--s-4);
+  }
+
+  .hero--solo .hero__title { text-align: center; font-size: 1.5rem; }
+}
+
+/* ─────────────────────────────────────────────────────────────
    Service dock — illustrations are small navigation cues, not mascots.
 ───────────────────────────────────────────────────────────── */
 .services { position: relative; z-index: 3; }
@@ -454,6 +490,18 @@
   filter: saturate(.85);
 }
 
+/* Services with no painted illustration draw a stroke glyph. Saffron on a
+   tinted disc gives it the same visual weight as the coloured ones, rather
+   than reading as a placeholder. */
+.svc__tile svg {
+  padding: 6px;
+  border: 1px solid var(--gold-line);
+  border-radius: 50%;
+  box-sizing: content-box;
+  background: var(--saffron-50);
+  color: var(--saffron-deep);
+}
+
 .svc__name {
   font-family: var(--font-display);
   font-size: .855rem;
@@ -493,6 +541,7 @@
   }
   .svc__tile { width: 26px; height: 26px; }
   .svc__tile img { width: 24px; height: 24px; }
+  .svc__tile svg { padding: 4px; width: 16px; height: 16px; }
   .svc__name { font-size: .67rem; line-height: 1.16; }
 }
 

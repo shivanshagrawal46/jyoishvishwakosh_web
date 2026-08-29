@@ -21,7 +21,9 @@ const ServiceTile = ({ service, hi, onAppOnly }) => {
   const body = (
     <>
       <span className="svc__tile" aria-hidden="true">
-        <img src={service.icon} alt="" loading="eager" decoding="async" />
+        {service.icon
+          ? <img src={service.icon} alt="" loading="eager" decoding="async" />
+          : <service.Glyph s={22} />}
       </span>
       <span className="svc__name">{label}</span>
     </>

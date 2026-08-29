@@ -19,6 +19,7 @@ import numerologyCalcIcon from '../assets/icons/numerology_calculator.png'
 import divineQuotesIcon from '../assets/icons/divine_quotes.png'
 import aartiIcon from '../assets/icons/aarti.png'
 import kundliIcon from '../assets/icons/kundli.png'
+import { IconQuiz } from '../components/ui/Icons'
 
 /** Single point of contact for every "call us" / "chat with us" affordance. */
 export const CONTACT = {
@@ -37,6 +38,8 @@ export const CONTACT = {
  *
  * Original service illustrations are intentionally retained, but their visual
  * treatment is controlled by the component so they read as one quiet system.
+ * Newer services have no painted illustration and carry a `Glyph` component
+ * instead; every consumer falls back to it when `icon` is absent.
  */
 export const SERVICES = [
   { id: 'panchang',   name: 'Panchang',       nameHi: 'पंचांग',        icon: panchangIcon,       path: '/panchang',       category: 'daily',   featured: true,  descHi: 'आज का शुभ-अशुभ समय',        desc: "Today's auspicious timings" },
@@ -49,6 +52,7 @@ export const SERVICES = [
   { id: 'aijyotish',  name: 'AI Jyotish',     nameHi: 'AI ज्योतिष',    icon: jyotishPredIcon,    path: '/#ai-jyotish',    category: 'tools',   featured: true,  descHi: 'मुफ़्त भविष्यवाणी',          desc: 'Free instant prediction' },
   { id: 'granth',     name: 'Granth',         nameHi: 'ग्रंथ',          icon: granthIcon,         path: '/books',          category: 'library', featured: true,  descHi: 'शास्त्र और ग्रंथालय',        desc: 'Scriptures and library' },
   { id: 'karmkand',   name: 'Karmkand',       nameHi: 'कर्मकांड',      icon: karmkandIcon,       path: '/karmkand',       category: 'seva',    featured: true,  descHi: 'विधि-विधान और संस्कार',     desc: 'Rituals and ceremonies' },
+  { id: 'quiz',       name: 'Quiz',           nameHi: 'प्रश्नोत्तरी',    Glyph: IconQuiz,          path: '/quiz',           category: 'learn',   featured: true,  descHi: 'ज्योतिष अभ्यास प्रश्न',      desc: 'Practise astrology questions' },
 
   { id: 'kosh',       name: 'Kosh',           nameHi: 'कोष',           icon: koshIcon,           path: '/kosh',           category: 'library' },
   { id: 'mantra',     name: 'Mantra Tantra',  nameHi: 'मंत्र तंत्र',     icon: tantraIcon,         path: '/mantra-tantra',  category: 'library' },
@@ -110,6 +114,7 @@ export const FOOTER_GROUPS = [
       { name: 'Dharma Shastra', nameHi: 'धर्म शास्त्र',   path: '/dharma-shastra' },
       { name: 'Chalisa Aarti',  nameHi: 'चालीसा आरती',  path: '/chalisa-aarti' },
       { name: 'E-Magazine',     nameHi: 'ई-मैगज़ीन',     path: '/emagazine' },
+      { name: 'Quiz',           nameHi: 'प्रश्नोत्तरी',   path: '/quiz' },
     ],
   },
   {

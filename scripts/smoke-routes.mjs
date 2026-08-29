@@ -12,7 +12,9 @@ const ROUTES = [
   '/jyotish-report', '/numerology-report',
   '/mulank', '/bhagyank', '/loshu', '/ai-ank', '/rashi', '/nakshatra', '/dasha',
   '/order', '/rashi-fal', '/ank-fal', '/panchang', '/dainik-muhurat',
-  '/prashan-yantra', '/contact', '/books', '/nope-404',
+  '/prashan-yantra', '/contact', '/books',
+  '/quiz', '/quiz/1', '/quiz/bookmarks', '/quiz/play', '/quiz/review/abc',
+  '/nope-404',
 ]
 
 const browser = await puppeteer.launch({ channel: 'chrome', headless: 'shell' })

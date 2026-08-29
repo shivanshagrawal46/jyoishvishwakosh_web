@@ -295,6 +295,20 @@
 
   .tabbar__item.is-active { color: var(--saffron-deep); font-weight: 600; }
 
+  /* Six columns leaves each label about a sixth of the screen. It clips rather
+     than wrapping to a second line, which would push the icons off-centre. */
+  .tabbar__item span {
+    max-width: 100%;
+    padding-inline: 2px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  @media (max-width: 380px) {
+    .tabbar__item { font-size: .62rem; }
+  }
+
   /* The active marker rides the top edge, mirroring the desktop underline. */
   .tabbar__item.is-active::before {
     content: '';

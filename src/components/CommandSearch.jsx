@@ -27,6 +27,7 @@ function buildIndex(hi) {
     path: s.path,
     appOnly: s.appOnly,
     icon: s.icon,
+    Glyph: s.Glyph,
     group: hi ? 'सेवाएं' : 'Services',
   }))
 
@@ -204,7 +205,9 @@ const CommandSearch = ({ open, onClose, language }) => {
                         <span className="u-tile u-tile--sm cmdk__icon">
                           {item.icon
                             ? <img src={item.icon} alt="" loading="lazy" decoding="async" />
-                            : <IconSearch s={16} />}
+                            : item.Glyph
+                              ? <item.Glyph s={16} />
+                              : <IconSearch s={16} />}
                         </span>
                         <span className="cmdk__text">
                           <span className="cmdk__label">{item.label}</span>

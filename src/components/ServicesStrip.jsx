@@ -38,7 +38,9 @@ const ServicesStrip = ({ language = 'hindi', activeService = null }) => {
           const content = (
             <>
               <span className="services-strip-icon">
-                <img src={service.icon} alt="" loading="lazy" decoding="async" />
+                {service.icon
+                  ? <img src={service.icon} alt="" loading="lazy" decoding="async" />
+                  : <service.Glyph s={19} />}
               </span>
               <span className="services-strip-name">{label}</span>
             </>

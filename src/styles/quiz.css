@@ -1,0 +1,708 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   अभ्यास — MCQ practice
+
+   A study surface, so it stays quieter than the storefront sections: one card
+   idiom, hairline rules, and colour reserved for the two things that matter —
+   what you got right and what you got wrong.
+═══════════════════════════════════════════════════════════════════════════ */
+
+.qz-page { padding-block: var(--s-6) var(--s-8); }
+
+/* The session runs without the services strip above it, so it needs the
+   header's height back. */
+.qz-page--solo { padding-top: calc(var(--header-h) + var(--s-5)); }
+
+.qz-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: var(--s-4);
+  font-family: var(--font-ui);
+  font-size: var(--fs-small);
+  color: var(--ink-3);
+  text-decoration: none;
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease);
+}
+
+.qz-back:hover { color: var(--saffron-deep); }
+
+/* ── Progress band ────────────────────────────────────────────────── */
+.qz-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--s-3);
+  margin-bottom: var(--s-5);
+}
+
+.qz-stat {
+  padding: var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-md);
+  background:
+    radial-gradient(120% 80% at 50% 0%, var(--saffron-50), transparent 70%),
+    var(--surface);
+  text-align: center;
+}
+
+.qz-stat__value {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.qz-stat__value svg { color: var(--saffron); }
+
+.qz-stat__label {
+  margin-top: 4px;
+  font-size: var(--fs-caption);
+  color: var(--ink-3);
+}
+
+/* ── Revision shortcuts ───────────────────────────────────────────── */
+.qz-revise {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  margin-bottom: var(--s-6);
+}
+
+/* ── Subject cards ────────────────────────────────────────────────── */
+.qz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(268px, 1fr));
+  gap: var(--s-4);
+}
+
+/* Each card is wrapped for its entrance animation, so the stretch has to be
+   passed down or a subject without progress ends up shorter than its row. */
+.qz-grid > * { display: flex; }
+.qz-cat { flex: 1; }
+
+.qz-cat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  padding: var(--s-5);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
+  text-decoration: none;
+  color: inherit;
+  transition: transform var(--dur-fast) var(--ease),
+              box-shadow var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease);
+}
+
+.qz-cat:hover {
+  transform: translateY(-2px);
+  border-color: var(--gold-line);
+  box-shadow: var(--shadow-2);
+}
+
+.qz-cat__top { display: flex; align-items: flex-start; gap: var(--s-3); }
+.qz-cat__top > span:last-child { min-width: 0; }
+
+/* Keeps the accuracy bar on the bottom edge whatever the name wraps to. */
+.qz-cat__progress { margin-top: auto; }
+
+.qz-cat__mark {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  flex: none;
+  border: 1px solid var(--gold-line);
+  border-radius: 50%;
+  background: var(--saffron-50);
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--gold-deep);
+  line-height: 1;
+}
+
+.qz-cat__name {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.04rem;
+  font-weight: 600;
+  line-height: 1.34;
+  color: var(--ink);
+}
+
+.qz-cat__meta {
+  display: block;
+  margin-top: 3px;
+  font-size: var(--fs-caption);
+  color: var(--ink-3);
+}
+
+/* ── Accuracy bar ─────────────────────────────────────────────────── */
+.qz-bar {
+  height: 5px;
+  border-radius: var(--r-full);
+  background: var(--sunken);
+  overflow: hidden;
+}
+
+.qz-bar__fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--saffron), var(--gold));
+}
+
+.qz-bar__label {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s-2);
+  margin-bottom: 5px;
+  font-size: var(--fs-caption);
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Mode switch: instant feedback, or score at the end ───────────── */
+.qz-seg {
+  display: inline-flex;
+  flex: none;
+  padding: 3px;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-full);
+  background: var(--page-2);
+}
+
+.qz-seg button {
+  padding: 6px 16px;
+  border: 0;
+  border-radius: var(--r-full);
+  background: none;
+  font-family: var(--font-display);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  color: var(--ink-3);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color var(--dur-fast) var(--ease),
+              color var(--dur-fast) var(--ease);
+}
+
+.qz-seg button.is-on {
+  background: var(--surface);
+  color: var(--saffron-deep);
+  box-shadow: var(--shadow-1);
+}
+
+.qz-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  margin-bottom: var(--s-4);
+}
+
+.qz-toolbar__spacer { flex: 1; }
+
+/* ── Set rows ─────────────────────────────────────────────────────── */
+.qz-sets {
+  border: 1px solid var(--rule);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
+  overflow: hidden;
+}
+
+.qz-set {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  padding: var(--s-4) var(--s-5);
+  border-bottom: 1px solid var(--rule);
+  transition: background-color var(--dur-fast) var(--ease);
+}
+
+.qz-set:last-child { border-bottom: 0; }
+.qz-set:hover { background: var(--page-2); }
+
+.qz-set__num {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border: 1px solid var(--gold-line);
+  border-radius: 50%;
+  background: var(--saffron-50);
+  font-family: var(--font-display);
+  font-size: .84rem;
+  font-weight: 600;
+  color: var(--gold-deep);
+  font-variant-numeric: tabular-nums;
+}
+
+.qz-set__text { flex: 1; min-width: 0; }
+
+.qz-set__name {
+  display: block;
+  font-family: var(--font-display);
+  font-size: .98rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+.qz-set__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-1) var(--s-3);
+  margin-top: 3px;
+  font-size: var(--fs-caption);
+  color: var(--ink-3);
+}
+
+.qz-set__meta span { display: inline-flex; align-items: center; gap: 4px; }
+
+/* ── Badges ───────────────────────────────────────────────────────── */
+.qz-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 9px;
+  border-radius: var(--r-full);
+  border: 1px solid var(--gold-line);
+  background: var(--saffron-50);
+  font-family: var(--font-ui);
+  font-size: .72rem;
+  font-weight: 600;
+  color: var(--gold-deep);
+  white-space: nowrap;
+}
+
+.qz-badge--lock { border-color: var(--rule-2); background: var(--surface-2); color: var(--ink-3); }
+.qz-badge--good { border-color: color-mix(in srgb, var(--success) 40%, transparent); background: color-mix(in srgb, var(--success) 10%, transparent); color: var(--success); }
+.qz-badge--bad  { border-color: color-mix(in srgb, var(--danger) 38%, transparent);  background: color-mix(in srgb, var(--danger) 9%, transparent);  color: var(--danger); }
+
+/* ── Attempt history ──────────────────────────────────────────────── */
+.qz-hist {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  padding: var(--s-3) var(--s-5);
+  border-bottom: 1px solid var(--rule);
+  text-decoration: none;
+  color: inherit;
+  transition: background-color var(--dur-fast) var(--ease);
+}
+
+.qz-hist:last-child { border-bottom: 0; }
+.qz-hist:hover { background: var(--page-2); }
+
+.qz-hist__score {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  flex: none;
+  border-radius: 50%;
+  border: 2px solid var(--gold-line);
+  font-family: var(--font-display);
+  font-size: .82rem;
+  font-weight: 600;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.qz-hist__text { flex: 1; min-width: 0; }
+.qz-hist__name {
+  display: block;
+  font-family: var(--font-display);
+  font-size: .94rem;
+  font-weight: 600;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.qz-hist__meta { display: block; margin-top: 2px; font-size: var(--fs-caption); color: var(--ink-3); }
+
+/* Anything that follows the main list on a page needs its own air. */
+.qz-more { margin-top: var(--s-7); }
+
+/* ═════════════════════════════════════════════════════════════════════
+   The session itself
+═════════════════════════════════════════════════════════════════════ */
+.qz-play { max-width: 780px; margin-inline: auto; }
+
+.qz-play__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  margin-bottom: var(--s-3);
+}
+
+.qz-play__count {
+  font-family: var(--font-display);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.qz-play__timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--fs-caption);
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+  margin-left: auto;
+}
+
+.qz-q {
+  padding: var(--s-5);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
+}
+
+.qz-q__head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-3);
+  margin-bottom: var(--s-4);
+}
+
+/* Some questions are authored as HTML tables, so this has to behave like a
+   small document rather than a line of text. */
+.qz-q__body {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-ui);
+  font-size: 1.02rem;
+  line-height: 1.7;
+  color: var(--ink);
+  overflow-x: auto;
+}
+
+.qz-q__body p { margin: 0 0 var(--s-2); }
+.qz-q__body p:last-child { margin-bottom: 0; }
+
+.qz-q__body table {
+  border-collapse: collapse;
+  width: auto;
+  min-width: 100%;
+  font-size: .94rem;
+}
+
+.qz-q__body td,
+.qz-q__body th {
+  padding: 6px 10px;
+  border: 1px solid var(--rule);
+  text-align: left;
+  vertical-align: top;
+}
+
+.qz-q__body img { max-width: 100%; height: auto; border-radius: var(--r-sm); }
+
+.qz-q__img {
+  display: block;
+  max-width: 100%;
+  margin-bottom: var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-sm);
+}
+
+.qz-mark {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink-4);
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease);
+}
+
+.qz-mark:hover { background: var(--surface-2); color: var(--ink-2); }
+.qz-mark.is-on { color: var(--saffron); }
+
+/* ── Options ──────────────────────────────────────────────────────── */
+.qz-opts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  margin-top: var(--s-4);
+}
+
+.qz-opt {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-3);
+  width: 100%;
+  padding: var(--s-3) var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-sm);
+  background: var(--page-2);
+  font-family: var(--font-ui);
+  font-size: .97rem;
+  line-height: 1.6;
+  text-align: left;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: border-color var(--dur-fast) var(--ease),
+              background-color var(--dur-fast) var(--ease),
+              color var(--dur-fast) var(--ease);
+}
+
+.qz-opt:hover:not(:disabled) { border-color: var(--gold-line); background: var(--saffron-50); }
+
+.qz-opt__key {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  flex: none;
+  margin-top: 1px;
+  border: 1px solid var(--rule-2);
+  border-radius: 50%;
+  background: var(--surface);
+  font-size: .76rem;
+  font-weight: 600;
+  color: var(--ink-3);
+  transition: inherit;
+}
+
+.qz-opt.is-picked {
+  border-color: var(--saffron);
+  background: var(--saffron-50);
+  color: var(--ink);
+}
+
+.qz-opt.is-picked .qz-opt__key {
+  border-color: var(--saffron);
+  background: var(--saffron);
+  color: #FFF;
+}
+
+/* Revealed state — after checking an answer, and throughout review. */
+.qz-opt.is-right {
+  border-color: var(--success);
+  background: color-mix(in srgb, var(--success) 9%, var(--surface));
+  color: var(--ink);
+}
+
+.qz-opt.is-right .qz-opt__key {
+  border-color: var(--success);
+  background: var(--success);
+  color: #FFF;
+}
+
+.qz-opt.is-wrong {
+  border-color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 8%, var(--surface));
+  color: var(--ink);
+}
+
+.qz-opt.is-wrong .qz-opt__key {
+  border-color: var(--danger);
+  background: var(--danger);
+  color: #FFF;
+}
+
+.qz-opt:disabled { cursor: default; }
+
+/* ── Verdict and explanation ──────────────────────────────────────── */
+.qz-verdict {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin-top: var(--s-4);
+  font-family: var(--font-display);
+  font-size: .96rem;
+  font-weight: 600;
+}
+
+.qz-verdict--right { color: var(--success); }
+.qz-verdict--wrong { color: var(--danger); }
+
+.qz-explain {
+  margin-top: var(--s-3);
+  padding: var(--s-4);
+  border-left: 3px solid var(--gold-line);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  background: var(--page-2);
+  font-family: var(--font-ui);
+  font-size: .92rem;
+  line-height: 1.75;
+  color: var(--ink-2);
+}
+
+.qz-explain p:first-child { margin-top: 0; }
+.qz-explain p:last-child { margin-bottom: 0; }
+
+.qz-explain__title {
+  display: block;
+  margin-bottom: 4px;
+  font-family: var(--font-display);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  letter-spacing: var(--track);
+  text-transform: uppercase;
+  color: var(--gold-deep);
+}
+
+.qz-play__foot {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  margin-top: var(--s-5);
+}
+
+.qz-play__foot .u-btn:last-child { margin-left: auto; }
+
+/* ═════════════════════════════════════════════════════════════════════
+   Scorecard
+═════════════════════════════════════════════════════════════════════ */
+.qz-card {
+  padding: var(--s-7) var(--s-5);
+  border: 1px solid var(--gold-line);
+  border-radius: var(--r-lg);
+  background:
+    radial-gradient(120% 70% at 50% 0%, var(--saffron-50), transparent 64%),
+    var(--surface);
+  box-shadow: var(--shadow-2);
+  text-align: center;
+}
+
+.qz-ring {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 132px;
+  height: 132px;
+  margin: 0 auto var(--s-4);
+  border-radius: 50%;
+}
+
+.qz-ring svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+
+.qz-ring__num {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.qz-ring__of {
+  display: block;
+  margin-top: 3px;
+  font-size: var(--fs-caption);
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.qz-ring > span { text-align: center; }
+
+.qz-card__title {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.qz-card__sub { margin-top: 5px; font-size: var(--fs-small); color: var(--ink-3); }
+
+.qz-tally {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-5);
+  margin-top: var(--s-5);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--rule);
+}
+
+.qz-tally div { text-align: center; }
+
+.qz-tally b {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.qz-tally span { font-size: var(--fs-caption); color: var(--ink-3); }
+
+.qz-card__actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  margin-top: var(--s-5);
+}
+
+/* Review list reuses the question card, stacked. */
+.qz-review { display: flex; flex-direction: column; gap: var(--s-4); }
+
+.qz-review__seq {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: var(--s-2);
+  font-family: var(--font-display);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  letter-spacing: var(--track);
+  text-transform: uppercase;
+  color: var(--ink-4);
+}
+
+/* ── Phones ───────────────────────────────────────────────────────── */
+@media (max-width: 720px) {
+  .qz-page { padding-block: var(--s-4) var(--s-6); }
+
+  /* Restated after the shorthand above, which would otherwise drop the offset
+     and slide the question counter under the fixed header. */
+  .qz-page--solo { padding-top: calc(var(--header-h) + var(--s-3)); }
+
+  .qz-stats { grid-template-columns: repeat(2, 1fr); gap: var(--s-2); }
+  .qz-stat { padding: var(--s-3); }
+  .qz-stat__value { font-size: 1.22rem; }
+  .qz-grid { grid-template-columns: 1fr; gap: var(--s-3); }
+  .qz-cat { padding: var(--s-4); }
+  .qz-set { padding: var(--s-3) var(--s-4); gap: var(--s-3); }
+  .qz-hist { padding: var(--s-3) var(--s-4); }
+  .qz-q { padding: var(--s-4); }
+  .qz-q__body { font-size: .97rem; }
+  .qz-opt { padding: 10px var(--s-3); font-size: .93rem; }
+  .qz-card { padding: var(--s-5) var(--s-4); }
+  .qz-ring { width: 112px; height: 112px; }
+
+  /* Actions stack full-width so the primary one is always under the thumb. */
+  .qz-play__foot { flex-direction: column-reverse; align-items: stretch; }
+  .qz-play__foot .u-btn:last-child { margin-left: 0; }
+  .qz-card__actions .u-btn { flex: 1 1 100%; }
+  .qz-revise .u-btn { flex: 1 1 100%; }
+}

@@ -139,6 +139,37 @@ export const IconOm = (p) => (
     <circle cx="19" cy="7.2" r="1" fill="currentColor" stroke="none" />
   </Svg>
 )
+export const IconQuiz = (p) => (
+  <Svg {...p}>
+    <rect x="3.4" y="3.4" width="17.2" height="17.2" rx="3.6" />
+    <path d="M9.6 9.5a2.5 2.5 0 1 1 3.3 2.4c-.6.2-.9.7-.9 1.3v.4" />
+    <circle cx="12" cy="16.7" r="1" fill="currentColor" stroke="none" />
+  </Svg>
+)
+export const IconTarget = (p) => (
+  <Svg {...p}><circle cx="12" cy="12" r="8.6" /><circle cx="12" cy="12" r="4.4" /><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none" /></Svg>
+)
+export const IconFlame = (p) => (
+  <Svg {...p}>
+    <path d="M12 2.8c3.4 3.2 5.6 6 5.6 8.9a5.6 5.6 0 1 1-11.2 0c0-1.6.7-3.2 2-4.9.3 1.4 1 2.2 2 2.4-.4-2.4.1-4.5 1.6-6.4Z" />
+  </Svg>
+)
+export const IconBookmark = ({ filled = false, ...p }) => (
+  <Svg {...p} fill={filled ? 'currentColor' : 'none'}>
+    <path d="M6.2 3.8h11.6a1 1 0 0 1 1 1v15.4L12 16.4l-6.8 3.8V4.8a1 1 0 0 1 1-1Z" />
+  </Svg>
+)
+export const IconLock = (p) => (
+  <Svg {...p}>
+    <rect x="4.4" y="10.4" width="15.2" height="10.2" rx="2.2" />
+    <path d="M8 10.4V7.6a4 4 0 0 1 8 0v2.8" />
+  </Svg>
+)
+export const IconRefresh = (p) => (
+  <Svg {...p}>
+    <path d="M20.2 12a8.2 8.2 0 1 1-2.4-5.8" /><polyline points="20.4 3.4 20.4 8.2 15.6 8.2" />
+  </Svg>
+)
 export const IconVideo = (p) => (
   <Svg {...p}><rect x="2.8" y="5.4" width="13" height="13.2" rx="2.4" /><path d="m15.8 10.6 5.4-3.2v9.2l-5.4-3.2Z" /></Svg>
 )

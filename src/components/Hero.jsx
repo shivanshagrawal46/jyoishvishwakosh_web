@@ -8,6 +8,11 @@ import gurujiImg from '../assets/icons/bhupendra1.png'
 
 const EASE = [0.22, 1, 0.36, 1]
 
+/* TEMPORARY — Guruji's portrait is switched off for now and will be restored
+   unchanged. Set this back to true and delete the `.hero--solo` block in
+   styles/landing.css; nothing else needs touching. */
+const SHOW_PORTRAIT = false
+
 /* The first view arrives in sequence rather than all at once — the sky and
    horizon settle first, then the words, then Guruji. */
 const stage = {
@@ -53,7 +58,7 @@ const Hero = ({ language }) => {
   const nearY = useTransform(scrollYProgress, [0, 1], [0, 44 * lag])
 
   return (
-    <div className="hero" ref={scene}>
+    <div className={`hero${SHOW_PORTRAIT ? '' : ' hero--solo'}`} ref={scene}>
       <motion.div
         className="hero__dawn"
         aria-hidden="true"
@@ -144,24 +149,26 @@ const Hero = ({ language }) => {
           </motion.div>
         </div>
 
-        <motion.figure
-          className="hero__portrait"
-          initial={{ opacity: 0, y: 30, scale: .97 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 1.1, ease: EASE, delay: .3 }}
-        >
-          <img
-            src={gurujiImg}
-            alt={hi ? 'नमस्कार करते हुए डॉ. भूपेंद्र पांडेय' : 'Dr. Bhupendra Pandey greeting with namaste'}
-            width="360"
-            height="360"
-            fetchPriority="high"
-          />
-          <figcaption className="hero__identity">
-            <strong>{hi ? 'डॉ. भूपेंद्र पांडेय' : 'Dr. Bhupendra Pandey'}</strong>
-            <span>{hi ? 'आपके ज्योतिष मार्गदर्शक' : 'Your Jyotish guide'}</span>
-          </figcaption>
-        </motion.figure>
+        {SHOW_PORTRAIT && (
+          <motion.figure
+            className="hero__portrait"
+            initial={{ opacity: 0, y: 30, scale: .97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 1.1, ease: EASE, delay: .3 }}
+          >
+            <img
+              src={gurujiImg}
+              alt={hi ? 'नमस्कार करते हुए डॉ. भूपेंद्र पांडेय' : 'Dr. Bhupendra Pandey greeting with namaste'}
+              width="360"
+              height="360"
+              fetchPriority="high"
+            />
+            <figcaption className="hero__identity">
+              <strong>{hi ? 'डॉ. भूपेंद्र पांडेय' : 'Dr. Bhupendra Pandey'}</strong>
+              <span>{hi ? 'आपके ज्योतिष मार्गदर्शक' : 'Your Jyotish guide'}</span>
+            </figcaption>
+          </motion.figure>
+        )}
       </motion.div>
     </div>
   )

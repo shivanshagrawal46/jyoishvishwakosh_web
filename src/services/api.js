@@ -20,7 +20,7 @@ const getApiBaseUrl = () => {
   return 'https://www.jyotishvishwakosh.in/api'
 }
 
-const API_BASE_URL = getApiBaseUrl()
+export const API_BASE_URL = getApiBaseUrl()
 // Panchang API - always use direct URL (different domain)
 const PANCHANG_API_BASE_URL = 'https://kapi.jyotishvishwakosh.com/api'
 const BOOK_API_BASE_URL = getApiBaseUrl()
