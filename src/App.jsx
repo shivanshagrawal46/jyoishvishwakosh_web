@@ -21,6 +21,7 @@ import CalculationSection from './components/CalculationSection'
 import Rashifal from './components/Rashifal'
 import EPooja from './components/EPooja'
 import AstroShop from './components/AstroShop'
+import Reviews from './components/Reviews'
 import AboutTeam from './components/AboutTeam'
 import AppDownloadBanner from './components/AppDownloadBanner'
 import Footer from './components/Footer'
@@ -152,6 +153,7 @@ function HomePage({ language, setLanguage }) {
         <Flourish />
         {SHOW_ON_HOME.consultBanner && <AstrologerBanner language={language} />}
         <CalculationSection language={language} />
+        <Reviews language={language} />
         <AboutTeam language={language} />
         <AppDownloadBanner language={language} />
       </main>

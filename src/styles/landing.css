@@ -591,6 +591,79 @@
 }
 
 /* ─────────────────────────────────────────────────────────────
+   Reader reviews
+───────────────────────────────────────────────────────────── */
+.rev {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  width: 336px;
+  margin: 0;
+  padding: var(--s-5);
+}
+
+.rev__stars {
+  display: inline-flex;
+  gap: 3px;
+  color: var(--gold);
+}
+
+/* Set in the display serif: a quotation should read as a voice, not as UI. */
+.rev__text {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: .95rem;
+  font-weight: 400;
+  line-height: 1.68;
+  color: var(--ink-2);
+}
+
+.rev__by {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  /* Pins attribution to the bottom so faces line up across uneven quotes. */
+  margin-top: auto;
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--rule);
+}
+
+/* Radius on the image itself rather than a wrapper — iOS Safari drops the
+   clip when a wrapper with overflow:hidden is the only thing rounding it. */
+.rev__face {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--gold-line);
+  border-radius: 50%;
+  /* Already square and face-cropped at build time; cover only guards against a
+     replacement photo that is not. */
+  object-fit: cover;
+}
+
+.rev__who { min-width: 0; }
+
+.rev__name {
+  display: block;
+  font-family: var(--font-display);
+  font-size: .88rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.rev__role {
+  display: block;
+  margin-top: 1px;
+  font-size: var(--fs-caption);
+  color: var(--ink-3);
+}
+
+@media (max-width: 560px) {
+  .rev { width: min(80vw, 300px); padding: var(--s-4); }
+  .rev__text { font-size: .89rem; line-height: 1.62; }
+}
+
+/* ─────────────────────────────────────────────────────────────
    Consultation banner
 ───────────────────────────────────────────────────────────── */
 .consult {
