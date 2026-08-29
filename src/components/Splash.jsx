@@ -5,6 +5,7 @@ import logoImg from '../assets/icons/logo_new.png'
 const EASE = [0.22, 1, 0.36, 1]
 
 const WORDMARK = 'Jyotish Vishwakosh'
+const FOUNDER = 'Dr. Bhupendra Pandey'
 
 /* Choreography, in seconds from the moment the webfont is ready. */
 const GATHER = .8      // dots travelling inward
@@ -12,7 +13,9 @@ const BLOOM_AT = .82
 const LOGO_AT = .95
 const TEXT_AT = 1.15
 const TEXT_STEP = .022
-const HOLD_MS = 2200
+// After the last letter of the wordmark has landed, not alongside it.
+const FOUNDER_AT = TEXT_AT + WORDMARK.replace(' ', '').length * TEXT_STEP + .2
+const HOLD_MS = 2700
 
 /**
  * Each dot flies in from a scattered point far outside the frame and lands on a
@@ -163,6 +166,17 @@ const Splash = () => {
                   </span>
                 ))}
               </p>
+
+              {/* The name behind the work, arriving last so it reads as a
+                  signature rather than a second title. */}
+              <motion.p
+                className="splash__founder"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: .55, delay: FOUNDER_AT, ease: EASE }}
+              >
+                {FOUNDER}
+              </motion.p>
             </motion.div>
           )}
         </motion.div>

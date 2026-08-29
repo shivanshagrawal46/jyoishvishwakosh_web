@@ -1,9 +1,9 @@
 import React, { useRef } from 'react'
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion'
 import { Button } from './ui'
-import { IconArrowRight, IconCheck, IconWhatsapp } from './ui/Icons'
+import { IconArrowRight, IconWhatsapp } from './ui/Icons'
 import TempleSkyline from './ui/TempleSkyline'
-import { CONTACT } from '../data/site'
+import { ARCHIVE, CONTACT } from '../data/site'
 import gurujiImg from '../assets/icons/bhupendra1.png'
 
 const EASE = [0.22, 1, 0.36, 1]
@@ -108,8 +108,8 @@ const Hero = ({ language }) => {
         <div className="hero__copy">
           <motion.h1 className="hero__title" variants={rise}>
             {hi
-              ? <>जीवन के प्रश्नों का उत्तर, <em>शास्त्र और अनुभव</em> के साथ</>
-              : <>Answers for life, guided by <em>scripture and experience</em></>}
+              ? <>सनातन भारतीय ज्ञान, <em>प्रामाणिकता और तर्क</em> के साथ विश्व तक</>
+              : <>Timeless Indian knowledge, carried to the world with <em>authenticity and reason</em></>}
           </motion.h1>
 
           <motion.div className="hero__cta" variants={rise}>
@@ -129,24 +129,20 @@ const Hero = ({ language }) => {
             </Button>
           </motion.div>
 
-          <motion.div
-            className="hero__assurances"
+          {/* The size of the archive, standing in for the old row of ticks —
+              a counted figure argues for the work better than an adjective. */}
+          <motion.dl
+            className="hero__archive"
             variants={rise}
-            aria-label={hi ? 'हमारे मूल्य' : 'Our values'}
+            aria-label={hi ? 'हमारा संग्रह' : 'Our archive'}
           >
-            <span>
-              <IconCheck s={14} />
-              {hi ? 'शास्त्र आधारित' : 'Scripture-led'}
-            </span>
-            <span>
-              <IconCheck s={14} />
-              {hi ? 'व्यक्तिगत मार्गदर्शन' : 'Personal guidance'}
-            </span>
-            <span>
-              <IconCheck s={14} />
-              {hi ? 'हिंदी और अंग्रेज़ी' : 'Hindi & English'}
-            </span>
-          </motion.div>
+            {ARCHIVE.map((stat) => (
+              <div key={stat.label}>
+                <dt>{stat.value}</dt>
+                <dd>{hi ? stat.labelHi : stat.label}</dd>
+              </div>
+            ))}
+          </motion.dl>
         </div>
 
         {SHOW_PORTRAIT && (

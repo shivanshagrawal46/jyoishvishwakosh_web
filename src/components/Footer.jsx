@@ -20,8 +20,8 @@ const Footer = ({ language }) => {
             </Link>
             <p className="sitefoot__blurb">
               {hi
-                ? 'वैदिक ज्ञान और आधुनिक तकनीक का संगम — पंचांग, राशिफल, ग्रंथ और ई-पूजा एक ही जगह।'
-                : 'Vedic wisdom meets modern technology — panchang, horoscopes, scriptures and e-pooja in one place.'}
+                ? 'वैदिक ज्ञान और आधुनिक तकनीक का संगम — पंचांग, राशिफल, ग्रंथ और कोष एक ही जगह।'
+                : 'Vedic wisdom meets modern technology — panchang, horoscopes, scriptures and kosh in one place.'}
             </p>
 
             <ul className="sitefoot__contact">

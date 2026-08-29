@@ -92,7 +92,33 @@
   will-change: transform, opacity;
 }
 
+/* A signature under the mark: smaller and quieter than the wordmark, with a
+   short gold rule above so it reads as attribution rather than a subtitle. */
+.splash__founder {
+  position: relative;
+  margin-top: calc(var(--s-2) * -1);
+  padding-top: var(--s-3);
+  font-family: var(--font-display);
+  font-size: clamp(.78rem, .7rem + .35vw, .92rem);
+  font-weight: 500;
+  letter-spacing: .05em;
+  color: var(--ink-3);
+  text-align: center;
+}
+
+.splash__founder::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 34px;
+  height: 1px;
+  transform: translateX(-50%);
+  background: var(--gold-line);
+}
+
 @media (max-width: 620px) {
   .splash__stage { gap: var(--s-3); }
   .splash__bloom { width: 140px; height: 140px; margin: -70px 0 0 -70px; }
+  .splash__founder { margin-top: calc(var(--s-1) * -1); }
 }

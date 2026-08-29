@@ -74,6 +74,18 @@ import CsuPrinting3Page from './pages/CsuPrinting3Page'
 
 const EASE = [0.22, 1, 0.36, 1]
 
+/**
+ * TEMPORARY — landing sections switched off for now, to be restored unchanged.
+ * The components, their styles and their data fetching are all untouched; set
+ * a flag back to true and that section returns exactly as it was. The /e-pooja
+ * and /astroshop pages themselves are unaffected and still linked everywhere.
+ */
+const SHOW_ON_HOME = {
+  epooja: false,
+  astroshop: false,
+  consultBanner: false,
+}
+
 /** Every route that takes the shared language/theme/search props. */
 const PAGES = [
   ['/kosh', KoshPage],
@@ -135,10 +147,10 @@ function HomePage({ language, setLanguage }) {
         </section>
         <Rashifal language={language} />
         <AIJyotishSection language={language} />
-        <EPooja language={language} />
-        <AstroShop language={language} />
+        {SHOW_ON_HOME.epooja && <EPooja language={language} />}
+        {SHOW_ON_HOME.astroshop && <AstroShop language={language} />}
         <Flourish />
-        <AstrologerBanner language={language} />
+        {SHOW_ON_HOME.consultBanner && <AstrologerBanner language={language} />}
         <CalculationSection language={language} />
         <AboutTeam language={language} />
         <AppDownloadBanner language={language} />

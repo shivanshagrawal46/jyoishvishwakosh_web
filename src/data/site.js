@@ -41,7 +41,7 @@ export const CONTACT = {
  * Newer services have no painted illustration and carry a `Glyph` component
  * instead; every consumer falls back to it when `icon` is absent.
  */
-export const SERVICES = [
+const ALL_SERVICES = [
   { id: 'panchang',   name: 'Panchang',       nameHi: 'पंचांग',        icon: panchangIcon,       path: '/panchang',       category: 'daily',   featured: true,  descHi: 'आज का शुभ-अशुभ समय',        desc: "Today's auspicious timings" },
   { id: 'rashifal',   name: 'Rashifal',       nameHi: 'राशिफल',       icon: rashifalsIcon,      path: '/rashi-fal',      category: 'daily',   featured: true,  descHi: 'बारह राशियों का दैनिक फल',  desc: 'Daily horoscope for all signs' },
   // The full chart is only computed in the mobile app, so the web tiles open a
@@ -69,6 +69,35 @@ export const SERVICES = [
   { id: 'videos',     name: 'Videos',         nameHi: 'वीडियो',        icon: youtubeIcon,        path: '/videos',         category: 'library' },
 ]
 
+/**
+ * TEMPORARY — services withdrawn from every list on the site: the top nav, the
+ * service grid, the strip on inner pages, the footer and universal search. This
+ * matches the home sections switched off in App.jsx.
+ *
+ * Nothing is deleted. The entries above keep their icons and copy, the routes
+ * still resolve, and the pages work if visited directly. Empty this set to
+ * bring them back — and restore the 'Tools' footer group to 'Tools & Shop'.
+ */
+const HIDDEN = new Set(['epooja', 'astroshop'])
+
+const shown = (items) => items.filter((item) => !HIDDEN.has(item.id))
+
+export const SERVICES = shown(ALL_SERVICES)
+
+/**
+ * What the archive actually holds, for the landing page's statement of intent.
+ *
+ * These are counted, not estimated — run `node scripts/count-library.mjs` to
+ * re-read them from the API when the collection grows. Last counted Aug 2026:
+ * 5,351 kosh entries, 32 granth across 9 subjects, 16 magazine issues.
+ */
+export const ARCHIVE = [
+  { value: '200+', label: 'Years of panchang',  labelHi: 'वर्षों का पंचांग' },
+  { value: '5,300+', label: 'Study entries',    labelHi: 'अध्ययन प्रविष्टियाँ' },
+  { value: '32', label: 'Granth in the library', labelHi: 'ग्रंथ' },
+  { value: '16', label: 'E-magazine issues',    labelHi: 'ई-मैगज़ीन अंक' },
+]
+
 export const FEATURED_SERVICES = SERVICES.filter((s) => s.featured)
 export const OTHER_SERVICES = SERVICES.filter((s) => !s.featured)
 
@@ -83,27 +112,27 @@ export const CALC_TOOLS = [
   { id: 'dasha',     name: 'Dasha',       nameHi: 'दशा',          path: '/dasha' },
 ]
 
-export const NAV_LINKS = [
+export const NAV_LINKS = shown([
   { name: 'Home',      nameHi: 'होम',      path: '/' },
   { name: 'Panchang',  nameHi: 'पंचांग',    path: '/panchang' },
   { name: 'Horoscope', nameHi: 'राशिफल',   path: '/rashi-fal' },
   { name: 'Granth',    nameHi: 'ग्रंथ',      path: '/books' },
-  { name: 'E-Pooja',   nameHi: 'ई-पूजा',    path: '/e-pooja' },
-  { name: 'Shop',      nameHi: 'शॉप',      path: '/astroshop' },
+  { id: 'epooja',    name: 'E-Pooja',   nameHi: 'ई-पूजा',    path: '/e-pooja' },
+  { id: 'astroshop', name: 'Shop',      nameHi: 'शॉप',      path: '/astroshop' },
   { name: 'Contact',   nameHi: 'संपर्क',    path: '/contact' },
-]
+])
 
 export const FOOTER_GROUPS = [
   {
     title: 'Services', titleHi: 'सेवाएं',
-    links: [
+    links: shown([
       { name: 'Panchang',  nameHi: 'पंचांग',      path: '/panchang' },
       { name: 'Rashifal',  nameHi: 'राशिफल',     path: '/rashi-fal' },
       { name: 'Kundli',    nameHi: 'कुंडली',      path: '/jyotish-report', appOnly: true },
-      { name: 'E-Pooja',   nameHi: 'ई-पूजा',      path: '/e-pooja' },
+      { id: 'epooja',    name: 'E-Pooja', nameHi: 'ई-पूजा',   path: '/e-pooja' },
       { name: 'Karmkand',  nameHi: 'कर्मकांड',    path: '/karmkand' },
       { name: 'Muhurat',   nameHi: 'दैनिक मुहूर्त', path: '/dainik-muhurat' },
-    ],
+    ]),
   },
   {
     title: 'Library', titleHi: 'ग्रंथालय',
@@ -118,14 +147,15 @@ export const FOOTER_GROUPS = [
     ],
   },
   {
-    title: 'Tools & Shop', titleHi: 'उपकरण और शॉप',
-    links: [
-      { name: 'AstroShop',     nameHi: 'एस्ट्रो शॉप',    path: '/astroshop' },
+    // Was 'Tools & Shop' — see HIDDEN above.
+    title: 'Tools', titleHi: 'उपकरण',
+    links: shown([
+      { id: 'astroshop', name: 'AstroShop', nameHi: 'एस्ट्रो शॉप', path: '/astroshop' },
       { name: 'Ank Jyotish',   nameHi: 'अंक ज्योतिष',   path: '/ank-jyotish' },
       { name: 'Hasth Rekha',   nameHi: 'हस्त रेखा',     path: '/hasth-rekha' },
       { name: 'Vastu',         nameHi: 'वास्तु',        path: '/vastu' },
       { name: 'Prashn Yantra', nameHi: 'प्रश्न यंत्र',    path: '/prashan-yantra' },
       { name: 'Videos',        nameHi: 'वीडियो',       path: '/videos' },
-    ],
+    ]),
   },
 ]
