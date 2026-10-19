@@ -11,6 +11,13 @@ export default defineConfig({
     port: 3000,
     open: true,
     proxy: {
+      // Local Kundli API (FastAPI + Swiss Ephemeris). Start it with
+      // `uv run kundli-api` in ../ (kundli_api) — see src/services/kundliApi.js.
+      '/kundli-api': {
+        target: process.env.KUNDLI_API_URL || 'http://127.0.0.1:8000',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/kundli-api/, ''),
+      },
       '/api': {
         target: 'https://www.jyotishvishwakosh.in',
         changeOrigin: true,

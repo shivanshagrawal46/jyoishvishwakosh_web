@@ -49,6 +49,8 @@ import NumerologyReportPage from './pages/NumerologyReportPage'
 import RashiPage from './pages/RashiPage'
 import NakshatraPage from './pages/NakshatraPage'
 import DashaPage from './pages/DashaPage'
+import KundliPage from './pages/KundliPage'
+import KundliReportPage from './pages/KundliReportPage'
 import OrderPage from './pages/OrderPage'
 import RashiFalPage from './pages/RashiFalPage'
 import AnkFalPage from './pages/AnkFalPage'
@@ -110,6 +112,8 @@ const PAGES = [
   ['/rashi', RashiPage],
   ['/nakshatra', NakshatraPage],
   ['/dasha', DashaPage],
+  ['/kundli', KundliPage],
+  ['/kundli/report', KundliReportPage],
   ['/order', OrderPage],
   ['/rashi-fal', RashiFalPage],
   ['/ank-fal', AnkFalPage],
