@@ -16,8 +16,8 @@ export const FLAGS = {
 /** Flags that apply to one planet record (planet table row or chart entry). */
 export function planetFlags(p, hi) {
   const out = []
-  const id = p.id || p.name
-  if (p.is_retrograde && id !== 'Rahu' && id !== 'Ketu') out.push(FLAGS.retro)
+  // Trust the API's is_retrograde as-is (it marks Rahu/Ketu retrograde too, like AstroSage).
+  if (p.is_retrograde) out.push(FLAGS.retro)
   if (p.is_combust) out.push(FLAGS.combust)
   if (p.is_vargottama) out.push(FLAGS.vargottama)
   const d = p.dignity_id || p.dignity
