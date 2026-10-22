@@ -1,9 +1,12 @@
 /**
  * Client for the Kundli API (FastAPI + Swiss Ephemeris, repo: kundli_api).
  *
- * Development: Vite proxies `/kundli-api/*` to http://127.0.0.1:8000 (vite.config.js).
- * Production:  set VITE_KUNDLI_API_BASE_URL (e.g. https://kundli.jyotishvishwakosh.in),
- *              or put the API behind the same origin at /kundli-api.
+ * The API runs on the server at http://139.59.39.65:47821 (systemd: kundli-api.service).
+ *
+ * Development: Vite proxies `/kundli-api/*` to that server (vite.config.js).
+ * Production:  nginx for jyotishvishwakosh.com proxies `/kundli-api/*` to 127.0.0.1:47821,
+ *              so the HTTPS site calls it same-origin (no mixed-content block, no CORS).
+ *              Set VITE_KUNDLI_API_BASE_URL only to override this with a different host.
  */
 
 const isDev = () => {
