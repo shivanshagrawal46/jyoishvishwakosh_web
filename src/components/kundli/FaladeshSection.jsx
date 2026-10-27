@@ -1,21 +1,15 @@
 import React from 'react'
 import { Card, fmtDate } from './KundliSections'
-import { falBandTone, falStep, planetList, planetName, signName, t } from './kundliLabels'
+import { falBandTone, planetList, planetName, signName, t } from './kundliLabels'
 
 /**
- * Faladesh (predictions) — `result.faladesh`. Two areas (marriage, career),
- * each a step-by-step chain the API already narrated; we only lay it out.
- * All display strings arrive localized; ids (step, planet, band) stay English.
+ * Faladesh (predictions) — `result.faladesh`. Two areas (marriage, career):
+ * verdict band + end result, the chart facts behind it, then strengths,
+ * cautions, remedies and favourable periods. The API's internal factor chain
+ * and numeric score are intentionally not shown.
+ * All display strings arrive localized; ids (planet, band) stay English.
  */
 
-const effectTone = (e) => (e === 'positive' ? 'good' : e === 'negative' ? 'bad' : 'mid')
-const fmtWeight = (w) => {
-  const n = Number(w) || 0
-  if (n === 0) return '0'
-  const s = Math.abs(n) % 1 === 0 ? Math.abs(n).toFixed(0) : Math.abs(n).toFixed(2).replace(/0$/, '')
-  return `${n > 0 ? '+' : '−'}${s}`
-}
-const fmtScore = (s) => (s == null ? '-' : `${s > 0 ? '+' : s < 0 ? '−' : ''}${Math.abs(Number(s)).toFixed(2)}`)
 const strengthTone = (s = '') => (/strong/i.test(s) ? 'yes' : /moderate/i.test(s) ? 'warn' : 'no')
 
 function ListCard({ title, items, tone, icon }) {
@@ -53,32 +47,6 @@ function Periods({ periods, hi }) {
   )
 }
 
-function Chain({ factors, hi }) {
-  if (!Array.isArray(factors) || factors.length === 0) return null
-  return (
-    <ol className="kd-steps">
-      {factors.map((f, i) => {
-        const tone = effectTone(f.effect)
-        return (
-          <li key={`${f.step}-${i}`} className={`kd-step kd-step--${tone}`}>
-            <span className="kd-step__dot" aria-hidden="true">{tone === 'good' ? '+' : tone === 'bad' ? '−' : '•'}</span>
-            <div className="kd-step__card">
-              <div className="kd-step__head">
-                <div>
-                  <div className="kd-step__title">{i + 1}. {falStep(f.step, hi)}</div>
-                  {f.detail && <div className="kd-step__detail">{f.detail}</div>}
-                </div>
-                <span className={`kd-step__w kd-flag kd-flag--${tone}`} title={`${t('weight', hi)} · ${t(f.effect || 'neutral', hi)}`}>{fmtWeight(f.weight)}</span>
-              </div>
-              {f.text && <p className="kd-step__text">{f.text}</p>}
-            </div>
-          </li>
-        )
-      })}
-    </ol>
-  )
-}
-
 function Area({ id, area, kind, hi }) {
   if (!area) return null
   const band = area.band_label ?? area.band
@@ -101,7 +69,6 @@ function Area({ id, area, kind, hi }) {
         <div className="kd-fal-hero__band">
           <b>{t('verdict', hi)}</b>
           <span>{band}</span>
-          <small>{t('score', hi)} {fmtScore(area.score)}</small>
         </div>
         <div className="kd-fal-hero__result">
           <b>{t('endResult', hi)}</b>
@@ -113,10 +80,7 @@ function Area({ id, area, kind, hi }) {
         {facts.map(([k, v]) => <div key={k}><b>{k}</b><span>{v}</span></div>)}
       </div>
 
-      <div className="kd-eyebrow" style={{ marginTop: 20 }}>{t('chain', hi)} · {area.factors?.length ?? 0}</div>
-      <Chain factors={area.factors} hi={hi} />
-
-      <div className="kd-fal-grid">
+      <div className="kd-fal-grid" style={{ marginTop: 20 }}>
         <ListCard title={t('strengths', hi)} items={area.strengths} tone="good" icon="✦" />
         <ListCard title={t('cautions', hi)} items={area.cautions} tone="bad" icon="!" />
         <ListCard title={t('remedies', hi)} items={area.remedies} tone="warn" icon="ॐ" />
@@ -126,7 +90,7 @@ function Area({ id, area, kind, hi }) {
             <div className="kd-fal-list__title"><i aria-hidden="true">⚒</i>{t('suggestedFields', hi)}</div>
             <div className="kd-chips">
               {area.suggested_fields.map((f, i) => (
-                <span key={`${f.field}-${i}`} className="kd-chip kd-chip--good" style={{ cursor: 'default' }}>{f.label ?? f.field}{f.weight != null && <small>· {f.weight}</small>}</span>
+                <span key={`${f.field}-${i}`} className="kd-chip kd-chip--good" style={{ cursor: 'default' }}>{f.label ?? f.field}</span>
               ))}
             </div>
             {(area.strongest_influence_label || area.strongest_influence) && (
