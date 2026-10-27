@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import KundliChart from './KundliChart'
-import { planetFlags, t } from './kundliLabels'
+import { planetFlags, t, yogaGroupName, YOGA_GROUPS } from './kundliLabels'
 import { fetchDashaPeriods } from '../../services/kundliApi'
 
-const fmtDate = (iso, hi) => {
+export const fmtDate = (iso, hi) => {
   if (!iso) return '-'
   const d = new Date(iso.length === 10 ? `${iso}T00:00:00` : iso)
   return d.toLocaleDateString(hi ? 'hi-IN' : 'en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
@@ -80,21 +80,45 @@ export function DashaExplorer({ payload, hi, today }) {
 }
 
 /* ───────────────────────── Yogas & doshas ───────────────────────── */
-export function YogaSection({ yogas, hi }) {
+export function YogaSection({ yogas, summary, hi }) {
   const [all, setAll] = useState(false)
-  const shown = all ? yogas : yogas.filter((y) => y.present)
-  const presentCount = yogas.filter((y) => y.present).length
+  const [group, setGroup] = useState('all')
+  const groups = useMemo(() => {
+    const seen = []
+    for (const y of yogas) { const g = y.group || 'classical'; if (!seen.includes(g)) seen.push(g) }
+    // keep a stable, meaningful order: classical → nabhasa → other → anything new
+    const order = Object.keys(YOGA_GROUPS)
+    return seen.sort((a, b) => (order.indexOf(a) === -1 ? 99 : order.indexOf(a)) - (order.indexOf(b) === -1 ? 99 : order.indexOf(b)))
+  }, [yogas])
+  const groupLabel = (g) => yogaGroupName(yogas.find((y) => (y.group || 'classical') === g) || { group: g }, hi)
+  const inGroup = (y) => group === 'all' || (y.group || 'classical') === group
+  const shown = yogas.filter((y) => inGroup(y) && (all || y.present))
+  const presentCount = summary?.present?.length ?? yogas.filter((y) => y.present).length
+  const total = summary?.total_checked ?? yogas.length
   const badWord = hi ? 'अशुभ' : 'inauspicious'
   return (
-    <Card id="yogas" title={`${t('yogas', hi)} (${presentCount}/${yogas.length})`} sub={t('yogasSub', hi)}
+    <Card id="yogas" title={`${t('yogas', hi)} (${presentCount}/${total})`}
+      sub={summary && (summary.auspicious_present != null || summary.inauspicious_present != null)
+        ? `${t('yogasSub', hi)} · ${summary.auspicious_present ?? 0} ${t('auspiciousCount', hi)} · ${summary.inauspicious_present ?? 0} ${t('inauspiciousCount', hi)}`
+        : t('yogasSub', hi)}
       right={<button type="button" className="kd-btn-ghost" onClick={() => setAll((v) => !v)}>{all ? t('hideAll', hi) : t('showAll', hi)}</button>}>
+      {groups.length > 1 && (
+        <div className="kd-seg kd-seg--inline" role="group" aria-label={t('yogaGroup', hi)} style={{ marginBottom: 16 }}>
+          <button type="button" aria-pressed={group === 'all'} onClick={() => setGroup('all')}>{t('allGroups', hi)} <small>{yogas.filter((y) => y.present).length}</small></button>
+          {groups.map((g) => (
+            <button type="button" key={g} aria-pressed={group === g} onClick={() => setGroup(g)}>
+              {groupLabel(g)} <small>{yogas.filter((y) => (y.group || 'classical') === g && y.present).length}</small>
+            </button>
+          ))}
+        </div>
+      )}
       <div className="kd-yogas">
         {shown.map((y) => {
           const bad = y.category === badWord
           return (
             <div key={y.id} className={`kd-yoga ${y.present ? 'is-present' : 'is-absent'}${bad ? ' is-bad' : ''}`}>
               <div className="kd-yoga__head">
-                <span className="kd-yoga__name">{y.name}</span>
+                <span className="kd-yoga__name">{y.name}{group === 'all' && y.group && y.group !== 'classical' && <small className="kd-yoga__group">{yogaGroupName(y, hi)}</small>}</span>
                 <span className={`kd-badge ${y.present ? (bad ? 'kd-badge--bad' : 'kd-badge--yes') : 'kd-badge--no'}`}>{y.present ? t('present', hi) : t('absent', hi)}</span>
               </div>
               <div className="kd-yoga__desc">{y.description}</div>
@@ -297,7 +321,7 @@ export function KarakaSection({ karakas, gems, hi }) {
 
 export function KPSection({ kp, hi }) {
   return (
-    <Card id="kp" title={t('kp', hi)}>
+    <Card id="kp-sublords" title={t('kp', hi)}>
       <div className="kd-two">
         <div className="kd-tablewrap">
           <table className="kd-table kd-table--compact">

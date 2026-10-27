@@ -1,0 +1,201 @@
+/**
+ * UI copy for the Kundli-API tool pages (matching, vrat/parv, muhurat finder).
+ * Astrological names arrive already localized from the API (`language` param);
+ * this file only holds the pages' own labels. Same shape as kundliLabels.js.
+ */
+
+export const UI = {
+  /* ── shared ───────────────────────────────────────────────── */
+  offline: { en: 'Service is not available right now. Please try again in a moment.', hi: 'सेवा उपलब्ध नहीं है। कृपया थोड़ी देर बाद पुनः प्रयास करें।' },
+  retry: { en: 'Try again', hi: 'पुनः प्रयास करें' },
+  edit: { en: 'Edit details', hi: 'विवरण बदलें' },
+  print: { en: 'Print', hi: 'प्रिंट' },
+  share: { en: 'Copy link', hi: 'लिंक कॉपी करें' },
+  copied: { en: 'Link copied', hi: 'लिंक कॉपी हो गया' },
+  name: { en: 'Name', hi: 'नाम' },
+  namePh: { en: 'Full name', hi: 'पूरा नाम' },
+  dob: { en: 'Date of birth', hi: 'जन्म तिथि' },
+  tob: { en: 'Time of birth', hi: 'जन्म समय' },
+  place: { en: 'Place of birth', hi: 'जन्म स्थान' },
+  location: { en: 'Location', hi: 'स्थान' },
+  placePh: { en: 'Type a city, e.g. Jaipur, Rajasthan', hi: 'शहर लिखें, जैसे जयपुर, राजस्थान' },
+  placeHint: { en: 'Pick from the list for exact coordinates and timezone.', hi: 'सटीक अक्षांश-देशांतर और समय क्षेत्र के लिए सूची से चुनें।' },
+  didYouMean: { en: 'did you mean', hi: 'क्या आपका मतलब' },
+  needDate: { en: 'Please enter date and time of birth', hi: 'कृपया जन्म तिथि और समय दर्ज करें' },
+  needPlace: { en: 'Please enter the place of birth', hi: 'कृपया जन्म स्थान दर्ज करें' },
+  needLocation: { en: 'Please pick a location from the list', hi: 'कृपया सूची से स्थान चुनें' },
+  missingParams: { en: 'Details are missing. Please fill the form again.', hi: 'विवरण उपलब्ध नहीं है। कृपया फ़ॉर्म दोबारा भरें।' },
+  today: { en: 'Today', hi: 'आज' },
+  sunrise: { en: 'Sunrise', hi: 'सूर्योदय' },
+  sunset: { en: 'Sunset', hi: 'सूर्यास्त' },
+  tithi: { en: 'Tithi', hi: 'तिथि' },
+  nakshatra: { en: 'Nakshatra', hi: 'नक्षत्र' },
+  yoga: { en: 'Yoga', hi: 'योग' },
+  pada: { en: 'Pada', hi: 'चरण' },
+  footnote: { en: 'Computed with the Swiss Ephemeris, Lahiri ayanamsa. For guidance; consult a learned astrologer for decisions.', hi: 'स्विस एफेमेरिस, लाहिड़ी अयनांश से गणना। मार्गदर्शन हेतु; निर्णय के लिए विद्वान ज्योतिषी से परामर्श लें।' },
+  loading: { en: 'Loading...', hi: 'लोड हो रहा है...' },
+  points: { en: 'points', hi: 'गुण' },
+
+  /* ── matching ─────────────────────────────────────────────── */
+  mBadge: { en: 'Free Kundli Matching', hi: 'निःशुल्क कुंडली मिलान' },
+  mTitle: { en: 'Kundli Matching', hi: 'कुंडली मिलान' },
+  mSubtitle: {
+    en: 'Ashtakoota (36 guna) compatibility, Bhakoot and Nadi dosha with cancellations, and Manglik comparison for both partners.',
+    hi: 'अष्टकूट (36 गुण) मिलान, भकूट व नाड़ी दोष एवं उनका भंग, और वर-वधू दोनों का मांगलिक विचार।',
+  },
+  boy: { en: 'Boy', hi: 'वर' },
+  girl: { en: 'Girl', hi: 'वधू' },
+  boyDetails: { en: "Boy's birth details", hi: 'वर का जन्म विवरण' },
+  girlDetails: { en: "Girl's birth details", hi: 'वधू का जन्म विवरण' },
+  mSubmit: { en: 'Match Kundlis', hi: 'गुण मिलान करें' },
+  mWorking: { en: 'Matching the two charts...', hi: 'दोनों कुंडलियों का मिलान हो रहा है...' },
+  mReport: { en: 'Matching report', hi: 'मिलान परिणाम' },
+  gunaScore: { en: 'Guna score', hi: 'गुण मिलान' },
+  outOf: { en: 'out of', hi: 'में से' },
+  effective: { en: 'Effective after cancellations', hi: 'दोष-भंग के बाद प्रभावी' },
+  percentage: { en: 'Match', hi: 'मिलान' },
+  verdict: { en: 'Verdict', hi: 'निष्कर्ष' },
+  overall: { en: 'Overall', hi: 'समग्र' },
+  born: { en: 'Born', hi: 'जन्म' },
+  at: { en: 'at', hi: 'को' },
+  moonSign: { en: 'Moon sign', hi: 'चंद्र राशि' },
+  moonLord: { en: 'Sign lord', hi: 'राशि स्वामी' },
+  lagna: { en: 'Lagna', hi: 'लग्न' },
+  varna: { en: 'Varna', hi: 'वर्ण' },
+  vashya: { en: 'Vashya', hi: 'वश्य' },
+  yoni: { en: 'Yoni', hi: 'योनि' },
+  gana: { en: 'Gana', hi: 'गण' },
+  nadi: { en: 'Nadi', hi: 'नाड़ी' },
+  natives: { en: 'The two natives', hi: 'वर-वधू परिचय' },
+  kootas: { en: 'Ashtakoota — eight kootas', hi: 'अष्टकूट मिलान' },
+  kootasSub: { en: 'Each koota compares one quality of the two Moon nakshatras; the maxima add up to 36.', hi: 'प्रत्येक कूट दोनों के चंद्र नक्षत्र के एक गुण की तुलना करता है; अधिकतम योग 36 है।' },
+  koota: { en: 'Koota', hi: 'कूट' },
+  relation: { en: 'Sign relation', hi: 'राशि संबंध' },
+  doshaPresent: { en: 'Dosha', hi: 'दोष' },
+  doshaCancelled: { en: 'Dosha cancelled', hi: 'दोष भंग' },
+  doshaNone: { en: 'No dosha', hi: 'दोष नहीं' },
+  cancellations: { en: 'Cancellation', hi: 'भंग के कारण' },
+  noCancellation: { en: 'No cancellation applies', hi: 'कोई भंग लागू नहीं' },
+  doshas: { en: 'Bhakoot & Nadi dosha', hi: 'भकूट व नाड़ी दोष' },
+  doshasSub: { en: 'The two heaviest kootas. A cancelled dosha restores its points in the effective score.', hi: 'सबसे भारी दो कूट। भंग हुए दोष के अंक प्रभावी गुणों में जुड़ जाते हैं।' },
+  manglik: { en: 'Manglik (Kuja) dosha', hi: 'मांगलिक विचार' },
+  manglikYes: { en: 'Manglik', hi: 'मांगलिक' },
+  manglikNo: { en: 'Not Manglik', hi: 'मांगलिक नहीं' },
+  manglikLevel: { en: 'Level', hi: 'स्तर' },
+  manglikFrom: { en: 'Mars in house (from)', hi: 'मंगल भाव (से)' },
+  compatible: { en: 'Compatible', hi: 'अनुकूल' },
+  notCompatible: { en: 'Needs attention', hi: 'विचारणीय' },
+  notes: { en: 'Notes & remedies', hi: 'टिप्पणियाँ व उपाय' },
+  mFoot: { en: 'Matching report', hi: 'मिलान रिपोर्ट' },
+
+  /* ── vrat / parv ──────────────────────────────────────────── */
+  vBadge: { en: 'Hindu calendar', hi: 'हिन्दू पंचांग' },
+  vTitle: { en: 'Vrat & Parv', hi: 'व्रत एवं पर्व' },
+  vSubtitle: {
+    en: 'Festivals, ekadashi, pradosh, sankranti and monthly vrat for any year — computed for your city from sunrise tithi.',
+    hi: 'किसी भी वर्ष के पर्व, एकादशी, प्रदोष, संक्रांति और मासिक व्रत — आपके शहर के सूर्योदय-कालीन तिथि से गणना।',
+  },
+  year: { en: 'Year', hi: 'वर्ष' },
+  month: { en: 'Month', hi: 'माह' },
+  allMonths: { en: 'All months', hi: 'पूरा वर्ष' },
+  monthly: { en: 'Show monthly vrat', hi: 'मासिक व्रत दिखाएँ' },
+  monthlySub: { en: 'Chaturthi, pradosh, shivaratri, purnima, amavasya...', hi: 'चतुर्थी, प्रदोष, शिवरात्रि, पूर्णिमा, अमावस्या...' },
+  category: { en: 'Category', hi: 'श्रेणी' },
+  all: { en: 'All', hi: 'सभी' },
+  eventsCount: { en: 'events', hi: 'पर्व / व्रत' },
+  lunarMonths: { en: 'Lunar months (amanta)', hi: 'चांद्र मास (अमांत)' },
+  adhik: { en: 'Adhik', hi: 'अधिक' },
+  kshaya: { en: 'Kshaya', hi: 'क्षय' },
+  tithiSunrise: { en: 'Tithi at sunrise', hi: 'सूर्योदय तिथि' },
+  nakSunrise: { en: 'Nakshatra', hi: 'नक्षत्र' },
+  rule: { en: 'Rule', hi: 'निर्णय' },
+  vaishnava: { en: 'Vaishnava', hi: 'वैष्णव' },
+  sankrantiAt: { en: 'Sankranti at', hi: 'संक्रांति' },
+  noEvents: { en: 'No events match these filters.', hi: 'इन फ़िल्टर में कोई पर्व नहीं मिला।' },
+  jumpToday: { en: 'Jump to today', hi: 'आज पर जाएँ' },
+  vWorking: { en: 'Preparing the calendar...', hi: 'पंचांग तैयार हो रहा है...' },
+
+  /* ── muhurat finder ───────────────────────────────────────── */
+  muBadge: { en: 'Muhurat finder', hi: 'मुहूर्त खोज' },
+  muTitle: { en: 'Shubh Muhurat Finder', hi: 'शुभ मुहूर्त खोज' },
+  muSubtitle: {
+    en: 'Auspicious days for marriage, griha pravesh, travel, business and more — scored by tithi, nakshatra, weekday and yoga.',
+    hi: 'विवाह, गृह प्रवेश, यात्रा, व्यापार आदि के लिए शुभ दिन — तिथि, नक्षत्र, वार और योग के आधार पर अंकित।',
+  },
+  activity: { en: 'Activity', hi: 'कार्य' },
+  startDate: { en: 'From date', hi: 'प्रारंभ तिथि' },
+  days: { en: 'Search window', hi: 'अवधि' },
+  daysUnit: { en: 'days', hi: 'दिन' },
+  minScore: { en: 'Minimum score', hi: 'न्यूनतम अंक' },
+  find: { en: 'Find muhurat', hi: 'मुहूर्त खोजें' },
+  muWorking: { en: 'Scanning the days...', hi: 'दिनों की जाँच हो रही है...' },
+  rules: { en: 'Rules for this activity', hi: 'इस कार्य के नियम' },
+  approvedNak: { en: 'Approved nakshatras', hi: 'शुभ नक्षत्र' },
+  approvedTithi: { en: 'Approved tithis', hi: 'शुभ तिथियाँ' },
+  approvedWeekday: { en: 'Approved weekdays', hi: 'शुभ वार' },
+  avoidPeriods: { en: 'Avoid', hi: 'वर्जित काल' },
+  daysFound: { en: 'auspicious days', hi: 'शुभ दिन' },
+  score: { en: 'Score', hi: 'अंक' },
+  lunarMonth: { en: 'Lunar month', hi: 'चांद्र मास' },
+  reasons: { en: 'Why this day', hi: 'कारण' },
+  restrictions: { en: 'Restrictions', hi: 'प्रतिबंध' },
+  windows: { en: 'Auspicious windows', hi: 'शुभ समय' },
+  avoidWindows: { en: 'Avoid (Rahu kaal etc.)', hi: 'त्याज्य समय (राहु काल आदि)' },
+  min: { en: 'min', hi: 'मिनट' },
+  viewPanchang: { en: 'Day panchang', hi: 'दिन का पंचांग' },
+  noDays: { en: 'No day reached the minimum score. Lower the score or widen the window.', hi: 'न्यूनतम अंक तक कोई दिन नहीं पहुँचा। अंक घटाएँ या अवधि बढ़ाएँ।' },
+  weekday: { en: 'Weekday', hi: 'वार' },
+}
+
+export const t = (key, hi) => (UI[key] ? UI[key][hi ? 'hi' : 'en'] : key)
+
+/** Hindi labels for /muhurat/find activity ids (the API returns English labels only). */
+export const ACTIVITY_HI = {
+  marriage: 'विवाह',
+  griha_pravesh: 'गृह प्रवेश',
+  vehicle: 'वाहन क्रय',
+  travel: 'यात्रा',
+  business: 'व्यापार आरंभ',
+  naming: 'नामकरण',
+  mundan: 'मुंडन',
+  education: 'विद्यारंभ',
+  property: 'संपत्ति क्रय',
+  general: 'शुभ कार्य',
+}
+
+/** Fallback when /ephemeris is unreachable — same ids as the API. */
+export const ACTIVITY_FALLBACK = {
+  marriage: 'Vivah (marriage)',
+  griha_pravesh: 'Griha Pravesh (house warming)',
+  vehicle: 'Vahan kharid (vehicle purchase)',
+  travel: 'Yatra (travel)',
+  business: 'Vyapar arambh (business / shop opening)',
+  naming: 'Namkaran (naming ceremony)',
+  mundan: 'Mundan (first haircut)',
+  education: 'Vidyarambh (start of education)',
+  property: 'Sampatti kharid (property purchase)',
+  general: 'Shubh karya (general auspicious work)',
+}
+
+export const activityLabel = (id, apiLabel, hi) => (hi ? ACTIVITY_HI[id] || apiLabel || id : apiLabel || ACTIVITY_HI[id] || id)
+
+/** Planet ids that come back untranslated inside `manglik.*.from`. */
+export const PLANET_HI = {
+  Sun: 'सूर्य', Moon: 'चंद्र', Mars: 'मंगल', Mercury: 'बुध', Jupiter: 'गुरु', Venus: 'शुक्र', Saturn: 'शनि',
+  Rahu: 'राहु', Ketu: 'केतु', Lagna: 'लग्न', Ascendant: 'लग्न',
+}
+export const planetName = (id, hi) => (hi ? PLANET_HI[id] || id : id)
+
+export const MONTHS = {
+  en: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+  hi: ['जनवरी', 'फ़रवरी', 'मार्च', 'अप्रैल', 'मई', 'जून', 'जुलाई', 'अगस्त', 'सितंबर', 'अक्टूबर', 'नवंबर', 'दिसंबर'],
+}
+export const monthName = (m, hi) => MONTHS[hi ? 'hi' : 'en'][m - 1] || String(m)
+
+/** Default location for the calendar tools: New Delhi. */
+export const DEFAULT_PLACE = {
+  display_name: 'New Delhi, Delhi, India',
+  latitude: 28.6139,
+  longitude: 77.209,
+  timezone: 'Asia/Kolkata',
+}

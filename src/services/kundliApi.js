@@ -63,3 +63,33 @@ export const fetchDashaPeriods = (payload, path = [], { signal } = {}) =>
   request('/api/v1/dasha/periods', { method: 'POST', body: { ...payload, path }, signal })
 
 export const fetchKundliHealth = () => request('/health')
+
+/* ───────────── Panchang / Muhurat / Festivals / Matching (Kundli API v0.3) ───────────── */
+
+const qs = (params) => {
+  const p = new URLSearchParams()
+  Object.entries(params).forEach(([k, v]) => { if (v !== undefined && v !== null && v !== '') p.set(k, String(v)) })
+  return p.toString()
+}
+
+/**
+ * Full-day panchang. `opts` = { date: 'YYYY-MM-DD', latitude, longitude, timezone?, place?, language: 'hi'|'en', ayanamsa?, sunrise_method? }
+ * Either latitude+longitude or place is required.
+ */
+export const fetchPanchangFull = (opts, { signal } = {}) => request(`/api/v1/panchang/full?${qs(opts)}`, { signal })
+
+/** Muhurat windows of one day. Same options as fetchPanchangFull. */
+export const fetchMuhuratDay = (opts, { signal } = {}) => request(`/api/v1/muhurat?${qs(opts)}`, { signal })
+
+/** Auspicious days for an activity. `opts` adds { activity, days (1-366), min_score? }. */
+export const fetchMuhuratFind = (opts, { signal } = {}) => request(`/api/v1/muhurat/find?${qs(opts)}`, { signal })
+
+/** Vrat / Parv calendar. `opts` = { year, month?, latitude, longitude | place, timezone?, language, include_monthly? } */
+export const fetchFestivals = (opts, { signal } = {}) => request(`/api/v1/festivals?${qs(opts)}`, { signal })
+
+/** Kundli matching. `boy` / `girl` are KundliRequest payloads (same shape as fetchKundli). */
+export const fetchMatching = (boy, girl, language = 'en', { signal } = {}) =>
+  request('/api/v1/matching', { method: 'POST', body: { boy, girl, language }, signal })
+
+/** Muhurat activity ids -> labels (from /api/v1/ephemeris). */
+export const fetchMuhuratActivities = () => request('/api/v1/ephemeris').then((d) => d.muhurat_activities || {})

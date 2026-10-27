@@ -102,6 +102,7 @@ export const UI = {
   tabOverview: { en: 'Overview', hi: 'सारांश' }, tabCharts: { en: 'Charts', hi: 'कुंडली' }, tabPlanets: { en: 'Planets', hi: 'ग्रह' },
   tabYogas: { en: 'Yogas & Doshas', hi: 'योग-दोष' }, tabDasha: { en: 'Dasha', hi: 'दशा' }, tabVargas: { en: 'Divisional', hi: 'वर्ग' },
   tabAshtak: { en: 'Ashtakavarga', hi: 'अष्टकवर्ग' }, tabAdvanced: { en: 'Advanced', hi: 'उन्नत' },
+  tabFaladesh: { en: 'Faladesh', hi: 'फलादेश' }, tabLalKitab: { en: 'Lal Kitab', hi: 'लाल किताब' }, tabKP: { en: 'KP Kundali', hi: 'KP कुंडली' },
   glance: { en: 'At a glance', hi: 'एक नज़र में' }, highlights: { en: 'Highlights', hi: 'मुख्य बिंदु' },
   formedYogas: { en: 'Yogas formed', hi: 'बने हुए योग' }, doshasPresent: { en: 'Doshas present', hi: 'उपस्थित दोष' },
   noDosha: { en: 'No major dosha', hi: 'कोई प्रमुख दोष नहीं' }, openCharts: { en: 'Open all charts', hi: 'सभी कुंडली देखें' },
@@ -140,6 +141,51 @@ export const UI = {
   pratyantar: { en: 'Pratyantardasha', hi: 'प्रत्यंतर दशा' }, sookshma: { en: 'Sookshma dasha', hi: 'सूक्ष्म दशा' }, prana: { en: 'Prana dasha', hi: 'प्राण दशा' },
   allMaha: { en: 'All mahadashas', hi: 'सभी महादशाएँ' }, duration: { en: 'Duration', hi: 'अवधि' }, days: { en: 'days', hi: 'दिन' },
   loadingPeriods: { en: 'Loading periods...', hi: 'अवधियाँ लोड हो रही हैं...' },
+  // yoga summary
+  yogaGroup: { en: 'Group', hi: 'वर्ग' }, allGroups: { en: 'All', hi: 'सभी' },
+  auspiciousCount: { en: 'auspicious', hi: 'शुभ' }, inauspiciousCount: { en: 'inauspicious', hi: 'अशुभ' },
+  // avasthas
+  avasthas: { en: 'Planetary avasthas (BPHS)', hi: 'ग्रह अवस्थाएँ (बृ.पा.हो.शा.)' },
+  baladi: { en: 'Baladi', hi: 'बालादि' }, jagradadi: { en: 'Jagradadi', hi: 'जाग्रतादि' }, deeptadi: { en: 'Deeptadi', hi: 'दीप्तादि' },
+  lajjitadi: { en: 'Lajjitadi', hi: 'लज्जितादि' }, sayanadi: { en: 'Sayanadi', hi: 'शयनादि' }, strength: { en: 'Strength', hi: 'बल' },
+  conjunct: { en: 'Conjunct', hi: 'युति' }, aspectedBy: { en: 'Aspected by', hi: 'दृष्टि' },
+  // chara dasha
+  charaDasha: { en: 'Chara dasha (Jaimini)', hi: 'चर दशा (जैमिनी)' }, system: { en: 'System', hi: 'पद्धति' }, variant: { en: 'Variant', hi: 'प्रकार' },
+  basis: { en: 'Basis', hi: 'आधार' }, cycle: { en: 'Cycle', hi: 'चक्र' }, planetsInSign: { en: 'Planets in sign', hi: 'राशि में ग्रह' },
+  firstCycle: { en: 'First cycle', hi: 'प्रथम चक्र' },
+  // faladesh
+  faladesh: { en: 'Faladesh — predictions', hi: 'फलादेश' },
+  faladeshSub: { en: 'Step-by-step reading of the house, its lord, occupants, aspects, karaka and divisional chart', hi: 'भाव, भावेश, भावस्थ ग्रह, दृष्टियाँ, कारक और वर्ग कुंडली की क्रमबद्ध विवेचना' },
+  marriage: { en: 'Marriage', hi: 'विवाह' }, career: { en: 'Career', hi: 'करियर' },
+  score: { en: 'Score', hi: 'अंक' }, verdict: { en: 'Verdict', hi: 'निष्कर्ष' }, endResult: { en: 'End result', hi: 'अंतिम फल' },
+  chain: { en: 'Step-by-step chain', hi: 'क्रमबद्ध विवेचना' }, strengths: { en: 'Strengths', hi: 'अनुकूल बिंदु' },
+  cautions: { en: 'Cautions', hi: 'सावधानियाँ' }, remedies: { en: 'Remedies', hi: 'उपाय' },
+  favourablePeriods: { en: 'Favourable periods', hi: 'अनुकूल दशाएँ' }, suggestedFields: { en: 'Suggested fields', hi: 'उपयुक्त क्षेत्र' },
+  strongestInfluence: { en: 'Strongest influence', hi: 'सबसे प्रबल प्रभाव' }, age: { en: 'age', hi: 'आयु' },
+  method: { en: 'Method', hi: 'विधि' }, bands: { en: 'Result bands', hi: 'फल श्रेणियाँ' }, howComputed: { en: 'How this was computed', hi: 'गणना कैसे हुई' },
+  houseLord: { en: 'House lord', hi: 'भावेश' }, inHouse: { en: 'in house', hi: 'भाव में' }, planetsInHouse: { en: 'Planets in house', hi: 'भाव में ग्रह' },
+  divisional: { en: 'Divisional chart', hi: 'वर्ग कुंडली' }, weight: { en: 'Weight', hi: 'भार' },
+  positive: { en: 'Positive', hi: 'अनुकूल' }, negative: { en: 'Negative', hi: 'प्रतिकूल' }, neutral: { en: 'Neutral', hi: 'सम' },
+  faladeshPreview: { en: 'Faladesh', hi: 'फलादेश' }, openFaladesh: { en: 'Read full faladesh', hi: 'पूरा फलादेश पढ़ें' },
+  // lal kitab
+  lalKitab: { en: 'Lal Kitab', hi: 'लाल किताब' }, lkChart: { en: 'Lal Kitab chart', hi: 'लाल किताब कुंडली' },
+  lkPlanets: { en: 'Planets — Lal Kitab reading', hi: 'ग्रह — लाल किताब फल' }, lkLord: { en: 'LK lord', hi: 'ला.कि. स्वामी' },
+  pakkaGhar: { en: 'Pakka ghar', hi: 'पक्का घर' }, inPakkaGhar: { en: 'In pakka ghar', hi: 'पक्के घर में' },
+  houseRelation: { en: 'House relation', hi: 'घर से संबंध' }, exaltedHouse: { en: 'Exalted house', hi: 'उच्च घर' }, debilitatedHouse: { en: 'Debilitated house', hi: 'नीच घर' },
+  reading: { en: 'Reading', hi: 'फल' }, needsRemedy: { en: 'Remedy advised', hi: 'उपाय आवश्यक' },
+  rin: { en: 'Rin (karmic debts)', hi: 'ऋण (कार्मिक ऋण)' }, condition: { en: 'Condition', hi: 'शर्त' },
+  showAllRin: { en: 'Show all rin', hi: 'सभी ऋण दिखाएँ' }, presentRinOnly: { en: 'Present rin only', hi: 'केवल उपस्थित ऋण' },
+  keyRemedies: { en: 'Key remedies', hi: 'मुख्य उपाय' }, emptyHouses: { en: 'Empty houses', hi: 'रिक्त भाव' }, houseBasis: { en: 'House basis', hi: 'भाव आधार' },
+  // kp kundali
+  kpKundali: { en: 'KP Kundali (Krishnamurti Paddhati)', hi: 'KP कुंडली (कृष्णमूर्ति पद्धति)' },
+  cusps: { en: 'Cusps (Placidus)', hi: 'भाव आरंभ (प्लेसिडस)' }, kpPlanets: { en: 'Planets & significators', hi: 'ग्रह और कारकत्व' },
+  houseSystem: { en: 'House system', hi: 'भाव पद्धति' }, significators: { en: 'Significators', hi: 'कारकत्व' },
+  houseSignificators: { en: 'House significators', hi: 'भाव कारक' }, rulingPlanets: { en: 'Ruling planets', hi: 'रूलिंग ग्रह' },
+  fortuna: { en: 'Fortuna (Pars Fortunae)', hi: 'फॉर्च्यूना (भाग्य बिंदु)' }, promises: { en: 'Promises by cuspal sub lord', hi: 'भाव उप-स्वामी से योग' },
+  cuspSubLord: { en: 'Cuspal sub lord', hi: 'भाव उप-स्वामी' }, signifiesHouses: { en: 'Signifies houses', hi: 'कारक भाव' },
+  favourable: { en: 'Favourable', hi: 'अनुकूल' }, unfavourable: { en: 'Unfavourable', hi: 'प्रतिकूल' },
+  owns: { en: 'Owns', hi: 'स्वामित्व' }, longitude: { en: 'Longitude', hi: 'भोगांश' }, retro: { en: 'Retro', hi: 'वक्री' },
+  all: { en: 'All', hi: 'सभी' },
   footnote: {
     en: 'Sidereal zodiac, whole-sign houses, Lahiri ayanamsa by default. Positions from the Swiss Ephemeris (1700–2200 CE).',
     hi: 'निरयण राशिचक्र, पूर्ण-राशि भाव, लाहिरी अयनांश (डिफ़ॉल्ट)। ग्रह स्थिति स्विस एफेमेरिस से (1700–2200 ई.)।',
@@ -147,3 +193,47 @@ export const UI = {
 }
 
 export const t = (key, hi) => (UI[key] ? UI[key][hi ? 'hi' : 'en'] : key)
+
+/* ── Astrological ids → display names (only for ids the API leaves untranslated) ── */
+export const PLANET_HI = {
+  Sun: 'सूर्य', Moon: 'चंद्र', Mars: 'मंगल', Mercury: 'बुध', Jupiter: 'गुरु', Venus: 'शुक्र', Saturn: 'शनि', Rahu: 'राहु', Ketu: 'केतु',
+  Uranus: 'यूरेनस', Neptune: 'नेपच्यून', Pluto: 'प्लूटो',
+}
+export const SIGN_HI = {
+  Aries: 'मेष', Taurus: 'वृषभ', Gemini: 'मिथुन', Cancer: 'कर्क', Leo: 'सिंह', Virgo: 'कन्या',
+  Libra: 'तुला', Scorpio: 'वृश्चिक', Sagittarius: 'धनु', Capricorn: 'मकर', Aquarius: 'कुंभ', Pisces: 'मीन',
+}
+/** Planet id → localized name. Falls back to the id itself (already-localized strings pass through). */
+export const planetName = (id, hi) => (id == null || id === '' ? '-' : hi ? (PLANET_HI[id] || id) : id)
+export const signName = (id, hi) => (id == null || id === '' ? '-' : hi ? (SIGN_HI[id] || id) : id)
+export const planetList = (ids, hi) => (Array.isArray(ids) && ids.length ? ids.map((p) => planetName(p, hi)).join(', ') : null)
+
+/** Yoga `group` ids (the API sends group_label only for non-classical yogas). */
+export const YOGA_GROUPS = {
+  classical: { en: 'Classical', hi: 'शास्त्रीय' },
+  nabhasa: { en: 'Nabhasa', hi: 'नाभस' },
+  other: { en: 'Other', hi: 'अन्य' },
+}
+export const yogaGroupName = (y, hi) => y.group_label || (YOGA_GROUPS[y.group] ? YOGA_GROUPS[y.group][hi ? 'hi' : 'en'] : y.group || '')
+
+/** Faladesh chain step ids → titles. */
+export const FAL_STEPS = {
+  house_lord_placement: { en: "Lord's placement", hi: 'भाव स्वामी की स्थिति' },
+  house_lord_dignity: { en: "Lord's dignity", hi: 'भावेश की गरिमा' },
+  house_lord_combust: { en: 'Lord combust', hi: 'भावेश अस्त' },
+  house_lord_retrograde: { en: 'Lord retrograde', hi: 'भावेश वक्री' },
+  house_lord_conjunction: { en: 'Conjunctions with the lord', hi: 'स्वामी के साथ युति' },
+  house_lord_aspected_by: { en: 'Aspects on the lord', hi: 'स्वामी पर दृष्टि' },
+  planet_in_house: { en: 'Planet in the house', hi: 'भाव में स्थित ग्रह' },
+  planet_in_house_dignity: { en: "Occupant's dignity", hi: 'भावस्थ ग्रह की गरिमा' },
+  house_occupants_conjunction: { en: 'Conjunctions among occupants', hi: 'भावस्थ ग्रहों की युति' },
+  house_aspected_by: { en: 'Aspects on the house', hi: 'भाव पर दृष्टि' },
+  karaka: { en: 'Karaka', hi: 'कारक' },
+  divisional_chart: { en: 'Divisional chart (D9/D10)', hi: 'वर्ग कुंडली (D9/D10)' },
+}
+export const falStep = (id, hi) => (FAL_STEPS[id] ? FAL_STEPS[id][hi ? 'hi' : 'en'] : String(id || '').replace(/_/g, ' '))
+
+/** KP promise verdict id → badge tone (kd-badge--*). */
+export const kpVerdictTone = (v = '') => (/obstacle/i.test(v) ? 'warn' : /^promised/i.test(v) ? 'yes' : /denied|delayed/i.test(v) ? 'bad' : /weak|mild/i.test(v) ? 'mid' : 'no')
+/** Faladesh band id → badge tone. */
+export const falBandTone = (b = '') => (/excellent|very good/i.test(b) ? 'yes' : /^good/i.test(b) ? 'good' : /mixed/i.test(b) ? 'warn' : /challenging|difficult/i.test(b) ? 'bad' : 'no')

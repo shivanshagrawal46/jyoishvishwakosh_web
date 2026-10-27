@@ -19,6 +19,7 @@ import numerologyCalcIcon from '../assets/icons/numerology_calculator.png'
 import divineQuotesIcon from '../assets/icons/divine_quotes.png'
 import aartiIcon from '../assets/icons/aarti.png'
 import kundliIcon from '../assets/icons/kundli.png'
+import kundliMatchingIcon from '../assets/icons/kundli_matching.png'
 import { IconQuiz } from '../components/ui/Icons'
 
 /** Single point of contact for every "call us" / "chat with us" affordance. */
@@ -46,6 +47,9 @@ const ALL_SERVICES = [
   { id: 'rashifal',   name: 'Rashifal',       nameHi: 'राशिफल',       icon: rashifalsIcon,      path: '/rashi-fal',      category: 'daily',   featured: true,  descHi: 'बारह राशियों का दैनिक फल',  desc: 'Daily horoscope for all signs' },
   // Computed on the web by the Kundli API (Swiss Ephemeris) — see pages/KundliPage.
   { id: 'kundli',     name: 'Kundli',         nameHi: 'कुंडली',        icon: kundliIcon,         path: '/kundli',         category: 'reports', featured: true,  descHi: 'जन्म कुंडली, ग्रह और दशा',   desc: 'Birth chart, planets and dasha' },
+  { id: 'matching',   name: 'Kundli Matching', nameHi: 'कुंडली मिलान',  icon: kundliMatchingIcon, path: '/kundli-matching', category: 'reports', descHi: 'अष्टकूट 36 गुण मिलान',      desc: 'Ashtakoota 36-guna compatibility' },
+  { id: 'vratparv',   name: 'Vrat & Parv',    nameHi: 'व्रत एवं पर्व',  icon: dharmaIcon,         path: '/vrat-parv',      category: 'daily',   descHi: 'वर्ष भर के व्रत और त्योहार',  desc: 'Festivals and vrat of the year' },
+  { id: 'muhurat',    name: 'Muhurat Finder', nameHi: 'शुभ मुहूर्त',    icon: calculatorIcon,     path: '/muhurat-finder', category: 'daily',   descHi: 'विवाह, गृह प्रवेश आदि के शुभ दिन', desc: 'Auspicious days for any activity' },
   { id: 'epooja',     name: 'E-Pooja',        nameHi: 'ई-पूजा',        icon: epoojaIcon,         path: '/e-pooja',        category: 'seva',    featured: true,  descHi: 'ऑनलाइन पूजा बुकिंग',        desc: 'Book a pooja online' },
   { id: 'astroshop',  name: 'AstroShop',      nameHi: 'एस्ट्रो शॉप',    icon: astroshopIcon,      path: '/astroshop',      category: 'shop',    featured: true,  descHi: 'रत्न, रुद्राक्ष और यंत्र',    desc: 'Gemstones, rudraksha, yantra' },
   { id: 'aijyotish',  name: 'AI Jyotish',     nameHi: 'AI ज्योतिष',    icon: jyotishPredIcon,    path: '/#ai-jyotish',    category: 'tools',   featured: true,  descHi: 'मुफ़्त भविष्यवाणी',          desc: 'Free instant prediction' },
@@ -103,6 +107,8 @@ export const OTHER_SERVICES = SERVICES.filter((s) => !s.featured)
 /** Calculation tools — shown as a chip strip, not their own icon grid. */
 export const CALC_TOOLS = [
   { id: 'kundli',    name: 'Kundli',      nameHi: 'कुंडली',        path: '/kundli' },
+  { id: 'matching',  name: 'Kundli Matching', nameHi: 'कुंडली मिलान', path: '/kundli-matching' },
+  { id: 'muhurat',   name: 'Muhurat Finder', nameHi: 'शुभ मुहूर्त',   path: '/muhurat-finder' },
   { id: 'mulank',    name: 'Mulank',      nameHi: 'मूलांक',        path: '/mulank' },
   { id: 'bhagyank',  name: 'Bhagyank',    nameHi: 'भाग्यांक',      path: '/bhagyank' },
   { id: 'loshu',     name: 'Lo Shu Grid', nameHi: 'लो शू ग्रिड',   path: '/loshu' },
@@ -116,6 +122,7 @@ export const NAV_LINKS = shown([
   { name: 'Home',      nameHi: 'होम',      path: '/' },
   { name: 'Panchang',  nameHi: 'पंचांग',    path: '/panchang' },
   { name: 'Kundli',    nameHi: 'कुंडली',    path: '/kundli' },
+  { name: 'Matching',  nameHi: 'मिलान',     path: '/kundli-matching' },
   { name: 'Horoscope', nameHi: 'राशिफल',   path: '/rashi-fal' },
   { name: 'Granth',    nameHi: 'ग्रंथ',      path: '/books' },
   { id: 'epooja',    name: 'E-Pooja',   nameHi: 'ई-पूजा',    path: '/e-pooja' },
@@ -128,11 +135,14 @@ export const FOOTER_GROUPS = [
     title: 'Services', titleHi: 'सेवाएं',
     links: shown([
       { name: 'Panchang',  nameHi: 'पंचांग',      path: '/panchang' },
+      { name: 'Vrat & Parv', nameHi: 'व्रत एवं पर्व', path: '/vrat-parv' },
       { name: 'Rashifal',  nameHi: 'राशिफल',     path: '/rashi-fal' },
       { name: 'Kundli',    nameHi: 'कुंडली',      path: '/kundli' },
+      { name: 'Kundli Matching', nameHi: 'कुंडली मिलान', path: '/kundli-matching' },
       { id: 'epooja',    name: 'E-Pooja', nameHi: 'ई-पूजा',   path: '/e-pooja' },
       { name: 'Karmkand',  nameHi: 'कर्मकांड',    path: '/karmkand' },
       { name: 'Muhurat',   nameHi: 'दैनिक मुहूर्त', path: '/dainik-muhurat' },
+      { name: 'Muhurat Finder', nameHi: 'शुभ मुहूर्त खोज', path: '/muhurat-finder' },
     ]),
   },
   {

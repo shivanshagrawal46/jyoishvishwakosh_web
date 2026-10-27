@@ -1,0 +1,158 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Panchang v2 — /panchang and /dainik-muhurat on the Kundli API.
+   Namespaced `pv-`, layered on the `kd-` report primitives (kundli.css) and the
+   design tokens, so the night theme is automatic. Everything must survive 360px.
+═══════════════════════════════════════════════════════════════════════════ */
+
+.pv-main .calc-page-container { max-width: 1120px; }
+.pv-main .panchang-page-header { padding-block: var(--s-6) var(--s-5); }
+.pv-results { display: grid; gap: var(--s-5); margin-top: var(--s-5); transition: opacity var(--dur) var(--ease); }
+.pv-results.is-busy { opacity: .55; pointer-events: none; }
+
+/* ── Controls: date + place ───────────────────────────────────── */
+.pv-controls { margin-top: var(--s-4); overflow: visible; }
+.pv-controls__body { display: grid; grid-template-columns: 1fr; gap: var(--s-4); }
+@media (min-width: 720px) { .pv-controls__body { grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); } }
+.pv-datebar { display: flex; gap: 6px; min-width: 0; }
+.pv-datebar input { flex: 1 1 auto; min-width: 0; }
+.pv-datebtn, .pv-todaybtn {
+  flex: 0 0 auto; min-height: 48px; padding: 0 14px; border: 1px solid var(--rule); border-radius: var(--r-sm);
+  background: var(--page-2); color: var(--ink-2); font: inherit; font-weight: 700; cursor: pointer;
+  transition: border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease);
+}
+.pv-datebtn { width: 44px; padding: 0; font-size: 1.4rem; line-height: 1; }
+.pv-todaybtn { font-size: var(--fs-caption); }
+.pv-datebtn:hover, .pv-todaybtn:hover:not(:disabled) { border-color: var(--saffron); color: var(--saffron-deep); background: var(--saffron-50); }
+.pv-todaybtn:disabled { opacity: .5; cursor: default; }
+.pv-place { margin-top: 2px; max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
+.pv-place small { color: var(--ink-4); font-weight: 500; }
+.pv-controls .kd-drop li[aria-selected='true'] { background: var(--saffron-50); color: var(--saffron-deep); }
+.pv-controls .kd-drop li > span { overflow-wrap: anywhere; }
+
+/* ── Collapsible section (details/summary on a kd-card) ───────── */
+.pv-sec { overflow: visible; }
+.pv-sec__head { cursor: pointer; list-style: none; user-select: none; position: relative; }
+.pv-sec__head::-webkit-details-marker { display: none; }
+.pv-sec:not([open]) > .pv-sec__head { border-bottom: 0; }
+.pv-sec__right { font-size: var(--fs-caption); color: var(--ink-3); }
+.pv-sec__head .kd-card__sub { display: block; }
+.pv-sec__chev { margin-left: auto; display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--rule); color: var(--ink-3); font-size: 1.2rem; line-height: 1; transform: rotate(90deg); transition: transform var(--dur) var(--ease), color var(--dur-fast) var(--ease); }
+.pv-sec:not([open]) .pv-sec__chev { transform: rotate(0deg); }
+.pv-sec__head:hover .pv-sec__chev { color: var(--saffron-deep); border-color: var(--gold-line); }
+.pv-count { display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 7px; margin-left: 8px; border-radius: var(--r-full); background: var(--saffron-50); border: 1px solid var(--gold-line); color: var(--saffron-deep); font-family: var(--font-ui); font-size: .72rem; font-weight: 700; vertical-align: middle; }
+.pv-sec .kd-card__title { font-size: 1.15rem; }
+.pv-sec .kd-card__body { padding: var(--s-4); }
+@media (min-width: 640px) { .pv-sec .kd-card__body { padding: var(--s-5); } }
+
+/* ── Jump navigation ──────────────────────────────────────────── */
+.pv-nav {
+  position: sticky; top: calc(var(--header-h) + 8px); z-index: var(--z-sticky);
+  display: flex; gap: 6px; padding: 6px; border: 1px solid var(--rule); border-radius: var(--r-full);
+  background: color-mix(in srgb, var(--surface) 85%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-1); overflow-x: auto; scrollbar-width: none;
+}
+.pv-nav::-webkit-scrollbar { display: none; }
+.pv-nav a { flex: 0 0 auto; text-decoration: none; }
+@media (max-width: 900px) { .pv-nav { top: 8px; } }
+
+/* ── Hero strip ───────────────────────────────────────────────── */
+.pv-hero .kd-hero__name { font-size: clamp(1.5rem, 1.1rem + 1.8vw, 2.3rem); }
+.pv-hero .kd-hero__meta { position: relative; }
+.pv-flags { position: relative; margin-top: 12px; }
+.pv-stats { margin-top: var(--s-4); }
+.pv-stats .kd-stat span { font-size: 1.1rem; }
+.pv-hero .kd-hero__actions { position: relative; }
+.pv-cta { text-decoration: none; }
+
+/* ── KV extras ────────────────────────────────────────────────── */
+.pv-kv__extra { display: block; font-size: var(--fs-caption); color: var(--ink-4); font-weight: 500; }
+.pv-group { margin-bottom: var(--s-4); min-width: 0; }
+.pv-group:last-child { margin-bottom: 0; }
+.pv-stack { display: grid; gap: var(--s-4); align-content: start; }
+.pv-empty { padding: 10px 12px; border: 1px dashed var(--rule); border-radius: var(--r-sm); background: var(--page-2); }
+.pv-chip--off { opacity: .6; }
+
+/* ── Anga items (tithi / nakshatra / yoga / karana) ───────────── */
+.pv-anga-grid { display: grid; grid-template-columns: 1fr; gap: var(--s-4); }
+@media (min-width: 860px) { .pv-anga-grid { grid-template-columns: 1fr 1fr; } .pv-anga-grid--3 { grid-template-columns: 1fr 1fr 1fr; } }
+.pv-anga-list { display: grid; gap: 8px; }
+.pv-anga { display: grid; gap: 6px; padding: 12px 14px; border: 1px solid var(--rule); border-radius: var(--r-md); background: var(--page-2); min-width: 0; }
+.pv-anga__head { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; }
+.pv-anga__n { display: inline-grid; place-items: center; min-width: 26px; height: 26px; padding: 0 6px; border-radius: 50%; background: var(--surface); border: 1px solid var(--gold-line); color: var(--gold-deep); font-size: .74rem; font-weight: 700; }
+.pv-anga__name { font-family: var(--font-display); font-size: 1.08rem; font-weight: 600; color: var(--ink); }
+.pv-anga__meta { display: flex; flex-wrap: wrap; gap: 3px 14px; font-size: var(--fs-caption); color: var(--ink-3); }
+.pv-anga__time { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: var(--fs-small); color: var(--ink); font-variant-numeric: tabular-nums; }
+.pv-anga__time i { font-style: normal; color: var(--ink-4); font-size: var(--fs-caption); margin-right: 4px; }
+
+/* ── Window tiles ─────────────────────────────────────────────── */
+.pv-wins { display: grid; gap: 8px; }
+.pv-win { display: grid; gap: 3px; padding: 10px 12px 10px 14px; border: 1px solid var(--rule); border-left-width: 4px; border-radius: var(--r-sm); background: var(--page-2); min-width: 0; }
+.pv-win--good { border-left-color: var(--jade); background: color-mix(in srgb, var(--jade) 7%, var(--page-2)); }
+.pv-win--bad { border-left-color: var(--vermilion); background: color-mix(in srgb, var(--vermilion) 6%, var(--page-2)); }
+.pv-win--mid { border-left-color: var(--gold); }
+.pv-win.is-now { box-shadow: var(--glow); border-color: var(--saffron); }
+.pv-win__head { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+.pv-win__head b { color: var(--ink); font-weight: 600; }
+.pv-win__range { font-size: var(--fs-small); color: var(--ink); font-variant-numeric: tabular-nums; }
+.pv-win__gp, .pv-win__sub { font-size: var(--fs-caption); color: var(--ink-3); }
+.pv-range { font-variant-numeric: tabular-nums; }
+
+/* ── Tables (scroll container keeps the page from overflowing) ── */
+.pv-table { min-width: 0; }
+.pv-table th, .pv-table td { padding: 9px 10px; }
+.pv-table--tight th, .pv-table--tight td { padding: 7px 9px; font-size: var(--fs-caption); }
+.pv-table td.pv-wrap { white-space: normal; min-width: 180px; }
+
+/* ── Vasa tiles ───────────────────────────────────────────────── */
+.pv-vasa-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: var(--s-3); }
+.pv-vasa { display: grid; gap: 4px; align-content: start; padding: 12px 14px; border: 1px solid var(--rule); border-radius: var(--r-md); background: var(--page-2); }
+.pv-vasa__label { font-size: var(--fs-caption); font-weight: 600; color: var(--ink-3); }
+.pv-vasa__head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.pv-vasa__value { font-family: var(--font-display); font-size: 1.2rem; font-weight: 600; color: var(--saffron-deep); }
+.pv-vasa__result { font-size: var(--fs-caption); color: var(--ink-2); line-height: 1.55; }
+
+/* ── Bhadra block ─────────────────────────────────────────────── */
+.pv-bhadra { margin-bottom: 8px; }
+.pv-bhadra .kd-kv div { font-size: var(--fs-small); padding: 8px 0; }
+
+/* ── Choghadiya rows ──────────────────────────────────────────── */
+.pv-chog-list { display: grid; gap: 6px; }
+.pv-chog { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: 'name time' 'planet q'; gap: 2px 10px; align-items: baseline; padding: 8px 12px 8px 14px; border: 1px solid var(--rule); border-left-width: 4px; border-radius: var(--r-sm); background: var(--page-2); font-size: var(--fs-small); }
+.pv-chog b { grid-area: name; color: var(--ink); font-weight: 600; }
+.pv-chog__time { grid-area: time; color: var(--ink); font-variant-numeric: tabular-nums; text-align: right; overflow-wrap: anywhere; }
+.pv-chog__planet { grid-area: planet; font-size: var(--fs-caption); color: var(--ink-3); }
+.pv-chog__q { grid-area: q; font-size: var(--fs-caption); font-weight: 600; text-align: right; }
+.pv-chog--good { border-left-color: var(--jade); background: color-mix(in srgb, var(--jade) 8%, var(--page-2)); }
+.pv-chog--good .pv-chog__q { color: var(--jade); }
+.pv-chog--bad { border-left-color: var(--vermilion); background: color-mix(in srgb, var(--vermilion) 6%, var(--page-2)); }
+.pv-chog--bad .pv-chog__q { color: var(--vermilion); }
+.pv-chog--mid { border-left-color: var(--gold); }
+.pv-chog--mid .pv-chog__q { color: var(--gold-deep); }
+.pv-chog.is-now { box-shadow: var(--glow); border-color: var(--saffron); }
+
+/* ── Activity suitability (muhurat page) ──────────────────────── */
+.pv-acts { display: grid; grid-template-columns: 1fr; gap: var(--s-3); }
+@media (min-width: 760px) { .pv-acts { grid-template-columns: 1fr 1fr; } }
+.pv-act { display: grid; gap: 8px; padding: 12px 14px; border: 1px solid var(--rule); border-radius: var(--r-md); background: var(--page-2); min-width: 0; }
+.pv-act--good { border-color: color-mix(in srgb, var(--jade) 35%, transparent); }
+.pv-act--bad { opacity: .92; }
+.pv-act__top { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.pv-act__label { font-family: var(--font-display); font-size: 1.02rem; font-weight: 600; color: var(--ink); }
+.pv-act__bar { height: 8px; border-radius: var(--r-full); background: var(--sunken); overflow: hidden; }
+.pv-act__bar span { display: block; height: 100%; border-radius: var(--r-full); background: var(--jade); transition: width var(--dur-slow) var(--ease); }
+.pv-act--warn .pv-act__bar span { background: var(--saffron); }
+.pv-act--bad .pv-act__bar span { background: var(--vermilion); }
+.pv-act__ticks { display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: var(--fs-caption); color: var(--ink-4); }
+.pv-tick { display: inline-flex; align-items: center; gap: 4px; }
+.pv-tick i { font-style: normal; font-weight: 700; color: var(--vermilion); }
+.pv-tick.is-ok { color: var(--ink-2); }
+.pv-tick.is-ok i { color: var(--jade); }
+.pv-act__blocked { font-size: var(--fs-caption); color: var(--vermilion); line-height: 1.5; }
+
+/* ── Error ────────────────────────────────────────────────────── */
+.pv-error { margin-top: var(--s-5); }
+
+@media print {
+  .pv-nav, .pv-controls, .pv-sec__chev { display: none !important; }
+  .pv-sec:not([open]) > .kd-card__body { display: block; }
+}

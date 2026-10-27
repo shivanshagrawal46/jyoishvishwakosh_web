@@ -1,137 +1,84 @@
 import { useEffect, useMemo, useState } from 'react'
-import { fetchPanchangData } from '../services/api'
-
-const BHOPAL = { lat: 23.2599, lon: 77.4126 }
-
-/** The API has shipped several response shapes; unwrap whichever we got. */
-function unwrapDetails(payload) {
-  if (!payload || typeof payload !== 'object') return null
-  return (
-    payload.details
-    || payload.response?.details
-    || payload.data?.details
-    || payload.response
-    || payload.data
-    || payload
-  )
-}
-
-/** Reads a field tolerating camelCase / UPPER / lower spellings, plus its time. */
-function readField(details, key, altKey, samayKey) {
-  if (!details) return ''
-  const candidates = [key, altKey, key.charAt(0).toLowerCase() + key.slice(1), key.toUpperCase(), key.toLowerCase()]
-  let value = ''
-  for (const c of candidates) {
-    if (!c) continue
-    const v = details[c]
-    if (v !== null && v !== undefined && v !== '') {
-      value = typeof v === 'object' ? '' : String(v).trim()
-      if (value) break
-    }
-  }
-  if (!value) return ''
-
-  if (samayKey) {
-    const samay = details[samayKey] ?? details[samayKey.toLowerCase()]
-    if (samay !== null && samay !== undefined && String(samay).trim() !== '') {
-      return `${value} ${String(samay).trim()}`.trim()
-    }
-  }
-  return value
-}
-
-const MAIN_FIELDS = [
-  { key: 'tithi',     label: 'Tithi',      labelHi: 'तिथि',     samay: 'tithiSamay' },
-  { key: 'paksha',    label: 'Paksha',     labelHi: 'पक्ष' },
-  { key: 'solarMaah', label: 'Solar Maah', labelHi: 'सौर मास',  alt: 'day' },
-  { key: 'nakshatra', label: 'Nakshatra',  labelHi: 'नक्षत्र',   samay: 'nakshatraSamay' },
-  { key: 'yoga',      label: 'Yoga',       labelHi: 'योग',      samay: 'yogaSamay' },
-  { key: 'ayan',      label: 'Ayan',       labelHi: 'अयन' },
-  { key: 'rashi',     label: 'Rashi',      labelHi: 'राशि',     samay: 'rashiSamay' },
-  { key: 'karan',     label: 'Karan',      labelHi: 'करण',      samay: 'karanSamay' },
-]
+import { fetchPanchangFull } from '../services/kundliApi'
+import { loadPlace } from '../components/panchang/place'
+import { clockLabel, rangeLabel, todayYmd } from '../components/panchang/format'
 
 /**
- * Today's panchang for a location (Bhopal by default), normalized into
- * display-ready rows. Shared by the hero snapshot and the full panchang card.
+ * Today's panchang for a location from the Kundli API (`/api/v1/panchang/full`),
+ * normalised into display-ready rows. Shared by the hero snapshot and the home
+ * panchang card. Defaults to the place chosen on /panchang, else New Delhi.
+ *
+ * Returns { details, rows, highlights, nakshatraCharan, summary, loading, error }.
  */
-export default function usePanchang({ language = 'hindi', lat = BHOPAL.lat, lon = BHOPAL.lon } = {}) {
+export default function usePanchang({ language = 'hindi', lat, lon, timezone } = {}) {
+  const saved = useMemo(() => loadPlace(), [])
+  const latitude = lat ?? saved.latitude
+  const longitude = lon ?? saved.longitude
+  const tz = timezone ?? (lat == null && lon == null ? saved.timezone : undefined)
+  const hi = language === 'hindi' || language === 'hi'
+
   const [payload, setPayload] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    let cancelled = false
+    const ctrl = new AbortController()
     setLoading(true)
     setError(null)
-
-    fetchPanchangData({ date: new Date(), lat, lon, language })
+    fetchPanchangFull({ date: todayYmd(), latitude, longitude, timezone: tz || undefined, language: hi ? 'hi' : 'en' }, { signal: ctrl.signal })
       .then((data) => {
-        if (cancelled) return
         if (!data) throw new Error('No data received')
         setPayload(data)
       })
-      .catch((err) => {
-        if (!cancelled) setError(err.message || 'Failed to load panchang')
-      })
-      .finally(() => { if (!cancelled) setLoading(false) })
+      .catch((err) => { if (err.name !== 'AbortError') setError(err.message || 'Failed to load panchang') })
+      .finally(() => { if (!ctrl.signal.aborted) setLoading(false) })
+    return () => ctrl.abort()
+  }, [latitude, longitude, tz, hi])
 
-    return () => { cancelled = true }
-  }, [lat, lon, language])
+  const details = payload
 
-  const details = useMemo(() => unwrapDetails(payload), [payload])
-
-  const rows = useMemo(() => (
-    MAIN_FIELDS
-      .map((f) => ({
-        key: f.key,
-        label: f.label,
-        labelHi: f.labelHi,
-        value: readField(details, f.key, f.alt, f.samay),
-      }))
-      .filter((r) => r.value)
-  ), [details])
-
-  const nakshatraCharan = useMemo(() => {
+  const rows = useMemo(() => {
     if (!details) return []
-    return ['padaSamay', 'padaSamay2', 'padaSamay3', 'padaSamay4']
-      .map((key, i) => {
-        const samay = details[key]
-        if (!samay) return null
-        const base = parseInt(details.pada || 1, 10)
-        return {
-          pada: (base + i) % 4 || 4,
-          nakshatra: i < 5 - base ? details.nakshatra : (details.nakshatra2 || details.nakshatra),
-          samay,
-        }
-      })
-      .filter(Boolean)
-  }, [details])
+    const till = hi ? 'तक' : 'till'
+    const withEnd = (name, clock) => (clock ? (hi ? `${name} ${clockLabel(clock, hi)} ${till}` : `${name} ${till} ${clockLabel(clock, hi)}`) : name)
+    const t1 = details.tithi?.[0], n1 = details.nakshatra?.[0], y1 = details.yoga?.[0], k1 = details.karana?.[0], lm = details.lunar_month || {}
+    return [
+      { key: 'tithi', label: 'Tithi', labelHi: 'तिथि', value: t1 ? withEnd(`${t1.paksha} ${t1.name}`, t1.end_clock) : '' },
+      { key: 'paksha', label: 'Paksha', labelHi: 'पक्ष', value: details.paksha || '' },
+      { key: 'month', label: 'Month', labelHi: 'मास', value: lm.purnimanta ? `${lm.purnimanta} (${hi ? 'पूर्णिमांत' : 'Purnimanta'}) · ${lm.amanta} (${hi ? 'अमांत' : 'Amanta'})${lm.adhik ? (hi ? ' · अधिक' : ' · Adhik') : ''}` : '' },
+      { key: 'nakshatra', label: 'Nakshatra', labelHi: 'नक्षत्र', value: n1 ? withEnd(n1.name, n1.end_clock) : '' },
+      { key: 'yoga', label: 'Yoga', labelHi: 'योग', value: y1 ? withEnd(y1.name, y1.end_clock) : '' },
+      { key: 'ayana', label: 'Ayana', labelHi: 'अयन', value: details.ayana?.vedic || '' },
+      { key: 'rashi', label: 'Rashi', labelHi: 'चंद्र राशि', value: details.moon_sign ? withEnd(details.moon_sign, details.moon_sign_until_clock) : '' },
+      { key: 'karana', label: 'Karana', labelHi: 'करण', value: k1 ? withEnd(k1.name, k1.end_clock) : '' },
+    ].filter((r) => r.value)
+  }, [details, hi])
+
+  const nakshatraCharan = useMemo(() => (
+    (details?.nakshatra_pada || []).map((x) => ({ pada: x.pada, nakshatra: x.nakshatra, samay: clockLabel(x.end_clock, hi) }))
+  ), [details, hi])
 
   const summary = useMemo(() => {
     if (!details) return ''
+    const t1 = details.tithi?.[0], n1 = details.nakshatra?.[0]
     return [
-      details.purnimantMaah || details.solarMaah || details.maas || details.month,
-      details.paksha,
-      details.tithi,
-      details.hinduDay || details.day || details.vaar,
-      details.nakshatra,
+      details.lunar_month?.purnimanta && `${details.lunar_month.purnimanta} ${hi ? 'मास' : 'month'}`,
+      details.paksha && `${details.paksha} ${hi ? 'पक्ष' : 'Paksha'}`,
+      t1?.name, details.vara?.name, n1?.name,
     ].filter(Boolean).join(', ')
-  }, [details])
+  }, [details, hi])
 
   /** The four rows worth showing in the hero snapshot. */
   const highlights = useMemo(() => {
     if (!details) return []
+    const t1 = details.tithi?.[0], n1 = details.nakshatra?.[0], y1 = details.yoga?.[0]
     return [
-      { label: 'Tithi',     labelHi: 'तिथि',      value: readField(details, 'tithi') },
-      { label: 'Nakshatra', labelHi: 'नक्षत्र',    value: readField(details, 'nakshatra') },
-      { label: 'Yoga',      labelHi: 'योग',       value: readField(details, 'yoga') },
-      {
-        label: 'Rahu Kaal', labelHi: 'राहु काल',
-        value: readField(details, 'rahuKaal', 'rahukaal') || readField(details, 'rahu'),
-      },
+      { label: 'Tithi', labelHi: 'तिथि', value: t1 ? `${t1.paksha} ${t1.name}` : '' },
+      { label: 'Nakshatra', labelHi: 'नक्षत्र', value: n1?.name || '' },
+      { label: 'Yoga', labelHi: 'योग', value: y1?.name || '' },
+      { label: 'Rahu Kaal', labelHi: 'राहु काल', value: details.rahu_kaal ? rangeLabel(details.rahu_kaal, hi, details.date) : '' },
     ].filter((r) => r.value)
-  }, [details])
+  }, [details, hi])
 
   return { details, rows, highlights, nakshatraCharan, summary, loading, error }
 }

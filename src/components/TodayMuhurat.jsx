@@ -1,84 +1,73 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { EmptyState, Skeleton } from './ui'
 import { IconArrowRight } from './ui/Icons'
-import { fetchDailyMuhuratData, fetchPopularCities } from '../services/api'
+import { fetchMuhuratDay } from '../services/kundliApi'
+import { loadPlace, shortName } from './panchang/place'
+import { durationLabel, rangeLabel, todayYmd } from './panchang/format'
 
-const FALLBACK_CITY = {
-  id: 1,
-  name: 'Bhopal',
-  state: 'Madhya Pradesh',
-  coordinates: { latitude: 23.2599, longitude: 77.4126 },
-}
-
-const shape = (list = [], limit) =>
-  list.slice(0, limit).map((item) => ({
-    label: item.name || '',
-    value: item.value || item.time || '',
-  }))
-
+/**
+ * Home-page "today's muhurat" card on the Kundli API (`/api/v1/muhurat`):
+ * choghadiya, auspicious windows and periods to avoid for today at the
+ * place chosen on /panchang (New Delhi by default).
+ */
 const TodayMuhurat = ({ language }) => {
   const hi = language === 'hindi'
-  const [activeTab, setActiveTab] = useState('yoga')
-  const [muhuratData, setMuhuratData] = useState(null)
+  const [activeTab, setActiveTab] = useState('choghadiya')
+  const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [location, setLocation] = useState(null)
+  const place = useMemo(() => loadPlace(), [])
 
   useEffect(() => {
-    let cancelled = false
-    fetchPopularCities()
-      .then((cities) => {
-        if (cancelled) return
-        const bhopal = (cities || []).find(c => c.name?.toLowerCase().includes('bhopal'))
-        setLocation(bhopal || cities?.[0] || FALLBACK_CITY)
-      })
-      .catch(() => { if (!cancelled) setLocation(FALLBACK_CITY) })
-    return () => { cancelled = true }
-  }, [])
-
-  useEffect(() => {
-    if (!location) return
-    let cancelled = false
+    const ctrl = new AbortController()
     setLoading(true)
     setError(null)
-
-    fetchDailyMuhuratData({
-      date: new Date(),
-      lat: location?.coordinates?.latitude || location?.lat || FALLBACK_CITY.coordinates.latitude,
-      lon: location?.coordinates?.longitude || location?.lon || FALLBACK_CITY.coordinates.longitude,
-      language,
-    })
-      .then((data) => {
-        if (cancelled) return
-        if (!data) { setError('empty'); return }
-        setMuhuratData({
-          yoga: shape(data.yogas, 7),
-          choghadiya: shape(data.choghadiya?.day, 4),
-          dayMahurat: shape(data.dayMahurat?.day, 3),
-        })
-      })
-      .catch(() => { if (!cancelled) setError('failed') })
-      .finally(() => { if (!cancelled) setLoading(false) })
-
-    return () => { cancelled = true }
-  }, [location, language])
+    fetchMuhuratDay({
+      date: todayYmd(), latitude: place.latitude, longitude: place.longitude, timezone: place.timezone || undefined, language: hi ? 'hi' : 'en',
+    }, { signal: ctrl.signal })
+      .then((d) => { if (!d) throw new Error('empty'); setData(d) })
+      .catch((e) => { if (e.name !== 'AbortError') setError('failed') })
+      .finally(() => { if (!ctrl.signal.aborted) setLoading(false) })
+    return () => ctrl.abort()
+  }, [place, hi])
 
   const tabs = [
-    { id: 'yoga', name: 'Yoga', nameHi: 'योग' },
     { id: 'choghadiya', name: 'Choghadiya', nameHi: 'चौघड़िया' },
-    { id: 'dayMahurat', name: 'Muhurat', nameHi: 'मुहूर्त' },
+    { id: 'shubh', name: 'Auspicious', nameHi: 'शुभ समय' },
+    { id: 'ashubh', name: 'Avoid', nameHi: 'वर्जित समय' },
   ]
 
-  const rows = muhuratData?.[activeTab] || []
+  const rows = useMemo(() => {
+    if (!data) return []
+    const base = data.date
+    const q = (c) => (c.quality === 'good' ? (hi ? 'शुभ' : 'good') : c.quality === 'bad' ? (hi ? 'अशुभ' : 'avoid') : (hi ? 'सम' : 'neutral'))
+    if (activeTab === 'choghadiya') {
+      return (data.choghadiya?.day || []).map((c) => ({ label: `${c.name} · ${q(c)}`, value: rangeLabel(c, hi, base), tone: c.quality }))
+    }
+    if (activeTab === 'shubh') {
+      const out = []
+      if (data.abhijit_muhurta && data.abhijit_muhurta.valid !== false) out.push({ label: hi ? 'अभिजीत मुहूर्त' : 'Abhijit Muhurat', value: rangeLabel(data.abhijit_muhurta, hi, base), tone: 'good' })
+      ;(data.auspicious_windows || []).forEach((w, i) => out.push({
+        label: `${hi ? 'शुभ समय' : 'Auspicious'} ${i + 1} · ${durationLabel(w.minutes, hi)}`, value: rangeLabel(w, hi, base), tone: 'good',
+      }))
+      return out
+    }
+    const out = []
+    if (data.rahu_kaal) out.push({ label: hi ? 'राहु काल' : 'Rahu Kaal', value: rangeLabel(data.rahu_kaal, hi, base), tone: 'bad' })
+    ;(data.avoid_windows || []).forEach((w, i) => out.push({ label: `${hi ? 'वर्जित समय' : 'Avoid'} ${i + 1}`, value: rangeLabel(w, hi, base), tone: 'bad' }))
+    return out
+  }, [data, activeTab, hi])
+
+  const city = shortName(place)
 
   return (
     <div className="aj">
       <div className="aj__head">
         <h3 className="aj__title">{hi ? 'आज का मुहूर्त' : "Today's muhurat"}</h3>
         <p className="aj__note">
-          {location?.name
-            ? (hi ? `${location.name} के सूर्योदय के अनुसार` : `Calculated for sunrise at ${location.name}`)
+          {city
+            ? (hi ? `${city} के सूर्योदय के अनुसार` : `Calculated for sunrise at ${city}`)
             : (hi ? 'सूर्योदय के अनुसार गणना' : 'Calculated from local sunrise')}
         </p>
       </div>
@@ -86,13 +75,7 @@ const TodayMuhurat = ({ language }) => {
       <div className="aj__body">
         <div className="aj-seg" role="tablist">
           {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              role="tab"
-              aria-selected={activeTab === tab.id}
-              onClick={() => setActiveTab(tab.id)}
-            >
+            <button key={tab.id} type="button" role="tab" aria-selected={activeTab === tab.id} onClick={() => setActiveTab(tab.id)}>
               {hi ? tab.nameHi : tab.name}
             </button>
           ))}
@@ -110,13 +93,13 @@ const TodayMuhurat = ({ language }) => {
         ) : error || rows.length === 0 ? (
           <EmptyState
             title={hi ? 'आज का डेटा उपलब्ध नहीं' : 'Not available right now'}
-            body={hi ? 'पूरा दैनिक मुहूर्त पंचांग पर देखें।' : "See the full daily muhurat on the panchang."}
+            body={hi ? 'पूरा दैनिक मुहूर्त पंचांग पर देखें।' : 'See the full daily muhurat on the panchang.'}
           />
         ) : (
           <div className="aj-rows" key={activeTab}>
             {rows.map((row, i) => (
               <div key={i} className="aj-item">
-                <span className="aj-item__k">{row.label}</span>
+                <span className="aj-item__k" style={row.tone === 'bad' ? { color: 'var(--vermilion)' } : row.tone === 'good' ? { color: 'var(--jade)' } : undefined}>{row.label}</span>
                 <span className="aj-item__v">{row.value}</span>
               </div>
             ))}

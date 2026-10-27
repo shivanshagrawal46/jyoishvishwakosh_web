@@ -11,12 +11,22 @@ import {
   AshtakavargaSection, AspectsSection, Card, DashaExplorer, DoshaSection, FriendshipSection, KPSection,
   KarakaSection, SadeSatiSection, VargaSection, YogaSection, YoginiSection,
 } from '../components/kundli/KundliSections'
+import { FaladeshPreview, FaladeshSection } from '../components/kundli/FaladeshSection'
+import { LalKitabSection } from '../components/kundli/LalKitabSection'
+import { KPKundaliSection } from '../components/kundli/KPKundaliSection'
+import { AvasthaSection } from '../components/kundli/AvasthaSection'
+import { CharaDashaSection } from '../components/kundli/CharaDashaSection'
 import { fetchKundli } from '../services/kundliApi'
 import '../styles/kundli.css'
 
 const EASE = [0.22, 1, 0.36, 1]
-const TABS = ['overview', 'charts', 'planets', 'yogas', 'dasha', 'vargas', 'ashtak', 'advanced']
-const TAB_LABEL = { overview: 'tabOverview', charts: 'tabCharts', planets: 'tabPlanets', yogas: 'tabYogas', dasha: 'tabDasha', vargas: 'tabVargas', ashtak: 'tabAshtak', advanced: 'tabAdvanced' }
+const TABS = ['overview', 'charts', 'planets', 'yogas', 'dasha', 'faladesh', 'lalkitab', 'kp', 'vargas', 'ashtak', 'advanced']
+const TAB_LABEL = {
+  overview: 'tabOverview', charts: 'tabCharts', planets: 'tabPlanets', yogas: 'tabYogas', dasha: 'tabDasha',
+  faladesh: 'tabFaladesh', lalkitab: 'tabLalKitab', kp: 'tabKP', vargas: 'tabVargas', ashtak: 'tabAshtak', advanced: 'tabAdvanced',
+}
+/** Tabs whose whole content comes from an optional response section (older charts may lack it). */
+const TAB_SOURCE = { faladesh: 'faladesh', lalkitab: 'lal_kitab', kp: 'kp_kundali' }
 
 const fmtDate = (iso, hi, short = false) => {
   if (!iso) return '-'
@@ -81,20 +91,20 @@ function ChartSection({ id, titleKey, subKey, chart, style, hi }) {
 }
 
 /* ───────────────────────── Tab bar ───────────────────────── */
-function TabBar({ active, onChange, hi, counts }) {
+function TabBar({ active, onChange, hi, counts, tabs = TABS }) {
   const ref = useRef(null)
   useEffect(() => {
     const el = ref.current?.querySelector('[aria-selected="true"]')
     el?.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' })
   }, [active])
   const onKey = (e) => {
-    const i = TABS.indexOf(active)
-    if (e.key === 'ArrowRight') onChange(TABS[(i + 1) % TABS.length])
-    if (e.key === 'ArrowLeft') onChange(TABS[(i - 1 + TABS.length) % TABS.length])
+    const i = tabs.indexOf(active)
+    if (e.key === 'ArrowRight') onChange(tabs[(i + 1) % tabs.length])
+    if (e.key === 'ArrowLeft') onChange(tabs[(i - 1 + tabs.length) % tabs.length])
   }
   return (
     <div className="kd-tabs" role="tablist" ref={ref} onKeyDown={onKey} aria-label={t('report', hi)}>
-      {TABS.map((id) => (
+      {tabs.map((id) => (
         <button key={id} type="button" role="tab" id={`tab-${id}`} aria-selected={active === id} aria-controls={`panel-${id}`} tabIndex={active === id ? 0 : -1}
           className={`kd-tab${active === id ? ' is-active' : ''}`} onClick={() => onChange(id)}>
           {active === id && <motion.span layoutId="kd-tab-ink" className="kd-tab__ink" transition={{ type: 'spring', stiffness: 420, damping: 36 }} />}
@@ -117,7 +127,9 @@ const KundliReportPage = ({ language: initialLanguage, setLanguage: setLanguageP
   const [error, setError] = useState('')
   const [copied, setCopied] = useState(false)
   const [chartStyle, setChartStyle] = useState(() => { try { return localStorage.getItem('jv-chart-style') || 'north' } catch { return 'north' } })
-  const tab = TABS.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'overview'
+  // Hide tabs whose section is missing from this response (very old charts / trimmed API).
+  const tabs = useMemo(() => (result ? TABS.filter((id) => !TAB_SOURCE[id] || result[TAB_SOURCE[id]]) : TABS), [result])
+  const tab = tabs.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'overview'
   const panelTop = useRef(null)
 
   const setTab = useCallback((id) => {
@@ -165,7 +177,11 @@ const KundliReportPage = ({ language: initialLanguage, setLanguage: setLanguageP
   const today = new Date().toISOString().slice(0, 10)
   const formedYogas = result?.yogas?.filter((y) => y.present) || []
   const presentDoshas = result ? [result.doshas.mangal, result.doshas.kaal_sarp, ...result.doshas.others].filter((d) => d.present) : []
-  const counts = result ? { yogas: formedYogas.length, vargas: Object.keys(result.divisional_charts).length } : null
+  const counts = result ? {
+    yogas: result.yoga_summary?.present?.length ?? formedYogas.length, vargas: Object.keys(result.divisional_charts).length,
+    ...(Array.isArray(result.kp_kundali?.promises) ? { kp: result.kp_kundali.promises.filter((p) => /^promised$/i.test(p.verdict || '')).length } : {}),
+    ...(Array.isArray(result.lal_kitab?.rin) ? { lalkitab: result.lal_kitab.rin.filter((r) => r.present).length } : {}),
+  } : null
   const badWord = hi ? 'अशुभ' : 'inauspicious'
 
   const chartDefs = result ? [
@@ -219,11 +235,12 @@ const KundliReportPage = ({ language: initialLanguage, setLanguage: setLanguageP
             </div>
             <div className="kd-card__body" style={{ paddingTop: 0 }}><Legend hi={hi} /></div>
           </section>
+          <AvasthaSection av={result.avasthas} hi={hi} />
           <AspectsSection aspects={result.aspects} hi={hi} />
         </>)
       case 'yogas':
         return (<>
-          <YogaSection yogas={result.yogas} hi={hi} />
+          <YogaSection yogas={result.yogas} summary={result.yoga_summary} hi={hi} />
           <DoshaSection doshas={result.doshas} hi={hi} />
           <SadeSatiSection ss={result.doshas.sade_sati} hi={hi} />
         </>)
@@ -257,7 +274,14 @@ const KundliReportPage = ({ language: initialLanguage, setLanguage: setLanguageP
           </Card>
           <DashaExplorer payload={payload} hi={hi} today={today} />
           <YoginiSection yd={result.yogini_dasha} hi={hi} />
+          <CharaDashaSection cd={result.chara_dasha} hi={hi} />
         </>)
+      case 'faladesh':
+        return <FaladeshSection fal={result.faladesh} hi={hi} />
+      case 'lalkitab':
+        return <LalKitabSection lk={result.lal_kitab} hi={hi} />
+      case 'kp':
+        return <KPKundaliSection kp={result.kp_kundali} hi={hi} />
       case 'vargas':
         return (<>
           <div className="kd-toolbar"><h2 className="kd-card__title">{t('vargas', hi)}</h2>{styleToggle}</div>
@@ -314,6 +338,8 @@ const KundliReportPage = ({ language: initialLanguage, setLanguage: setLanguageP
               </Card>
             </div>
           </div>
+
+          <FaladeshPreview fal={result.faladesh} hi={hi} onOpen={() => setTab('faladesh')} />
 
           <div className="kd-two">
             <Card title={t('basic', hi)}>
@@ -382,7 +408,7 @@ const KundliReportPage = ({ language: initialLanguage, setLanguage: setLanguageP
                 </div>
               </section>
 
-              <TabBar active={tab} onChange={setTab} hi={hi} counts={counts} />
+              <TabBar active={tab} onChange={setTab} hi={hi} counts={counts} tabs={tabs} />
 
               <div ref={panelTop} />
               <AnimatePresence mode="wait" initial={false}>

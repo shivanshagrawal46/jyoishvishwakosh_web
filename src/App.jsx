@@ -51,6 +51,9 @@ import NakshatraPage from './pages/NakshatraPage'
 import DashaPage from './pages/DashaPage'
 import KundliPage from './pages/KundliPage'
 import KundliReportPage from './pages/KundliReportPage'
+import KundliMatchingPage from './pages/KundliMatchingPage'
+import VratParvPage from './pages/VratParvPage'
+import MuhuratFinderPage from './pages/MuhuratFinderPage'
 import OrderPage from './pages/OrderPage'
 import RashiFalPage from './pages/RashiFalPage'
 import AnkFalPage from './pages/AnkFalPage'
@@ -114,6 +117,10 @@ const PAGES = [
   ['/dasha', DashaPage],
   ['/kundli', KundliPage],
   ['/kundli/report', KundliReportPage],
+  ['/kundli-matching', KundliMatchingPage],
+  ['/kundli-matching/result', KundliMatchingPage],
+  ['/vrat-parv', VratParvPage],
+  ['/muhurat-finder', MuhuratFinderPage],
   ['/order', OrderPage],
   ['/rashi-fal', RashiFalPage],
   ['/ank-fal', AnkFalPage],
