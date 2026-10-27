@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { searchPlaces } from '../../services/kundliApi'
 import { t } from './toolLabels'
+import { IconPin } from '../ui/Icons'
 
 /**
  * City autocomplete backed by /api/v1/places. Reusable port of the field on
@@ -67,7 +68,7 @@ export default function PlaceField({
         </ul>
       )}
       {hasCoords
-        ? <span className="kd-pill">📍 {lat.toFixed(4)}, {lon.toFixed(4)}{meta.timezone ? ` · ${meta.timezone}` : ''}</span>
+        ? <span className="kd-pill"><IconPin s={14} /> {lat.toFixed(4)}, {lon.toFixed(4)}{meta.timezone ? ` · ${meta.timezone}` : ''}</span>
         : <span className="kd-hint">{hint ?? t('placeHint', hi)}</span>}
     </div>
   )

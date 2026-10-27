@@ -6,7 +6,7 @@ import Footer from '../Footer'
 /** Header + services strip + page hero + footer, shared by the tool pages. */
 export function ToolShell({ language, onLanguage, active, wide = false, children, className = '' }) {
   return (
-    <div className="app">
+    <div className="app jt-page">
       <Header language={language} setLanguage={onLanguage} />
       <ServicesStrip language={language} activeService={active} />
       <main className={`calc-page-main kt-main${wide ? ' kt-main--wide' : ''} ${className}`.trim()} id="main">

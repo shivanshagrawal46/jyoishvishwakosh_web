@@ -4,8 +4,11 @@ import Header from '../components/Header'
 import ServicesStrip from '../components/ServicesStrip'
 import Footer from '../components/Footer'
 import { t } from '../components/kundli/kundliLabels'
+import { FormCard, SplitHero } from '../components/tools/jt'
+import { IconChart, IconClock, IconPin, IconSparkle, IconZodiac } from '../components/ui/Icons'
 import { searchPlaces } from '../services/kundliApi'
 import '../styles/kundli.css'
+import '../styles/jyotish-tools.css'
 
 export const FORM_KEY = 'jv-kundli-form'
 const EMPTY = {
@@ -91,7 +94,7 @@ function PlaceField({ value, meta, onChange, onPick, hi }) {
         </ul>
       )}
       {meta
-        ? <span className="kd-pill">📍 {meta.latitude.toFixed(4)}, {meta.longitude.toFixed(4)} · {meta.timezone}</span>
+        ? <span className="kd-pill"><IconPin s={14} />{meta.latitude.toFixed(4)}, {meta.longitude.toFixed(4)} · {meta.timezone}</span>
         : <span className="kd-hint">{t('placeHint', hi)}</span>}
     </div>
   )
@@ -118,20 +121,24 @@ const KundliPage = ({ language: initialLanguage, setLanguage: setLanguageProp })
   }
 
   return (
-    <div className="app">
+    <div className="app jt-page">
       <Header language={language} setLanguage={handleLanguageChange} />
       <ServicesStrip language={language} activeService="kundli" />
 
-      <main className="calc-page-main kd-main" id="main">
+      <main className="calc-page-main" id="main">
         <div className="calc-page-container">
-          <div className="calc-page-hero">
-            <div className="calc-hero-badge">{t('badge', hi)}</div>
-            <h1 className={`calc-page-title ${hi ? 'hindi' : ''}`}>{t('title', hi)}</h1>
-            <p className="calc-page-subtitle">{t('subtitle', hi)}</p>
-          </div>
-
-          <div className="calc-form-card">
-            <form onSubmit={handleSubmit} className="calc-form kd-form" noValidate>
+          <SplitHero
+            eyebrow={t('badge', hi)} title={t('title', hi)} subtitle={t('subtitle', hi)}
+            points={[
+              [IconChart, t('vp1', hi), t('vp1s', hi)],
+              [IconClock, t('vp2', hi), t('vp2s', hi)],
+              [IconZodiac, t('vp3', hi), t('vp3s', hi)],
+              [IconSparkle, t('vp4', hi), t('vp4s', hi)],
+            ]}
+            trust={[t('trust1', hi), t('trust2', hi), t('trust3', hi)]}
+          >
+          <FormCard title={t('formTitle', hi)} sub={t('formSub', hi)}>
+            <form onSubmit={handleSubmit} className="kd-form" noValidate>
               <div className="kd-grid">
                 <div className="kd-fld">
                   <label className="kd-fld__label" htmlFor="kd-name">{t('name', hi)}</label>
@@ -199,7 +206,8 @@ const KundliPage = ({ language: initialLanguage, setLanguage: setLanguageProp })
 
               <button type="submit" className="calc-form-submit">{t('submit', hi)}</button>
             </form>
-          </div>
+          </FormCard>
+          </SplitHero>
         </div>
       </main>
 

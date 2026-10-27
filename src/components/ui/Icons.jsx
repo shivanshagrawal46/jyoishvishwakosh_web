@@ -191,6 +191,9 @@ export const IconStar = ({ filled = true, ...p }) => (
   </Svg>
 )
 export const IconClock = (p) => <Svg {...p}><circle cx="12" cy="12" r="8.8" /><polyline points="12 6.8 12 12 15.6 14" /></Svg>
+export const IconEdit = (p) => <Svg {...p}><path d="M4 20h4.5L19 9.5a2.1 2.1 0 0 0-3-3L5.5 17 4 20Z" /><path d="m13.5 8 3 3" /></Svg>
+export const IconPrint = (p) => <Svg {...p}><path d="M7 9V4h10v5" /><rect x="4" y="9" width="16" height="8" rx="1.5" /><path d="M7 14h10v6H7z" /></Svg>
+export const IconLink = (p) => <Svg {...p}><path d="M10 13.5a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1.2 1.2" /><path d="M14 10.5a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1.2-1.2" /></Svg>
 export const IconSunrise = (p) => (
   <Svg {...p}>
     <path d="M3.4 18.4h17.2" /><path d="M6.6 14.6a5.4 5.4 0 0 1 10.8 0" />

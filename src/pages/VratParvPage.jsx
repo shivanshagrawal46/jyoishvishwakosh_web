@@ -1,64 +1,77 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Skeleton, ToolError, ToolHero, ToolShell } from '../components/tools/ToolShell'
-import PlaceField from '../components/tools/PlaceField'
+import { ToolError, ToolShell } from '../components/tools/ToolShell'
 import useStoredState from '../components/tools/useStoredState'
 import { DEFAULT_PLACE, monthName, t } from '../components/tools/toolLabels'
 import { clock, dayOf, fmtDate, todayISO } from '../components/tools/format'
 import { fetchFestivals } from '../services/kundliApi'
+import { MonthBar } from '../components/panchang/Day'
+import { Chips, MonthGrid, Panel, Skeleton } from '../components/tools/jt'
+import { IconSunrise } from '../components/ui/Icons'
 import '../styles/kundli.css'
 import '../styles/kundli-tools.css'
+import '../styles/jyotish-tools.css'
 
 const PREF_KEY = 'jv-vrat-prefs'
 const DEFAULT_PREFS = { place: DEFAULT_PLACE.display_name, placeMeta: DEFAULT_PLACE, location: DEFAULT_PLACE, includeMonthly: true }
 const MIN_YEAR = 1700, MAX_YEAR = 2200
 const clampYear = (y) => Math.min(MAX_YEAR, Math.max(MIN_YEAR, y))
 
+/** Calendar dot / chip colour per API category. */
+const TONE = {
+  festival: 'saffron', jayanti: 'gold', sankranti: 'bad',
+  purnima: 'good', amavasya: 'good', shivaratri: 'good',
+  ekadashi: 'indigo', vrat: 'indigo', pradosh: 'indigo', chaturthi: 'indigo', ashtami: 'indigo', shashthi: 'indigo',
+}
+const TONE_VAR = { saffron: 'var(--saffron)', gold: 'var(--gold)', bad: 'var(--vermilion)', good: 'var(--jade)', indigo: 'var(--indigo)' }
+const toneOf = (cat) => TONE[cat] || 'saffron'
+
 const LunarStrip = ({ months, hi, nowISO }) => {
   if (!Array.isArray(months) || months.length === 0) return null
   return (
-    <div className="kt-lunar" aria-label={t('lunarMonths', hi)}>
-      <div className="kd-eyebrow">{t('lunarMonths', hi)}</div>
-      <div className="kt-lunar__track no-bar">
-        {months.map((m, i) => {
-          const current = m.start && m.end && m.start.slice(0, 10) <= nowISO && nowISO < m.end.slice(0, 10)
-          return (
-            <div key={`${m.amanta_en || m.amanta}-${m.start || i}`} className={`kt-lunar__chip${current ? ' is-current' : ''}${m.adhik ? ' is-adhik' : ''}`}>
-              <b>{m.amanta ?? m.amanta_en ?? '-'}</b>
-              {m.adhik && <span className="kd-badge kd-badge--warn">{t('adhik', hi)}</span>}
-              {m.kshaya && <span className="kd-badge kd-badge--bad">{t('kshaya', hi)}</span>}
-              <small>{fmtDate(m.start, hi, { short: true, year: false })} – {fmtDate(m.end, hi, { short: true, year: false })}</small>
-            </div>
-          )
-        })}
-      </div>
+    <div className="jt-lunar" aria-label={t('lunarMonths', hi)}>
+      {months.map((m, i) => {
+        const current = m.start && m.end && m.start.slice(0, 10) <= nowISO && nowISO < m.end.slice(0, 10)
+        return (
+          <div key={`${m.amanta_en || m.amanta}-${m.start || i}`} className={`jt-lunar__chip${current ? ' is-current' : ''}${m.adhik ? ' is-adhik' : ''}`}>
+            <b>{m.amanta ?? m.amanta_en ?? '-'}{m.adhik && <span className="kd-badge kd-badge--warn">{t('adhik', hi)}</span>}{m.kshaya && <span className="kd-badge kd-badge--bad">{t('kshaya', hi)}</span>}</b>
+            <small>{fmtDate(m.start, hi, { short: true, year: false })} – {fmtDate(m.end, hi, { short: true, year: false })}</small>
+          </div>
+        )
+      })}
     </div>
   )
 }
 
-const Event = ({ e, hi, isToday }) => (
-  <li className={`kt-ev${isToday ? ' is-today' : ''}`} id={isToday ? 'kt-today' : undefined}>
-    <div className="kt-ev__date"><b>{dayOf(e.date)}</b><small>{e.weekday ?? ''}</small></div>
-    <div className="kt-ev__body">
-      <div className="kt-ev__title">
-        <h3>{e.name ?? e.name_en ?? '-'}</h3>
-        {e.name_en && e.name_en !== e.name && <small>{e.name_en}</small>}
-      </div>
-      <div className="kt-ev__tags">
-        {(e.category_label ?? e.category) && <span className={`kd-badge kt-cat kt-cat--${e.category || 'other'}`}>{e.category_label ?? e.category}</span>}
-        {(e.rule_label ?? e.rule) && <span className="kd-badge kd-badge--no">{e.rule_label ?? e.rule}</span>}
-        {isToday && <span className="kd-badge kd-badge--warn">{t('today', hi)}</span>}
-      </div>
-      <p className="kt-ev__meta">
-        {e.tithi_at_sunrise && <span><b>{t('tithiSunrise', hi)}</b> {e.tithi_at_sunrise}</span>}
-        {e.nakshatra_at_sunrise && <span><b>{t('nakSunrise', hi)}</b> {e.nakshatra_at_sunrise}</span>}
-        {e.lunar_month_amanta && <span><b>{t('lunarMonth', hi)}</b> {e.lunar_month_amanta}</span>}
-      </p>
-      {e.sankranti_time && <p className="kt-ev__extra">☀ {t('sankrantiAt', hi)} <b>{clock(e.sankranti_time)}</b></p>}
-      {e.vaishnava_date && <p className="kt-ev__extra">{t('vaishnava', hi)}: <b>{fmtDate(e.vaishnava_date, hi, { short: true, weekday: true })}</b></p>}
-      {e.note && <p className="kt-ev__note">{e.note}</p>}
+const Event = ({ e, hi }) => (
+  <div className="jt-ev">
+    <div className="jt-ev__name">
+      <h3>{e.name ?? e.name_en ?? '-'}</h3>
+      {e.name_en && e.name_en !== e.name && <small>{e.name_en}</small>}
     </div>
-  </li>
+    <div className="jt-ev__cat">
+      {(e.category_label ?? e.category) && <span className={`kd-badge kt-cat kt-cat--${e.category || 'other'}`}>{e.category_label ?? e.category}</span>}
+    </div>
+    <div className="jt-ev__meta">
+      {e.tithi_at_sunrise && <span><b>{t('tithiSunrise', hi)}</b>{e.tithi_at_sunrise}</span>}
+      {e.nakshatra_at_sunrise && <span><b>{t('nakSunrise', hi)}</b>{e.nakshatra_at_sunrise}</span>}
+      {(e.rule_label ?? e.rule) && <span><b>{t('rule', hi)}</b>{e.rule_label ?? e.rule}</span>}
+      {e.sankranti_time && <span><IconSunrise s={13} style={{ verticalAlign: '-2px', marginRight: 4, color: 'var(--saffron)' }} />{t('sankrantiAt', hi)} <em>{clock(e.sankranti_time)}</em></span>}
+      {e.vaishnava_date && <span><b>{t('vaishnava', hi)}</b><em>{fmtDate(e.vaishnava_date, hi, { short: true, weekday: true })}</em></span>}
+    </div>
+    {e.note && <p className="jt-ev__note">{e.note}</p>}
+  </div>
+)
+
+const DayCard = ({ date, list, hi, isToday, selected }) => (
+  <article className={`jt-day${isToday ? ' is-today' : ''}${selected ? ' is-selected' : ''}`} id={`vd-${date}`}>
+    <div className="jt-day__rail">
+      <b>{dayOf(date)}</b>
+      <small>{new Date(`${date}T00:00:00`).toLocaleDateString(hi ? 'hi-IN' : 'en-IN', { weekday: 'short' })}</small>
+      {isToday && <small style={{ marginTop: 4 }}>{t('today', hi)}</small>}
+    </div>
+    <div className="jt-day__list">{list.map((e, i) => <Event key={`${e.name_en || e.name}-${i}`} e={e} hi={hi} />)}</div>
+  </article>
 )
 
 const VratParvPage = ({ language: initialLanguage, setLanguage: setLanguageProp }) => {
@@ -77,10 +90,13 @@ const VratParvPage = ({ language: initialLanguage, setLanguage: setLanguageProp 
     Object.entries(patch).forEach(([k, v]) => (v == null ? next.delete(k) : next.set(k, String(v))))
     setParams(next, { replace: true })
   }
+  const setYM = (y, m) => setQuery({ year: y, month: m === 0 ? 'all' : m })
 
   const [prefs, setPrefs] = useStoredState(PREF_KEY, DEFAULT_PREFS)
   const loc = prefs.location && Number.isFinite(Number(prefs.location.latitude)) ? prefs.location : DEFAULT_PLACE
+  const setPlace = (p) => setPrefs((pr) => ({ ...pr, place: p.display_name, placeMeta: p, location: p }))
   const [cats, setCats] = useState(() => new Set())
+  const [selected, setSelected] = useState(null)
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -104,83 +120,102 @@ const VratParvPage = ({ language: initialLanguage, setLanguage: setLanguageProp 
   const categories = useMemo(() => [...new Map(events.filter((e) => e.category).map((e) => [e.category, e.category_label ?? e.category]))], [events])
   const filtered = useMemo(() => events.filter((e) =>
     (month === 0 || Number(e.date?.slice(5, 7)) === month) && (cats.size === 0 || cats.has(e.category))), [events, month, cats])
+  /** Group by month, then by day. */
   const groups = useMemo(() => {
     const map = new Map()
-    filtered.forEach((e) => { const k = (e.date || '').slice(0, 7); if (!map.has(k)) map.set(k, []); map.get(k).push(e) })
-    return [...map.entries()].sort(([a], [b]) => a.localeCompare(b))
+    filtered.forEach((e) => {
+      const ym = (e.date || '').slice(0, 7)
+      if (!map.has(ym)) map.set(ym, new Map())
+      const days = map.get(ym)
+      if (!days.has(e.date)) days.set(e.date, [])
+      days.get(e.date).push(e)
+    })
+    return [...map.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([ym, days]) => [ym, [...days.entries()].sort(([a], [b]) => a.localeCompare(b))])
   }, [filtered])
   const hasToday = filtered.some((e) => e.date === nowISO)
 
+  /** Calendar marks for the visible month (or the current month when the whole year is shown). */
+  const calMonth = month === 0 ? (year === thisYear ? thisMonth : 1) : month
+  const marks = useMemo(() => {
+    const m = {}
+    events.filter((e) => Number(e.date?.slice(5, 7)) === calMonth && (cats.size === 0 || cats.has(e.category))).forEach((e) => {
+      if (!m[e.date]) m[e.date] = { dots: [], label: '' }
+      const tone = toneOf(e.category)
+      if (!m[e.date].dots.includes(tone)) m[e.date].dots.push(tone)
+      m[e.date].label = m[e.date].label ? `${m[e.date].label}, ${e.name}` : e.name
+    })
+    return m
+  }, [events, calMonth, cats])
+
   const toggleCat = (id) => setCats((s) => { const n = new Set(s); n.has(id) ? n.delete(id) : n.add(id); return n })
-  const jumpToday = () => document.getElementById('kt-today')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  const jumpTo = (id) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  const pickDay = (iso) => {
+    setSelected(iso)
+    if (month !== 0 && Number(iso.slice(5, 7)) !== month) setYM(Number(iso.slice(0, 4)), Number(iso.slice(5, 7)))
+    setTimeout(() => jumpTo(`vd-${iso}`), 60)
+  }
+
+  const chipItems = [
+    { id: '__all', label: t('all', hi), on: cats.size === 0 },
+    ...categories.map(([id, label]) => ({ id, label, on: cats.has(id), dot: TONE_VAR[toneOf(id)], count: events.filter((e) => e.category === id && (month === 0 || Number(e.date?.slice(5, 7)) === month)).length })),
+  ]
 
   return (
     <ToolShell language={language} onLanguage={onLanguage} active="vratparv" wide>
-      <ToolHero badge={t('vBadge', hi)} title={t('vTitle', hi)} subtitle={t('vSubtitle', hi)} hi={hi} />
-
-      <div className="calc-form-card kt-formcard">
-        <div className="kt-controls">
-          <div className="kd-fld">
-            <label className="kd-fld__label" htmlFor="vp-year">{t('year', hi)}</label>
-            <div className="kt-stepper">
-              <button type="button" aria-label="−1" onClick={() => setQuery({ year: clampYear(year - 1) })} disabled={year <= MIN_YEAR}>−</button>
-              <input id="vp-year" type="number" inputMode="numeric" min={MIN_YEAR} max={MAX_YEAR} value={year}
-                onChange={(e) => { const y = Number(e.target.value); if (y >= MIN_YEAR && y <= MAX_YEAR) setQuery({ year: y }) }} />
-              <button type="button" aria-label="+1" onClick={() => setQuery({ year: clampYear(year + 1) })} disabled={year >= MAX_YEAR}>+</button>
-            </div>
-          </div>
-          <div className="kd-fld">
-            <label className="kd-fld__label" htmlFor="vp-month">{t('month', hi)}</label>
-            <select id="vp-month" value={month} onChange={(e) => setQuery({ month: Number(e.target.value) === 0 ? 'all' : e.target.value })}>
-              <option value={0}>{t('allMonths', hi)}</option>
-              {Array.from({ length: 12 }, (_, i) => <option key={i + 1} value={i + 1}>{monthName(i + 1, hi)}</option>)}
-            </select>
-          </div>
-          <PlaceField id="vp-place" hi={hi} label={t('location', hi)} value={prefs.place || ''} meta={prefs.placeMeta} span={false} className="kt-controls__place"
-            onChange={(v) => setPrefs((p) => ({ ...p, place: v, placeMeta: null }))}
-            onPick={(p) => setPrefs((pr) => ({ ...pr, place: p.display_name, placeMeta: p, location: p }))} />
-          <label className="kd-check kt-check">
-            <input type="checkbox" checked={!!prefs.includeMonthly} onChange={(e) => setPrefs((p) => ({ ...p, includeMonthly: e.target.checked }))} />
-            <span><b>{t('monthly', hi)}</b><small>{t('monthlySub', hi)}</small></span>
-          </label>
-        </div>
+      <div className="jt-pagehead">
+        <h1>{t('vTitle', hi)}</h1>
+        <p className="jt-pagehead__sub">{t('vSubtitle', hi)}</p>
       </div>
 
-      {loading && <Skeleton rows={6} height={92} text={t('vWorking', hi)} />}
+      <MonthBar hi={hi} year={year} month={month} onChange={setYM} place={loc} setPlace={setPlace}
+        allLabel={t('allMonths', hi)} monthName={(m) => monthName(m, hi)} min={MIN_YEAR} max={MAX_YEAR} />
+
+      {loading && !data && <Skeleton tiles={0} rows={5} height={110} text={t('vWorking', hi)} />}
       {!loading && error && <ToolError message={error} onRetry={() => setAttempt((a) => a + 1)} retryLabel={t('retry', hi)} />}
 
-      {!loading && data && (
-        <div className="kd-results kt-vrat">
-          <LunarStrip months={data.lunar_months} hi={hi} nowISO={nowISO} />
-
-          {categories.length > 0 && (
-            <div className="kt-filter">
-              <div className="kd-eyebrow">{t('category', hi)}</div>
-              <div className="kd-chips">
-                <button type="button" className={`kd-chip${cats.size === 0 ? ' kd-chip--warn' : ''}`} aria-pressed={cats.size === 0} onClick={() => setCats(new Set())}>{t('all', hi)}</button>
-                {categories.map(([id, label]) => (
-                  <button type="button" key={id} className={`kd-chip${cats.has(id) ? ' kd-chip--warn' : ''}`} aria-pressed={cats.has(id)} onClick={() => toggleCat(id)}>{label}</button>
-                ))}
+      {data && !error && (
+        <div className={`jt-vrat${loading ? ' is-busy' : ''}`} aria-busy={loading}>
+          <aside className="jt-vrat__aside">
+            <Panel title={`${monthName(calMonth, hi)} ${year}`} sub={`${Object.keys(marks).length} ${t('eventsCount', hi)}`}
+              right={<label className="jt-switch"><input type="checkbox" checked={!!prefs.includeMonthly} onChange={(e) => setPrefs((p) => ({ ...p, includeMonthly: e.target.checked }))} /><span>{t('monthly', hi)}</span></label>}>
+              <MonthGrid year={year} month={calMonth} marks={marks} selected={selected} today={nowISO} hi={hi} onPick={pickDay} />
+              <div className="jt-legend">
+                {[['festival', 'saffron'], ['ekadashi', 'indigo'], ['purnima', 'good'], ['sankranti', 'bad'], ['jayanti', 'gold']].map(([id, tone]) => {
+                  const label = categories.find(([c]) => c === id)?.[1]
+                  return label ? <span key={id}><i style={{ background: TONE_VAR[tone] }} />{label}</span> : null
+                })}
               </div>
+            </Panel>
+            <Panel title={t('lunarMonths', hi)} className="jt-only-desktop">
+              <LunarStrip months={data.lunar_months} hi={hi} nowISO={nowISO} />
+            </Panel>
+          </aside>
+
+          <div className="jt-vrat__main">
+            {categories.length > 0 && (
+              <Chips scroll items={chipItems} onToggle={(id) => (id === '__all' ? setCats(new Set()) : toggleCat(id))} />
+            )}
+
+            <div className="jt-section__head">
+              <p><strong style={{ color: 'var(--ink)' }}>{filtered.length}</strong> {t('eventsCount', hi)} · {month === 0 ? year : `${monthName(month, hi)} ${year}`}</p>
+              {hasToday && <button type="button" className="kd-link" onClick={() => jumpTo(`vd-${nowISO}`)}>{t('jumpToday', hi)} ↓</button>}
             </div>
-          )}
 
-          <div className="kt-summary">
-            <span><strong>{filtered.length}</strong> {t('eventsCount', hi)} · {month === 0 ? year : `${monthName(month, hi)} ${year}`}</span>
-            {hasToday && <button type="button" className="kd-link" onClick={jumpToday}>{t('jumpToday', hi)} ↓</button>}
+            {groups.length === 0 && <p className="kt-empty">{t('noEvents', hi)}</p>}
+            <div className="jt-days">
+              {groups.map(([ym, days]) => (
+                <React.Fragment key={ym}>
+                  {month === 0 && <h2 className="jt-monthhead jt-sticky"><span>{monthName(Number(ym.slice(5, 7)), hi)} {ym.slice(0, 4)}</span><small>{days.reduce((n, [, l]) => n + l.length, 0)}</small></h2>}
+                  {days.map(([date, list]) => <DayCard key={date} date={date} list={list} hi={hi} isToday={date === nowISO} selected={date === selected} />)}
+                </React.Fragment>
+              ))}
+            </div>
+
+            <Panel title={t('lunarMonths', hi)} className="jt-only-mobile">
+              <LunarStrip months={data.lunar_months} hi={hi} nowISO={nowISO} />
+            </Panel>
+            <p className="kd-foot">{loc.display_name || `${loc.latitude}, ${loc.longitude}`} · {t('footnote', hi)}</p>
           </div>
-
-          {groups.length === 0 && <p className="kt-empty">{t('noEvents', hi)}</p>}
-          {groups.map(([ym, list]) => (
-            <section key={ym} className="kt-month">
-              <h2 className="kt-month__head"><span>{monthName(Number(ym.slice(5, 7)), hi)} {ym.slice(0, 4)}</span><small>{list.length}</small></h2>
-              <ul className="kt-evlist">
-                {list.map((e, i) => <Event key={`${e.date}-${e.name_en || e.name}-${i}`} e={e} hi={hi} isToday={e.date === nowISO} />)}
-              </ul>
-            </section>
-          ))}
-
-          <p className="kd-foot">{loc.display_name || `${loc.latitude}, ${loc.longitude}`} · {t('footnote', hi)}</p>
         </div>
       )}
     </ToolShell>

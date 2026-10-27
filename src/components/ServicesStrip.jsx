@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useChrome } from '../contexts/ChromeContext'
 import { SERVICES } from '../data/site'
@@ -28,9 +28,21 @@ const ServicesStrip = ({ language = 'hindi', activeService = null }) => {
   const hi = language === 'hindi'
   const active = ID_ALIASES[activeService] || activeService
   const { openAppPrompt } = useChrome()
+  const ref = useRef(null)
+
+  // Publish the strip's real height so sticky bars below it can sit exactly under it.
+  useEffect(() => {
+    const el = ref.current
+    if (!el || typeof ResizeObserver === 'undefined') return undefined
+    const apply = () => document.documentElement.style.setProperty('--strip-h', `${el.offsetHeight}px`)
+    apply()
+    const ro = new ResizeObserver(apply)
+    ro.observe(el)
+    return () => { ro.disconnect(); document.documentElement.style.removeProperty('--strip-h') }
+  }, [])
 
   return (
-    <nav className="services-strip" aria-label={hi ? 'सेवाएं' : 'Services'}>
+    <nav className="services-strip" aria-label={hi ? 'सेवाएं' : 'Services'} ref={ref}>
       <div className="services-strip-track no-bar">
         {SERVICES.map((service) => {
           const isActive = active === service.id

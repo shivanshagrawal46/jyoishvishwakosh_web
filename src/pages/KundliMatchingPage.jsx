@@ -1,17 +1,17 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
-import { Mandala } from '../components/ui/Icons'
-import { Card, KV, Skeleton, ToolError, ToolHero, ToolShell } from '../components/tools/ToolShell'
+import { IconChart, IconCheck, IconEdit, IconLink, IconPrint, IconSparkle, IconWarn, Mandala } from '../components/ui/Icons'
+import { Card, KV, Skeleton, ToolError, ToolShell } from '../components/tools/ToolShell'
+import { Avatar, SplitHero } from '../components/tools/jt'
 import BirthForm, { EMPTY_BIRTH } from '../components/tools/BirthForm'
 import ScoreRing, { toneFor } from '../components/tools/ScoreRing'
 import useStoredState from '../components/tools/useStoredState'
 import { planetName, t } from '../components/tools/toolLabels'
 import { fmtDate, fmtTime, num, numParam } from '../components/tools/format'
 import { fetchMatching } from '../services/kundliApi'
-import boyIcon from '../assets/icons/boyIcon.png'
-import girlIcon from '../assets/icons/girlIcon.png'
 import '../styles/kundli.css'
 import '../styles/kundli-tools.css'
+import '../styles/jyotish-tools.css'
 
 export const FORM_KEY = 'jv-matching-form'
 const EMPTY = { boy: { ...EMPTY_BIRTH }, girl: { ...EMPTY_BIRTH } }
@@ -82,26 +82,35 @@ function MatchingForm({ hi, language, onLanguage }) {
 
   return (
     <ToolShell language={language} onLanguage={onLanguage} active="matching" wide>
-      <ToolHero badge={t('mBadge', hi)} title={t('mTitle', hi)} subtitle={t('mSubtitle', hi)} hi={hi} />
-      <div className="calc-form-card kt-formcard">
-        <form onSubmit={submit} className="calc-form kd-form" noValidate>
-          <div className="kt-pair">
-            <BirthForm id="boy" tone="boy" title={t('boyDetails', hi)} icon={boyIcon} hi={hi}
-              value={form.boy || EMPTY_BIRTH} onChange={(v) => setForm((f) => ({ ...f, boy: v }))} />
-            <BirthForm id="girl" tone="girl" title={t('girlDetails', hi)} icon={girlIcon} hi={hi}
-              value={form.girl || EMPTY_BIRTH} onChange={(v) => setForm((f) => ({ ...f, girl: v }))} />
-          </div>
-          {error && <div className="calc-error-message" role="alert">{error}</div>}
-          <button type="submit" className="calc-form-submit">{t('mSubmit', hi)}</button>
-        </form>
-      </div>
+      <SplitHero wide
+        eyebrow={t('mBadge', hi)} title={t('mTitle', hi)} subtitle={t('mSubtitle', hi)}
+        points={[
+          [IconChart, t('mvp1', hi), t('mvp1s', hi)],
+          [IconWarn, t('mvp2', hi), t('mvp2s', hi)],
+          [IconSparkle, t('mvp3', hi), t('mvp3s', hi)],
+          [IconCheck, t('mvp4', hi), t('mvp4s', hi)],
+        ]}
+      >
+        <div className="jt-card">
+          <form onSubmit={submit} className="kd-form" noValidate>
+            <div className="kt-pair">
+              <BirthForm id="boy" tone="boy" title={t('boyDetails', hi)} icon={<Avatar name={form.boy?.name} side="boy" />} hi={hi}
+                value={form.boy || EMPTY_BIRTH} onChange={(v) => setForm((f) => ({ ...f, boy: v }))} />
+              <BirthForm id="girl" tone="girl" title={t('girlDetails', hi)} icon={<Avatar name={form.girl?.name} side="girl" />} hi={hi}
+                value={form.girl || EMPTY_BIRTH} onChange={(v) => setForm((f) => ({ ...f, girl: v }))} />
+            </div>
+            {error && <div className="calc-error-message" role="alert">{error}</div>}
+            <button type="submit" className="calc-form-submit">{t('mSubmit', hi)}</button>
+          </form>
+        </div>
+      </SplitHero>
     </ToolShell>
   )
 }
 
 /* ──────────────────────────── Result ──────────────────────────── */
-const Native = ({ n, side, bd, hi, icon }) => (
-  <Card className={`kt-native kt-native--${side}`} title={<span className="kt-native__title"><img src={icon} alt="" width="26" height="26" />{bd?.name || t(side, hi)}</span>}
+const Native = ({ n, side, bd, hi }) => (
+  <Card className={`kt-native kt-native--${side}`} title={<span className="kt-native__title"><Avatar name={bd?.name} side={side} />{bd?.name || t(side, hi)}</span>}
     right={<span className="kd-hint">{fmtDate(bd?.date, hi)} · {fmtTime(bd?.time)}</span>} sub={bd?.place}>
     <KV rows={[
       [t('moonSign', hi), n.moon_sign ? `${n.moon_sign}${n.moon_sign_lord ? ` · ${n.moon_sign_lord}` : ''}` : null],
@@ -141,14 +150,14 @@ const Koota = ({ k, hi }) => {
   )
 }
 
-const ManglikSide = ({ m, side, hi, icon }) => {
+const ManglikSide = ({ m, side, hi, name }) => {
   if (!m) return null
   const from = m.from && typeof m.from === 'object' ? Object.entries(m.from) : []
   const cancels = Array.isArray(m.cancellations) ? m.cancellations : []
   return (
     <div className={`kd-dosha kt-mside${m.present ? ' is-present' : ''}`}>
       <div className="kd-dosha__title">
-        <span className="kt-native__title"><img src={icon} alt="" width="24" height="24" />{t(side, hi)}</span>
+        <span className="kt-native__title"><Avatar name={name} side={side} />{name || t(side, hi)}</span>
         <span className={`kd-badge kd-badge--${m.present ? 'bad' : 'yes'}`}>{m.present ? t('manglikYes', hi) : t('manglikNo', hi)}</span>
       </div>
       <KV rows={[
@@ -213,7 +222,7 @@ function MatchingResult({ hi, language, onLanguage }) {
 
       {!loading && error && (
         <ToolError message={error} onRetry={sides ? () => setAttempt((a) => a + 1) : undefined} retryLabel={t('retry', hi)}>
-          <Link to={sides ? editHref : '/kundli-matching'} className="kd-btn-ghost">✎ {t('edit', hi)}</Link>
+          <Link to={sides ? editHref : '/kundli-matching'} className="kd-btn-ghost"><IconEdit s={15} /> {t('edit', hi)}</Link>
         </ToolError>
       )}
 
@@ -231,9 +240,9 @@ function MatchingResult({ hi, language, onLanguage }) {
                 {overall && overall !== verdict && <span className="kd-badge kd-badge--no kt-verdict">{t('overall', hi)}: {overall}</span>}
               </div>
               <div className="kd-hero__actions">
-                <button type="button" className="kd-btn-ghost" onClick={() => navigate(editHref)}>✎ {t('edit', hi)}</button>
-                <button type="button" className="kd-btn-ghost" onClick={() => window.print()}>🖨 {t('print', hi)}</button>
-                <button type="button" className="kd-btn-ghost" onClick={copyLink}>🔗 {copied ? t('copied', hi) : t('share', hi)}</button>
+                <button type="button" className="kd-btn-ghost" onClick={() => navigate(editHref)}><IconEdit s={15} /> {t('edit', hi)}</button>
+                <button type="button" className="kd-btn-ghost" onClick={() => window.print()}><IconPrint s={15} /> {t('print', hi)}</button>
+                <button type="button" className="kd-btn-ghost" onClick={copyLink}><IconLink s={15} /> {copied ? t('copied', hi) : t('share', hi)}</button>
               </div>
             </div>
             <div className="kt-mhero__score">
@@ -247,8 +256,8 @@ function MatchingResult({ hi, language, onLanguage }) {
 
           <div className="kd-eyebrow">{t('natives', hi)}</div>
           <div className="kd-two kt-natives">
-            <Native n={boy} bd={bb} side="boy" hi={hi} icon={boyIcon} />
-            <Native n={girl} bd={gb} side="girl" hi={hi} icon={girlIcon} />
+            <Native n={boy} bd={bb} side="boy" hi={hi} />
+            <Native n={girl} bd={gb} side="girl" hi={hi} />
           </div>
 
           <Card title={t('kootas', hi)} sub={t('kootasSub', hi)}
@@ -291,8 +300,8 @@ function MatchingResult({ hi, language, onLanguage }) {
             <Card title={t('manglik', hi)}
               right={manglik.compatible != null && <span className={`kd-badge kd-badge--${manglik.compatible ? 'yes' : 'bad'}`}>{manglik.compatible ? t('compatible', hi) : t('notCompatible', hi)}</span>}>
               <div className="kt-manglik">
-                <ManglikSide m={manglik.boy} side="boy" hi={hi} icon={boyIcon} />
-                <ManglikSide m={manglik.girl} side="girl" hi={hi} icon={girlIcon} />
+                <ManglikSide m={manglik.boy} side="boy" hi={hi} name={bb.name} />
+                <ManglikSide m={manglik.girl} side="girl" hi={hi} name={gb.name} />
               </div>
               {(manglik.verdict_label ?? manglik.verdict) && (
                 <p className="kt-manglik__verdict">{manglik.verdict_label ?? manglik.verdict}</p>

@@ -432,11 +432,11 @@ export function SankrantiSection({ p, hi }) {
 }
 
 /* ───────────────────────── 11. Shalaka vedha + Andhadi ───────────────────────── */
-export function VedhaSection({ p, hi }) {
+export function VedhaSection({ p, hi, open = false }) {
   const base = p.date
   const chakraLabel = (c) => (c === 'saptashalaka' ? t('saptashalaka', hi) : c === 'panchashalaka' ? t('panchashalaka', hi) : c)
   return (
-    <Sec id="sec-vedha" title={t('vedhaSection', hi)} open={false}>
+    <Sec id="sec-vedha" title={t('vedhaSection', hi)} open={open}>
       <Eyebrow>{t('shalaka', hi)}</Eyebrow>
       <div className="kd-tablewrap">
         <table className="kd-table pv-table">
@@ -547,9 +547,9 @@ export function BalamSection({ p, hi }) {
   )
 }
 
-export function PlanetsSection({ p, hi }) {
+export function PlanetsSection({ p, hi, open = false }) {
   return (
-    <Sec id="sec-planets" title={t('planetsAtSunrise', hi)} sub={`${t('sunrise', hi)} ${hhmm(p.sunrise)} · ${t('ayanamsa', hi)}: ${p.ayanamsa}`} open={false}>
+    <Sec id="sec-planets" title={t('planetsAtSunrise', hi)} sub={`${t('sunrise', hi)} ${hhmm(p.sunrise)} · ${t('ayanamsa', hi)}: ${p.ayanamsa}`} open={open}>
       <div className="kd-tablewrap">
         <table className="kd-table pv-table pv-table--tight">
           <thead><tr><th>{t('planet', hi)}</th><th>{t('sign', hi)}</th><th>{t('degrees', hi)}</th><th>{t('nakshatra', hi)}</th><th>{t('state', hi)}</th></tr></thead>

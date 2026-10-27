@@ -28,11 +28,21 @@ export function planetFlags(p, hi) {
 
 export const UI = {
   badge: { en: 'Free Kundli', hi: 'निःशुल्क कुंडली' },
-  title: { en: 'Janam Kundli', hi: 'जन्म कुंडली' },
+  title: { en: 'Your Janam Kundli, computed to the arc-second', hi: 'आपकी जन्म कुंडली — अंश-अंश सटीक' },
   subtitle: {
     en: 'Lagna chart, planetary degrees, nakshatra, panchang and Vimshottari dasha — computed from the Swiss Ephemeris.',
     hi: 'लग्न कुंडली, ग्रहों के अंश, नक्षत्र, पंचांग और विंशोत्तरी दशा — स्विस एफेमेरिस से सटीक गणना।',
   },
+  formTitle: { en: 'Birth details', hi: 'जन्म विवरण' },
+  formSub: { en: 'Three facts are all the sky needs.', hi: 'सिर्फ़ तीन बातें — तिथि, समय और स्थान।' },
+  vp1: { en: '16 varga charts', hi: '16 वर्ग कुंडलियाँ' }, vp1s: { en: 'Lagna, Chandra, Navamsa and the full Shodashvarga', hi: 'लग्न, चंद्र, नवमांश और पूरा षोडशवर्ग' },
+  vp2: { en: 'Vimshottari dasha', hi: 'विंशोत्तरी दशा' }, vp2s: { en: 'Mahadasha → antardasha timeline, current period marked', hi: 'महादशा → अंतर्दशा, वर्तमान अवधि चिह्नित' },
+  vp3: { en: 'Yogas & doshas', hi: 'योग एवं दोष' }, vp3s: { en: 'Parashari yogas, Mangal, Kaal Sarp, Sade Sati', hi: 'पाराशरी योग, मंगल, काल सर्प, साढ़े साती' },
+  vp4: { en: 'KP · Lal Kitab · Faladesh', hi: 'KP · लाल किताब · फलादेश' }, vp4s: { en: 'Sub-lords, rin, remedies and life-area predictions', hi: 'उप-स्वामी, ऋण, उपाय और क्षेत्रवार फलादेश' },
+  trust1: { en: 'Swiss Ephemeris', hi: 'स्विस एफेमेरिस' },
+  trust2: { en: 'Lahiri ayanamsa', hi: 'लाहिड़ी अयनांश' },
+  trust3: { en: 'No sign-up, no ads', hi: 'न साइन-अप, न विज्ञापन' },
+  recent: { en: 'Recent', hi: 'हाल के' },
   name: { en: 'Name', hi: 'नाम' },
   namePh: { en: 'Full name', hi: 'पूरा नाम' },
   gender: { en: 'Gender', hi: 'लिंग' },

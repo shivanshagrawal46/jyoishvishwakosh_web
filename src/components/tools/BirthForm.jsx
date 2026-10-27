@@ -12,7 +12,7 @@ export default function BirthForm({ id, title, icon, value = EMPTY_BIRTH, onChan
   const set = (patch) => onChange?.({ ...value, ...patch })
   return (
     <fieldset className={`kt-person kt-person--${tone}`}>
-      <legend className="kt-person__legend">{icon && <img src={icon} alt="" width="28" height="28" />}<span>{title}</span></legend>
+      <legend className="kt-person__legend">{icon}<span>{title}</span></legend>
       <div className="kd-grid">
         <div className="kd-fld kd-span">
           <label className="kd-fld__label" htmlFor={`${id}-name`}>{t('name', hi)}</label>

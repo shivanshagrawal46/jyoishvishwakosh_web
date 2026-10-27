@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import Header from '../components/Header'
 import ServicesStrip from '../components/ServicesStrip'
 import Footer from '../components/Footer'
-import { Mandala } from '../components/ui/Icons'
+import { IconEdit, IconLink, IconPrint, Mandala } from '../components/ui/Icons'
 import KundliChart from '../components/kundli/KundliChart'
 import { FLAGS, planetFlags, t } from '../components/kundli/kundliLabels'
 import {
@@ -398,9 +398,9 @@ const KundliReportPage = ({ language: initialLanguage, setLanguage: setLanguageP
                   </p>
                   <p className="kd-hero__meta">{t('lagna', hi)} <b>{lagna.sign} {lagna.degrees_in_sign_dms}</b> · {t('moonSign', hi)} <b>{moon?.sign}</b> · {moon?.nakshatra?.name} {moon?.nakshatra?.pada}</p>
                   <div className="kd-hero__actions">
-                    <button type="button" className="kd-btn-ghost" onClick={() => navigate('/kundli')}>✎ {t('edit', hi)}</button>
-                    <button type="button" className="kd-btn-ghost" onClick={() => window.print()}>🖨 {t('print', hi)}</button>
-                    <button type="button" className="kd-btn-ghost" onClick={copyLink}>🔗 {copied ? t('copied', hi) : t('share', hi)}</button>
+                    <button type="button" className="kd-btn-ghost" onClick={() => navigate('/kundli')}><IconEdit s={15} /> {t('edit', hi)}</button>
+                    <button type="button" className="kd-btn-ghost" onClick={() => window.print()}><IconPrint s={15} /> {t('print', hi)}</button>
+                    <button type="button" className="kd-btn-ghost" onClick={copyLink}><IconLink s={15} /> {copied ? t('copied', hi) : t('share', hi)}</button>
                   </div>
                 </div>
                 <div className="kd-hero__chart" aria-hidden="true">

@@ -34,6 +34,28 @@ const L = {
   now: ['अभी', 'Now'],
   dash: ['—', '—'],
 
+  /* v3 day layout */
+  tabOverview: ['एक नज़र', 'Overview'],
+  tabKaal: ['मुहूर्त व काल', 'Muhurta & kaal'],
+  tabChog: ['चौघड़िया · होरा', 'Choghadiya · Hora'],
+  tabLagna: ['लग्न · ग्रह', 'Lagna · Planets'],
+  tabDetail: ['विस्तार', 'Details'],
+  timeline: ['दिन की रूपरेखा', 'Shape of the day'],
+  timelineSub: ['सूर्योदय से अगले सूर्योदय तक — शुभ और वर्ज्य समय', 'Sunrise to next sunrise — auspicious and avoid windows'],
+  rightNow: ['इस समय', 'Right now'],
+  upcoming: ['आगामी', 'Up next'],
+  endsAt: ['समाप्त', 'ends'],
+  startsAt: ['प्रारंभ', 'starts'],
+  changePlace: ['स्थान बदलें', 'Change place'],
+  noKaalNow: ['कोई वर्ज्य काल नहीं', 'No avoid window running'],
+  dayProgress: ['दिन बीता', 'of day elapsed'],
+  skyAria: ['सूर्य पथ — सूर्योदय से सूर्यास्त', 'Sun path — sunrise to sunset'],
+  sunriseFrom: ['सूर्योदय से', 'from sunrise'],
+  nowHint: ['वर्तमान तिथि · नक्षत्र · योग · करण और इनकी प्रगति', 'Current tithi · nakshatra · yoga · karana and how far each has run'],
+  sequence: ['क्रम', 'sequence'],
+  lagnaNow: ['वर्तमान लग्न', 'Current lagna'],
+  muhurtaNow: ['वर्तमान मुहूर्त', 'Current muhurta'],
+
   /* header strip */
   vara: ['वार', 'Weekday'],
   lord: ['स्वामी', 'Lord'],

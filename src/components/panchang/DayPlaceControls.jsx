@@ -3,10 +3,15 @@ import { searchPlaces } from '../../services/kundliApi'
 import { t } from './labels'
 import { isValidYmd, shiftYmd, todayYmd } from './format'
 import { loadPlace, savePlace, toPlace } from './place'
+import { IconPin } from '../ui/Icons'
 
 /** Date + place state shared by the panchang and muhurat pages (place persisted in localStorage). */
 export function usePlaceDate() {
-  const [date, setDateRaw] = useState(todayYmd)
+  const [date, setDateRaw] = useState(() => {
+    // Deep links (e.g. from the muhurat finder) may pin the day: /panchang?date=YYYY-MM-DD
+    try { const d = new URLSearchParams(window.location.search).get('date'); if (isValidYmd(d)) return d } catch { /* no window */ }
+    return todayYmd()
+  })
   const [place, setPlaceRaw] = useState(loadPlace)
   const setDate = useCallback((d) => { if (isValidYmd(d)) setDateRaw(d) }, [])
   const setPlace = useCallback((p) => { setPlaceRaw(p); savePlace(p) }, [])
@@ -96,7 +101,7 @@ export default function DayPlaceControls({ hi, date, setDate, place, setPlace })
             </ul>
           )}
           <span className="kd-pill pv-place">
-            <span aria-hidden="true">📍</span> {place?.display_name}
+            <IconPin s={14} /> {place?.display_name}
             {place?.timezone && <small>· {place.timezone}</small>}
           </span>
         </div>
