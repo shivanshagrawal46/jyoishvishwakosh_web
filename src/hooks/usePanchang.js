@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { fetchPanchangFull } from '../services/kundliApi'
 import { loadPlace } from '../components/panchang/place'
-import { clockLabel, rangeLabel, todayYmd } from '../components/panchang/format'
+import { spanLabel, todayYmd, untilText, whenLabel } from '../components/panchang/format'
 
 /**
  * Today's panchang for a location from the Kundli API (`/api/v1/panchang/full`),
@@ -39,23 +39,24 @@ export default function usePanchang({ language = 'hindi', lat, lon, timezone } =
 
   const rows = useMemo(() => {
     if (!details) return []
-    const till = hi ? 'तक' : 'till'
-    const withEnd = (name, clock) => (clock ? (hi ? `${name} ${clockLabel(clock, hi)} ${till}` : `${name} ${till} ${clockLabel(clock, hi)}`) : name)
+    const base = details.date
+    // API v0.4 entries carry `until` ("upto 2:52 PM" / "14:52 तक") and `whole_day`; fall back to the ISO end.
+    const withEnd = (name, it) => { const u = untilText(it, base, hi); return u ? `${name} ${u}` : name }
     const t1 = details.tithi?.[0], n1 = details.nakshatra?.[0], y1 = details.yoga?.[0], k1 = details.karana?.[0], lm = details.lunar_month || {}
     return [
-      { key: 'tithi', label: 'Tithi', labelHi: 'तिथि', value: t1 ? withEnd(`${t1.paksha} ${t1.name}`, t1.end_clock) : '' },
+      { key: 'tithi', label: 'Tithi', labelHi: 'तिथि', value: t1 ? withEnd(`${t1.paksha} ${t1.name}`, t1) : '' },
       { key: 'paksha', label: 'Paksha', labelHi: 'पक्ष', value: details.paksha || '' },
       { key: 'month', label: 'Month', labelHi: 'मास', value: lm.purnimanta ? `${lm.purnimanta} (${hi ? 'पूर्णिमांत' : 'Purnimanta'}) · ${lm.amanta} (${hi ? 'अमांत' : 'Amanta'})${lm.adhik ? (hi ? ' · अधिक' : ' · Adhik') : ''}` : '' },
-      { key: 'nakshatra', label: 'Nakshatra', labelHi: 'नक्षत्र', value: n1 ? withEnd(n1.name, n1.end_clock) : '' },
-      { key: 'yoga', label: 'Yoga', labelHi: 'योग', value: y1 ? withEnd(y1.name, y1.end_clock) : '' },
+      { key: 'nakshatra', label: 'Nakshatra', labelHi: 'नक्षत्र', value: n1 ? withEnd(n1.name, n1) : '' },
+      { key: 'yoga', label: 'Yoga', labelHi: 'योग', value: y1 ? withEnd(y1.name, y1) : '' },
       { key: 'ayana', label: 'Ayana', labelHi: 'अयन', value: details.ayana?.vedic || '' },
-      { key: 'rashi', label: 'Rashi', labelHi: 'चंद्र राशि', value: details.moon_sign ? withEnd(details.moon_sign, details.moon_sign_until_clock) : '' },
-      { key: 'karana', label: 'Karana', labelHi: 'करण', value: k1 ? withEnd(k1.name, k1.end_clock) : '' },
+      { key: 'rashi', label: 'Rashi', labelHi: 'चंद्र राशि', value: details.moon_sign ? withEnd(details.moon_sign, { end: details.moon_sign_until }) : '' },
+      { key: 'karana', label: 'Karana', labelHi: 'करण', value: k1 ? withEnd(k1.name, k1) : '' },
     ].filter((r) => r.value)
   }, [details, hi])
 
   const nakshatraCharan = useMemo(() => (
-    (details?.nakshatra_pada || []).map((x) => ({ pada: x.pada, nakshatra: x.nakshatra, samay: clockLabel(x.end_clock, hi) }))
+    (details?.nakshatra_pada || []).map((x) => ({ pada: x.pada, nakshatra: x.nakshatra, samay: whenLabel(x.end, details.date, hi) }))
   ), [details, hi])
 
   const summary = useMemo(() => {
@@ -76,7 +77,7 @@ export default function usePanchang({ language = 'hindi', lat, lon, timezone } =
       { label: 'Tithi', labelHi: 'तिथि', value: t1 ? `${t1.paksha} ${t1.name}` : '' },
       { label: 'Nakshatra', labelHi: 'नक्षत्र', value: n1?.name || '' },
       { label: 'Yoga', labelHi: 'योग', value: y1?.name || '' },
-      { label: 'Rahu Kaal', labelHi: 'राहु काल', value: details.rahu_kaal ? rangeLabel(details.rahu_kaal, hi, details.date) : '' },
+      { label: 'Rahu Kaal', labelHi: 'राहु काल', value: details.rahu_kaal ? spanLabel(details.rahu_kaal, details.date, hi) : '' },
     ].filter((r) => r.value)
   }, [details, hi])
 

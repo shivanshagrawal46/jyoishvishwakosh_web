@@ -1,7 +1,7 @@
 import React from 'react'
 import { t } from './labels'
 import { Badge, Chips, Empty, Eyebrow, KV, Sec, Shubh, WinTile } from './Shared'
-import { clockLabel, fmtDate, fmtDateTime, gp, hhmm, hoursLabel, isCurrent, isoClock, qualityTone, rangeLabel } from './format'
+import { clockLabel, fmtDate, fmtDateTime, fromToText, gp, hhmm, hoursLabel, isCurrent, isoClock, qualityTone, rangeLabel } from './format'
 
 /* Section ids + title keys, also used for the jump navigation on the page. */
 export const SECTIONS = [
@@ -123,9 +123,12 @@ function AngaItem({ it, hi, meta = [], badges = null, number }) {
         <div className="pv-anga__meta">{meta.filter(Boolean).map((m, i) => <span key={i}>{m}</span>)}</div>
       )}
       <div className="pv-anga__time">
-        <span><i>{t('start', hi)}</i> {clockLabel(it.start_clock, hi)}</span>
-        <span><i>{t('end', hi)}</i> {clockLabel(it.end_clock, hi)}</span>
-        {it.end_ghati_pala && <span className="kd-hint">{gp(it.end_ghati_pala, hi)}</span>}
+        {it.whole_day
+          ? <span>{t('fullDay', hi)}</span>
+          : (<>
+            <span><i>{t('start', hi)}</i> {it.start_label || clockLabel(it.start_clock, hi)}</span>
+            <span><i>{t('end', hi)}</i> {it.end_label || clockLabel(it.end_clock, hi)}</span>
+          </>)}
       </div>
     </div>
   )
@@ -308,8 +311,13 @@ export function BhadraSection({ p, hi }) {
             {!hasMool && <Empty>{t('noMool', hi)}</Empty>}
             {hasMool && (
               <div className="pv-wins">
-                {(mool.ganda_mula || []).map((w, i) => <WinTile key={`g${i}`} label={`${t('gandaMulaWindows', hi)}: ${w.nakshatra}`} w={w} hi={hi} base={base} tone="bad" />)}
-                {(mool.abhukta_mula || []).map((w, i) => <WinTile key={`a${i}`} label={t('abhukta', hi)} w={w} hi={hi} base={base} tone="bad" sub={w.part} />)}
+                {/* Ganda-mula / abhukta-mula entries carry only ISO moments + API labels (no clocks or ghati-pala). */}
+                {(mool.ganda_mula || []).map((w, i) => (
+                  <div key={`g${i}`} className="pv-win pv-win--bad"><div className="pv-win__head"><b>{t('gandaMulaWindows', hi)}: {w.nakshatra}</b></div><span className="pv-win__range">{fromToText(w, base, hi)}</span></div>
+                ))}
+                {(mool.abhukta_mula || []).map((w, i) => (
+                  <div key={`a${i}`} className="pv-win pv-win--bad"><div className="pv-win__head"><b>{t('abhukta', hi)}{w.nakshatra ? `: ${w.nakshatra}` : ''}</b></div><span className="pv-win__range">{fromToText(w, base, hi)}</span>{w.part && <small className="pv-win__sub">{w.part}</small>}</div>
+                ))}
               </div>
             )}
           </div>

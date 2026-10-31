@@ -123,3 +123,50 @@ export const isCurrent = (w, nowIso) => Boolean(nowIso && w?.start && w?.end && 
 /** Choghadiya / activity tone from API quality ids and scores. */
 export const qualityTone = (q) => (q === 'good' ? 'good' : q === 'bad' ? 'bad' : 'mid')
 export const scoreTone = (s) => (s >= 75 ? 'good' : s >= 50 ? 'warn' : 'bad')
+
+/* ───────────────────────── Human clock labels (API v0.4 style) ─────────────────────────
+   The API now ships ready-made strings (`start_label`, `end_label`, `until`) on tithi /
+   nakshatra / yoga / karana / ganda-mula entries. For windows that only carry ISO
+   moments (rahu kaal, choghadiya, lagna…) we build the same shape locally:
+   English → "4:30 AM" / "4:30 AM, 02 Nov"; Hindi → "04:30" / "04:30, 02 नवंबर".
+   The date is appended only when the moment falls on a different civil date than
+   the panchang day, so same-day times stay short. */
+const MON_EN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+const MON_HI = ['जनवरी', 'फ़रवरी', 'मार्च', 'अप्रैल', 'मई', 'जून', 'जुलाई', 'अगस्त', 'सितंबर', 'अक्टूबर', 'नवंबर', 'दिसंबर']
+
+/** "4:30 AM" (en) / "04:30" (hi), plus ", 02 Nov" when `iso` is not on `baseYmd`. */
+export function whenLabel(iso, baseYmd, hi) {
+  if (!iso || iso.length < 16) return '—'
+  const h = Number(iso.slice(11, 13)), m = iso.slice(14, 16)
+  let s
+  if (hi) s = `${pad2(h)}:${m}`
+  else s = `${h % 12 === 0 ? 12 : h % 12}:${m} ${h < 12 ? 'AM' : 'PM'}`
+  const day = iso.slice(0, 10)
+  if (baseYmd && day !== baseYmd) {
+    const mon = Number(day.slice(5, 7)) - 1
+    s += `, ${day.slice(8, 10)} ${(hi ? MON_HI : MON_EN)[mon] || ''}`
+  }
+  return s
+}
+
+/** "4:13 PM – 5:36 PM" for a {start,end} window. */
+export const spanLabel = (w, baseYmd, hi) => (w?.start && w?.end ? `${whenLabel(w.start, baseYmd, hi)} – ${whenLabel(w.end, baseYmd, hi)}` : '—')
+
+/** "upto 2:52 PM" / "14:52 तक" — prefers the API's own `until`, honours `whole_day`. */
+export function untilText(it, baseYmd, hi) {
+  if (!it) return ''
+  if (it.whole_day) return hi ? 'पूर्ण दिन' : 'full day'
+  if (it.until) return it.until
+  if (!it.end) return ''
+  const e = whenLabel(it.end, baseYmd, hi)
+  return hi ? `${e} तक` : `upto ${e}`
+}
+
+/** "4:30 AM, 02 Nov to 3:46 AM, 03 Nov" for ganda-mula style entries; "full day" when flagged. */
+export function fromToText(it, baseYmd, hi) {
+  if (!it) return ''
+  if (it.whole_day) return hi ? 'पूर्ण दिन' : 'full day'
+  const a = it.start_label || whenLabel(it.start, baseYmd, hi)
+  const b = it.end_label || whenLabel(it.end, baseYmd, hi)
+  return hi ? `${a} से ${b} तक` : `${a} to ${b}`
+}
