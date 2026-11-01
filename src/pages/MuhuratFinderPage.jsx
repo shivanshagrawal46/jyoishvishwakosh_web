@@ -7,7 +7,7 @@ import useStoredState from '../components/tools/useStoredState'
 import { ACTIVITY_FALLBACK, DEFAULT_PLACE, activityLabel, canonActivity, monthName, t } from '../components/tools/toolLabels'
 import { clock, dayOf, fmtDate, fmtMinutes, monthShort, num, numParam, todayISO } from '../components/tools/format'
 import { fetchMuhuratActivities, fetchMuhuratFind } from '../services/kundliApi'
-import { Chips, FormCard, MonthGrid, Panel, Skeleton, SplitHero } from '../components/tools/jt'
+import { FormCard, MonthGrid, Panel, Skeleton, SplitHero } from '../components/tools/jt'
 import { IconCalendar, IconClock, IconSparkle, IconTarget, IconWarn } from '../components/ui/Icons'
 import '../styles/kundli.css'
 import '../styles/kundli-tools.css'
@@ -291,9 +291,10 @@ const MuhuratFinderPage = ({ language: initialLanguage, setLanguage: setLanguage
       right={result && <button type="button" className="jt-btn jt-btn--ghost jt-btn--sm" onClick={() => setEditing(false)}>{t('cancel', hi)}</button>}>
       <form className="calc-form kd-form" onSubmit={submit} noValidate>
         <div className="kd-fld">
-          <span className="kd-fld__label">{t('activity', hi)}</span>
-          <Chips items={activityIds.map((id) => ({ id, label: activityLabel(id, activities[id], hi).split(' (')[0], on: selectedActivity === id }))}
-            onToggle={(id) => setPrefs((p) => ({ ...p, activity: id }))} />
+          <label className="kd-fld__label" htmlFor="mu-activity">{t('activity', hi)}</label>
+          <select id="mu-activity" value={selectedActivity} onChange={(e) => setPrefs((p) => ({ ...p, activity: e.target.value }))}>
+            {activityIds.map((id) => <option key={id} value={id}>{activityLabel(id, activities[id], hi)}</option>)}
+          </select>
         </div>
         <div className="jt-query">
           <div className="kd-fld">
