@@ -49,13 +49,14 @@ const TodayMuhurat = ({ language }) => {
       const out = []
       if (data.abhijit_muhurta && data.abhijit_muhurta.valid !== false) out.push({ label: hi ? 'अभिजीत मुहूर्त' : 'Abhijit Muhurat', value: rangeLabel(data.abhijit_muhurta, hi, base), tone: 'good' })
       ;(data.auspicious_windows || []).forEach((w, i) => out.push({
-        label: `${hi ? 'शुभ समय' : 'Auspicious'} ${i + 1} · ${durationLabel(w.minutes, hi)}`, value: rangeLabel(w, hi, base), tone: 'good',
+        // v0.4 windows carry the lagna — the key piece of a printed muhurat.
+        label: `${w.lagna ? `${w.lagna} ${hi ? 'लग्न' : 'lagna'}` : `${hi ? 'शुभ समय' : 'Auspicious'} ${i + 1}`} · ${durationLabel(w.minutes, hi)}`, value: rangeLabel(w, hi, base), tone: 'good',
       }))
       return out
     }
     const out = []
     if (data.rahu_kaal) out.push({ label: hi ? 'राहु काल' : 'Rahu Kaal', value: rangeLabel(data.rahu_kaal, hi, base), tone: 'bad' })
-    ;(data.avoid_windows || []).forEach((w, i) => out.push({ label: `${hi ? 'वर्जित समय' : 'Avoid'} ${i + 1}`, value: rangeLabel(w, hi, base), tone: 'bad' }))
+    ;(data.avoid_windows || []).forEach((w, i) => out.push({ label: w.reason || `${hi ? 'वर्जित समय' : 'Avoid'} ${i + 1}`, value: rangeLabel(w, hi, base), tone: 'bad' }))
     return out
   }, [data, activeTab, hi])
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import { t } from './labels'
 import { Badge, Chips, Empty, Eyebrow, KV, Sec, Shubh, WinTile } from './Shared'
-import { clockLabel, fmtDate, fmtDateTime, fromToText, gp, hhmm, hoursLabel, isCurrent, isoClock, qualityTone, rangeLabel } from './format'
+import { clockLabel, fmtDate, fmtDateTime, fromToText, gp, hhmm, hoursLabel, isCurrent, isoClock, qualityTone, rangeLabel, spanLabel } from './format'
 
 /* Section ids + title keys, also used for the jump navigation on the page. */
 export const SECTIONS = [
@@ -486,7 +486,7 @@ export function ChoghadiyaSection({ p, hi, now, id = 'sec-chog', open = true }) 
             <div key={i} className={`pv-chog pv-chog--${qualityTone(c.quality)}${cur ? ' is-now' : ''}`}>
               <b>{c.name}</b>
               <span className="pv-chog__planet">{c.planet_name || c.planet}</span>
-              <span className="pv-chog__time">{rangeLabel(c, hi, base)}</span>
+              <span className="pv-chog__time">{spanLabel(c, base, hi)}</span>
               <span className="pv-chog__q">{c.quality === 'good' ? t('auspicious', hi) : c.quality === 'bad' ? t('inauspicious', hi) : t('neutral', hi)}{cur ? ` · ${t('now', hi)}` : ''}</span>
             </div>
           )

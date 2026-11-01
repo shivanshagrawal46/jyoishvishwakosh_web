@@ -144,7 +144,7 @@ export const UI = {
   reasons: { en: 'Why this day', hi: 'कारण' },
   restrictions: { en: 'Restrictions', hi: 'प्रतिबंध' },
   windows: { en: 'Auspicious windows', hi: 'शुभ समय' },
-  avoidWindows: { en: 'Avoid (Rahu kaal etc.)', hi: 'त्याज्य समय (राहु काल आदि)' },
+  avoidWindows: { en: 'Avoid (Rahu kaal, varjyam, dur muhurta…)', hi: 'त्याज्य समय (राहु काल, वर्ज्य, दुर्मुहूर्त…)' },
   min: { en: 'min', hi: 'मिनट' },
   viewPanchang: { en: 'Day panchang', hi: 'दिन का पंचांग' },
   noDays: { en: 'No day reached the minimum score. Lower the score or widen the window.', hi: 'न्यूनतम अंक तक कोई दिन नहीं पहुँचा। अंक घटाएँ या अवधि बढ़ाएँ।' },
@@ -169,39 +169,87 @@ export const UI = {
   muVp4s: { en: 'Scan 30 to 365 days from any start date.', hi: 'किसी भी तिथि से 30 से 365 दिन तक।' },
   scoreLegend: { en: 'Score', hi: 'अंक' },
   cancel: { en: 'Cancel', hi: 'रद्द करें' },
+  /* muhurat v0.4: lagna windows, flags, rules, rejected days */
+  lagna: { en: 'Lagna', hi: 'लग्न' },
+  bana: { en: 'Bana', hi: 'बाण' },
+  cautions: { en: 'Cautions', hi: 'सावधानियाँ' },
+  clean: { en: 'Clean', hi: 'शुद्ध' },
+  cleanNote: { en: 'No cautions — the cleanest window', hi: 'कोई सावधानी नहीं — सबसे शुद्ध समय' },
+  reason: { en: 'Reason', hi: 'कारण' },
+  rejectedLagna: { en: 'Considered and rejected', hi: 'जाँचे गए पर अस्वीकृत' },
+  rejectedDays: { en: 'Why the other days were rejected', hi: 'अन्य दिन क्यों अस्वीकृत हुए' },
+  rejectedDaysSub: { en: 'Days in the search window that failed a rule, by reason', hi: 'खोज अवधि के जो दिन किसी नियम में अटके, कारण सहित' },
+  altNak: { en: 'Also approved (alternative opinion)', hi: 'मतांतर से मान्य नक्षत्र' },
+  approvedTithiShukla: { en: 'Shukla paksha tithis', hi: 'शुक्ल पक्ष तिथियाँ' },
+  approvedTithiKrishna: { en: 'Krishna paksha tithis', hi: 'कृष्ण पक्ष तिथियाँ' },
+  approvedSunMonths: { en: 'Solar months (Sun in)', hi: 'सौर मास (सूर्य राशि)' },
+  approvedLagnas: { en: 'Approved lagnas', hi: 'शुभ लग्न' },
+  avoidYogas: { en: 'Yogas to avoid', hi: 'वर्जित योग' },
+  uttarayanaOnly: { en: 'Uttarayana only', hi: 'केवल उत्तरायण' },
+  bhadraAvoided: { en: 'Bhadra (Mrityulok) avoided', hi: 'मृत्युलोक भद्रा वर्जित' },
+  banaAvoid: { en: 'Bana avoided', hi: 'वर्जित बाण' },
+  vedhaChakra: { en: 'Vedha chakra', hi: 'वेध चक्र' },
+  timeOfDay: { en: 'Time of day', hi: 'समय' },
+  note: { en: 'Note', hi: 'टिप्पणी' },
+  sunSign: { en: 'Sun sign', hi: 'सूर्य राशि' },
+  noDaysRules: { en: 'No day in this window passed every rule for this activity.', hi: 'इस अवधि में कोई दिन इस कार्य के सभी नियमों पर खरा नहीं उतरा।' },
+  daysUnitShort: { en: 'days', hi: 'दिन' },
 }
 
 export const t = (key, hi) => (UI[key] ? UI[key][hi ? 'hi' : 'en'] : key)
 
-/** Hindi labels for /muhurat/find activity ids (the API returns English labels only). */
+/**
+ * Muhurat activity ids (Kundli API v0.4, 25 keys — the live list comes from /api/v1/ephemeris
+ * `muhurat_activities`). Hindi names for the picker; the find / day responses also carry
+ * `hindi_name`, which wins when present.
+ */
 export const ACTIVITY_HI = {
-  marriage: 'विवाह',
-  griha_pravesh: 'गृह प्रवेश',
-  vehicle: 'वाहन क्रय',
-  travel: 'यात्रा',
-  business: 'व्यापार आरंभ',
-  naming: 'नामकरण',
-  mundan: 'मुंडन',
-  education: 'विद्यारंभ',
-  property: 'संपत्ति क्रय',
-  general: 'शुभ कार्य',
+  griharambha: 'गृहारंभ', grihpravesh: 'गृह प्रवेश', jirna_griha_pravesh: 'जीर्ण गृह प्रवेश', dev_pratishtha: 'देव प्रतिष्ठा',
+  jalashay_arambh: 'जलाशय आरंभ', mantra_deeksha: 'मंत्र दीक्षा',
+  garbhadhan: 'गर्भाधान', punsavan_seemant: 'पुंसवन / सीमंतोन्नयन', jatakarma: 'जातकर्म', prasuti_snana: 'प्रसूति स्नान',
+  namkaran: 'नामकरण', annaprashan: 'अन्नप्राशन', karnavedh: 'कर्णवेध', mundan: 'मुंडन',
+  aksharambh: 'अक्षरारंभ', upanayan: 'उपनयन / यज्ञोपवीत', vidyarambh: 'विद्यारंभ',
+  vivah: 'विवाह', vadhu_pravesh: 'वधू प्रवेश', dwiragaman: 'द्विरागमन',
+  vehicle: 'वाहन क्रय', travel: 'यात्रा', business: 'व्यापार आरंभ', property: 'संपत्ति क्रय', general: 'शुभ कार्य',
 }
 
-/** Fallback when /ephemeris is unreachable — same ids as the API. */
+/** Fallback when /ephemeris is unreachable — same ids and order as the API. */
 export const ACTIVITY_FALLBACK = {
-  marriage: 'Vivah (marriage)',
-  griha_pravesh: 'Griha Pravesh (house warming)',
+  griharambha: 'Griharambha (foundation / start of construction)',
+  grihpravesh: 'Griha Pravesh (house warming)',
+  jirna_griha_pravesh: 'Jirna Griha Pravesh (re-entry into an old / renovated house)',
+  dev_pratishtha: 'Dev Pratishtha (idol consecration)',
+  jalashay_arambh: 'Jalashay Arambh (borewell / well / water body)',
+  mantra_deeksha: 'Mantra Deeksha (initiation / Guru mantra)',
+  garbhadhan: 'Garbhadhan (conception sanskar)',
+  punsavan_seemant: 'Punsavan / Seemantonnayan',
+  jatakarma: 'Jatakarma (birth rites)',
+  prasuti_snana: 'Prasuti Snana (post-natal bath)',
+  namkaran: 'Namkaran (naming ceremony)',
+  annaprashan: 'Annaprashan (first solid food)',
+  karnavedh: 'Karnavedh (ear piercing)',
+  mundan: 'Mundan (first haircut)',
+  aksharambh: 'Aksharambh (learning letters)',
+  upanayan: 'Upanayan / Yagyopavit (sacred thread)',
+  vidyarambh: 'Vidyarambh (start of education)',
+  vivah: 'Vivah (marriage)',
+  vadhu_pravesh: "Vadhu Pravesh (bride's entry)",
+  dwiragaman: "Dwiragaman (bride's second homecoming)",
   vehicle: 'Vahan kharid (vehicle purchase)',
   travel: 'Yatra (travel)',
   business: 'Vyapar arambh (business / shop opening)',
-  naming: 'Namkaran (naming ceremony)',
-  mundan: 'Mundan (first haircut)',
-  education: 'Vidyarambh (start of education)',
   property: 'Sampatti kharid (property purchase)',
   general: 'Shubh karya (general auspicious work)',
 }
 
-export const activityLabel = (id, apiLabel, hi) => (hi ? ACTIVITY_HI[id] || apiLabel || id : apiLabel || ACTIVITY_HI[id] || id)
+/** Old activity names (still accepted by the API) → current keys. Used for saved prefs and shared links. */
+export const LEGACY_ACTIVITY = { marriage: 'vivah', griha_pravesh: 'grihpravesh', naming: 'namkaran', education: 'vidyarambh' }
+export const canonActivity = (id) => LEGACY_ACTIVITY[id] || id
+
+export const activityLabel = (id, apiLabel, hi, hindiName) => {
+  const key = canonActivity(id)
+  return hi ? hindiName || ACTIVITY_HI[key] || apiLabel || key : apiLabel || ACTIVITY_FALLBACK[key] || key
+}
 
 /** Planet ids that come back untranslated inside `manglik.*.from`. */
 export const PLANET_HI = {

@@ -325,6 +325,39 @@ html[lang='hi'] .jt-week__day small { text-transform: none; letter-spacing: 0; f
 .jt-win span { font-variant-numeric: tabular-nums; font-size: var(--fs-small); color: var(--ink-2); white-space: nowrap; }
 .jt-win.is-now { border-color: var(--saffron); background: var(--surface); box-shadow: var(--glow); }
 
+/* Window card (muhurat v0.4): time + lagna + cautions / reason. */
+.jt-win--card { grid-template-columns: 4px 1fr; align-items: stretch; padding: 10px 12px 10px 0; }
+.jt-win__main { display: grid; gap: 4px; min-width: 0; }
+.jt-win__top { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.jt-win__top b { font-size: var(--fs-small); }
+.jt-win__top span { color: var(--ink-4); font-size: var(--fs-caption); }
+.jt-win__meta { display: flex; flex-wrap: wrap; gap: 2px 14px; font-size: var(--fs-caption); color: var(--ink-2); }
+.jt-win__meta em { font-style: normal; color: var(--ink-4); margin-right: 4px; }
+.jt-win__meta span { white-space: normal; font-size: var(--fs-caption); }
+.jt-win__clean { color: var(--jade); font-weight: 700; }
+.jt-win__count { color: var(--gold-deep); font-weight: 600; }
+.jt-win__reason { color: var(--vermilion); font-weight: 500; flex-basis: 100%; }
+.jt-win__flags { margin: 2px 0 0; padding: 0 0 0 16px; display: grid; gap: 2px; font-size: var(--fs-caption); color: var(--ink-3); line-height: 1.45; }
+.jt-win__flags li::marker { color: var(--gold); }
+.jt-win.is-clean { border-color: color-mix(in srgb, var(--jade) 45%, transparent); background: color-mix(in srgb, var(--jade) 6%, var(--surface)); }
+.jt-win.is-muted { opacity: .62; background: var(--sunken); }
+.jt-win.is-muted i { background: var(--rule-2); }
+.jt-win.is-muted .jt-win__reason { color: var(--ink-3); }
+.jt-sub > summary { cursor: pointer; list-style: none; font-size: var(--fs-caption); font-weight: 600; color: var(--ink-3); padding: 6px 0; }
+.jt-sub > summary::-webkit-details-marker { display: none; }
+.jt-sub > summary::before { content: '›'; display: inline-block; margin-right: 6px; transform: rotate(0deg); transition: transform var(--dur) var(--ease); }
+.jt-sub[open] > summary::before { transform: rotate(90deg); }
+.jt-sub > summary:hover { color: var(--saffron-deep); }
+
+/* Rejected-day reasons (bar per reason) */
+.jt-rej { display: grid; gap: 8px; }
+.jt-rej__row { display: grid; grid-template-columns: 1fr auto; grid-template-areas: 'label n' 'bar bar'; gap: 4px 12px; align-items: center; }
+.jt-rej__label { grid-area: label; font-size: var(--fs-small); color: var(--ink-2); line-height: 1.4; }
+.jt-rej__n { grid-area: n; font-variant-numeric: tabular-nums; color: var(--ink); white-space: nowrap; }
+.jt-rej__n small { font-weight: 500; color: var(--ink-4); }
+.jt-rej__bar { grid-area: bar; height: 6px; border-radius: var(--r-full); background: var(--sunken); overflow: hidden; }
+.jt-rej__bar i { display: block; height: 100%; border-radius: inherit; background: var(--vermilion); opacity: .7; }
+
 /* ── Month grid (calendar) ────────────────────────────────────── */
 .jt-cal { display: grid; gap: 8px; }
 .jt-cal__head { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }

@@ -78,6 +78,13 @@ const L = {
   firstHalf: ['पूर्वार्ध', 'first half'],
   secondHalf: ['उत्तरार्ध', 'second half'],
   timesLocal: ['सभी समय स्थानीय हैं', 'All times are local'],
+  cautions: ['सावधानियाँ', 'Cautions'],
+  clean: ['शुद्ध', 'Clean'],
+  bana: ['बाण', 'Bana'],
+  reason: ['कारण', 'Reason'],
+  suitable: ['उपयुक्त', 'Suitable'],
+  notSuitable: ['अनुपयुक्त', 'Not suitable'],
+  windowsFor: ['शुभ समय', 'Windows'],
 
   /* header strip */
   vara: ['वार', 'Weekday'],

@@ -96,6 +96,19 @@
 .pv-win__range { font-size: var(--fs-small); color: var(--ink); font-variant-numeric: tabular-nums; }
 .pv-win__gp, .pv-win__sub { font-size: var(--fs-caption); color: var(--ink-3); }
 .pv-range { font-variant-numeric: tabular-nums; }
+.pv-win__meta { display: flex; flex-wrap: wrap; gap: 2px 14px; font-size: var(--fs-caption); color: var(--ink-2); }
+.pv-win__meta i { font-style: normal; color: var(--ink-4); margin-right: 4px; }
+.pv-win__clean { color: var(--jade); font-weight: 700; }
+.pv-win__flags { margin: 2px 0 0; padding: 0 0 0 16px; display: grid; gap: 2px; font-size: var(--fs-caption); color: var(--ink-3); line-height: 1.45; }
+.pv-win__flags li::marker { color: var(--gold); }
+.pv-win__reason { font-size: var(--fs-caption); color: var(--vermilion); }
+.pv-act__badge { display: flex; align-items: center; gap: 8px; }
+.pv-act__wins { display: grid; gap: 6px; }
+.pv-act__win { display: grid; gap: 2px; padding: 8px 10px; border-radius: var(--r-sm); border: 1px solid var(--rule); background: var(--surface); font-size: var(--fs-caption); }
+.pv-act__win b { color: var(--ink); font-size: var(--fs-small); font-variant-numeric: tabular-nums; }
+.pv-act__win span { color: var(--ink-3); }
+.pv-restr { margin: 0; padding: 0 0 0 20px; display: grid; gap: 4px; font-size: var(--fs-small); color: var(--ink-2); line-height: 1.5; columns: auto; }
+@media (min-width: 760px) { .pv-restr { grid-template-columns: 1fr 1fr; gap: 4px 24px; } }
 
 /* ── Tables (scroll container keeps the page from overflowing) ── */
 .pv-table { min-width: 0; }
